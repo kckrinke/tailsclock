@@ -1,0 +1,10 @@
+[Applet Factory]
+Id=tailstimeFactory
+Location=/usr/lib/gnome-applets/tailstime-factory3.py
+Name=tailstime Factory
+
+[tailstime]
+Name=tailstime
+Description=Simple clock applet.
+Icon=gnome-panel-clock
+BonoboId=OAFIID:tailstimeFactory

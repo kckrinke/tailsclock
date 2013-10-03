@@ -1,0 +1,6 @@
+org.gnome.applets.tailstime.panel-applet usr/share/gnome-panel/4.0/applets/
+org.gnome.panel.applet.tailstime.service usr/share/dbus-1/services/
+tailstime-factory2.py usr/lib/gnome-applets
+tailstime-factory3.py usr/lib/gnome-applets
+tailstimeApplet.py usr/lib/gnome-applets
+tailstime.server usr/lib/bonobo/servers 
