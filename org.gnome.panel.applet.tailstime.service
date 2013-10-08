@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.gnome.panel.applet.tailstimeFactory
-Exec=/usr/lib/gnome-applets/tailstime-factory3.py

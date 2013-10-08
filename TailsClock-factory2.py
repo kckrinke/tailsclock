@@ -5,7 +5,7 @@ import gtk
 import pygtk
 pygtk.require('2.0')
 import gnomeapplet
-from tailstimeApplet import applet_factory
+from TailsClockApplet import applet_factory
 
 if __name__ == '__main__':	 # testing for execution
 	print('Starting factory')
@@ -21,8 +21,8 @@ if __name__ == '__main__':	 # testing for execution
 		gtk.main()
 		sys.exit()
 	else:
-		gnomeapplet.bonobo_factory('OAFIID:tailstime_Factory', 
+		gnomeapplet.bonobo_factory('OAFIID:TailsClock_Factory', 
 				gnomeapplet.Applet.__gtype__, 
-				'tailstime',
+				'TailsClock',
 				'0.1', 
 				applet_factory)

@@ -1,12 +1,12 @@
-Source: tailstime
+Source: tailsclock
 Section: gnome
 Priority: extra
 Maintainer: Kevin C. Krinke <kevin@krinke.ca>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.2
-Homepage: http://kevin.c.krinke.ca/code/tailstime/
+Homepage: http://kevin.c.krinke.ca/code/tailsclock/
 
-Package: tailstime
+Package: tailsclock
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, gir1.2-gtk-3.0 | python-gtk2, gir1.2-panelapplet-4.0 | python-gnomeapplet, gnome-icon-theme, gnome-panel
 Description: Simple clock applet for Gnome (fallback mode)

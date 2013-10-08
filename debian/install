@@ -1,6 +1,6 @@
-org.gnome.applets.tailstime.panel-applet usr/share/gnome-panel/4.0/applets/
-org.gnome.panel.applet.tailstime.service usr/share/dbus-1/services/
-tailstime-factory2.py usr/lib/gnome-applets
-tailstime-factory3.py usr/lib/gnome-applets
-tailstimeApplet.py usr/lib/gnome-applets
-tailstime.server usr/lib/bonobo/servers 
+org.gnome.applets.TailsClock.panel-applet usr/share/gnome-panel/4.0/applets/
+org.gnome.panel.applet.TailsClock.service usr/share/dbus-1/services/
+TailsClock-factory2.py usr/lib/gnome-applets
+TailsClock-factory3.py usr/lib/gnome-applets
+TailsClockApplet.py usr/lib/gnome-applets
+TailsClock.server usr/lib/bonobo/servers 
