@@ -6,10 +6,11 @@ import locale
 import pytz
 
 try:
-    from gi.repository import Gtk, GObject
+    from gi.repository import Gtk, GObject, Gdk
 except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gtk as Gtk
     import gobject as GObject
+    import gtk.gdk as Gdk
 
 
 class TailsClockPreferences(Gtk.Dialog):
