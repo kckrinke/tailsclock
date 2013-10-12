@@ -1,10 +1,10 @@
 [Applet Factory]
 Id=TailsClockFactory
 Location=/usr/lib/gnome-applets/TailsClock-factory3.py
-Name=TailsClock Factory
+Name=Tails Clock Factory
 
 [TailsClock]
-Name=TailsClock
+Name=Tails Clock
 Description=Simple clock applet.
 Icon=gnome-panel-clock
 BonoboId=OAFIID:TailsClockFactory
