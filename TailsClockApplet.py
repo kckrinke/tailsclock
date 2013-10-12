@@ -14,10 +14,10 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
 
 
 class TailsClockPreferences(Gtk.Dialog):
-    parent = None
-    def __init__(self, tailsclock):
-        self.parent = tailsclock
-        Gtk.Dialog.__init__(self, "My Dialog", self.parent, 0,
+    tailsclock = None
+    def __init__(self, applet):
+        self.tailsclock = applet
+        Gtk.Dialog.__init__(self, "TailsClock Preferences", None, 0,
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                              Gtk.STOCK_OK, Gtk.ResponseType.OK))
         self.set_default_size(150, 100)
@@ -31,6 +31,8 @@ class TailsClockPreferences(Gtk.Dialog):
 
 class TailsClock:
     main_label = None
+    main_evbox = None
+    main_menu = None
 
     panel_applet = None
     panel_iid = None
@@ -39,40 +41,50 @@ class TailsClock:
     tz_info = None
 
     def __init__(self,applet,iid,data):
+        # transparent background?
+        #applet.set_background_widget(applet)
         # not sure why, but let's save this
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
+        self.create_menu()
         pass
 
+    def create_menu(self):
+        self.main_menu = Gtk.Menu()
+        pref_item = Gtk.MenuItem("Preferences")
+        pref_item.connect("activate",self.display_prefs,self)
+        pref_item.show()
+        self.main_menu.append(pref_item)
+        self.main_menu.show_all()
+        return True
+
     def refresh_cfg(self):
-        #self.tz_info = pytz.timezone('Canada/Eastern')
-        #self.tz_info = pytz.timezone('Canada/Pacific')
-        #self.tz_info = pytz.timezone('Canada/Central')
         cfg_path = os.environ['HOME']+"/.config/tails/timezone"
-        print cfg_path
         if os.path.exists(cfg_path):
-            print "exists"
             fh = open(cfg_path,'r')
             try:
                 contents = fh.read()
                 contents = re.sub("\s","",contents)
                 self.tz_info = pytz.timezone(contents)
-            except Exception( e ):
-                print e
+            except Exception, e:
+                sys.stderr.write("TailsClock Invalid Timezone: "+str(e)+"\n")
+                os.remove(cfg_path)
                 self.tz_info = None
             fh.close()
-        else:
-            print "not exist"
         if self.tz_info is None:
             self.tz_info = pytz.utc
-        pass
+        return
 
     def launch(self):
         # actually populate UI
         self.refresh_cfg()
         self.main_label = Gtk.Label("Initializing...")
-        self.panel_applet.add(self.main_label)
+        self.main_evbox = Gtk.EventBox()
+        self.main_evbox.modify_bg(Gtk.StateFlags.NORMAL,Gdk.color_parse("black"))
+        self.main_evbox.add(self.main_label)
+        self.main_evbox.connect("button-release-event",self.display_menu)
+        self.panel_applet.add(self.main_evbox)
         self.panel_applet.show_all()
         self.update_time()
         GObject.timeout_add(1000,self.update_time)
@@ -86,6 +98,21 @@ class TailsClock:
         stamp = dt.strftime(dt_format)
         self.main_label.set_text(stamp)
         return True
+
+    def display_prefs(self,widget,event):
+        tcp = TailsClockPreferences(self)
+        tcp.run()
+        tcp.destroy()
+        pass
+
+    def display_menu(self,widget,event):
+        if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 1:
+            # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
+            self.main_menu.popup(None,None,None,None,event.button,event.time)
+            return True
+        return False
+
+
     
 tc_inst = None
 def applet_factory(applet, iid, data = None):
