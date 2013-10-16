@@ -148,6 +148,7 @@ class TailsClock:
         css = """
         #TailsClockAppletLabel,#TailsClockAppletEvBox {
             background-color: rgba(0,0,0,0);
+            font-weight: bold;
         }
         """
         style_provider.load_from_data(css)
