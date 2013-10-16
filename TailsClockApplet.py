@@ -138,10 +138,25 @@ class TailsClock:
         # actually populate UI
         self.refresh_cfg()
         self.main_label = Gtk.Label("Initializing...")
+        self.main_label.set_name("TailsClockAppletLabel")
         self.main_evbox = Gtk.EventBox()
-        self.main_evbox.modify_bg(Gtk.StateFlags.NORMAL,Gdk.color_parse("black"))
+        self.main_evbox.set_name("TailsClockAppletEvBox")
         self.main_evbox.add(self.main_label)
         self.main_evbox.connect("button-release-event",self.display_menu)
+        # transparent background style
+        style_provider = Gtk.CssProvider()
+        css = """
+        #TailsClockAppletLabel,#TailsClockAppletEvBox {
+            background-color: rgba(0,0,0,0);
+        }
+        """
+        style_provider.load_from_data(css)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
+        # add/show all
         self.panel_applet.add(self.main_evbox)
         self.panel_applet.show_all()
         self.update_time()
