@@ -1,4 +1,20 @@
 #!/usr/bin/env python
+"""
+Tails Clock Applet
+
+A simple GNOME panel applet (GNOME 2.x or GNOME 3 in fallback/classic mode)
+that displays the date and time. The clock applet defaults to UTC, however,
+users can configure the timezone in the applet's preferences. Changing the
+timezone in the applet does not affect any actual part of the operating
+system with the exception of storing the currently selected timezone in
+~/.config/tails/timezone
+
+Author: Kevin C. Krinke <kevin@krinke.ca>
+License: GNU Public License 2.0 (or greater)
+
+Project based on initial code that was generated using the following project:
+ https://github.com/palfrey/panel-applet-generator
+"""
 import os, sys, re
 from datetime import datetime, tzinfo, timedelta
 import time
@@ -12,7 +28,13 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gobject as GObject
     import gtk.gdk as Gdk
 
+
+
 class TailsClockPrefsDialog:
+    """
+    Simple preferences dialog for Tails Clock. Currently supports changing
+    the timezone for the clock display. Changes propagate immediately.
+    """
     applet = None
     dialog = None
     tz_tview = None
@@ -56,6 +78,10 @@ class TailsClockPrefsDialog:
         pass
 
     def on_timezone_selection_changed(self,selection):
+        """
+        Whenever the user selects a timezone, update the clock display
+        immediately.
+        """
         model, treeiter = selection.get_selected()
         if treeiter != None:
             new_tz = model[treeiter][0]
@@ -63,6 +89,10 @@ class TailsClockPrefsDialog:
         pass
 
     def run(self):
+        """
+        Helper method to actually display the dialog (and all of the
+        widgets contained therein.
+        """
         self.dialog.show_all()
         rv = self.dialog.run()
         # retrieve pref values
@@ -71,6 +101,9 @@ class TailsClockPrefsDialog:
 
 
 class TailsClock:
+    """
+    Actual class used to manage the applet and display the time.
+    """
     main_label = None
     main_evbox = None
     main_menu = None
@@ -84,6 +117,9 @@ class TailsClock:
     cfg_path = None
 
     def __init__(self,applet,iid,data):
+        """
+        Simple initialization of the class instance.
+        """
         self.cfg_path = os.environ['HOME']+"/.config/tails/timezone"
         # transparent background?
         if applet.__class__ is not Gtk.Window:
@@ -96,6 +132,9 @@ class TailsClock:
         pass
 
     def create_menu(self):
+        """
+        Generate a left-click context-menu
+        """
         self.main_menu = Gtk.Menu()
         pref_item = Gtk.MenuItem("Preferences")
         pref_item.connect("activate",self.display_prefs,self)
@@ -105,6 +144,10 @@ class TailsClock:
         return True
 
     def refresh_cfg(self):
+        """
+        Read the contents of the configuration file and update the clock
+        accordingly. Tries to handle failures gracefully.
+        """
         if os.path.exists(self.cfg_path):
             fh = open(self.cfg_path,'r')
             try:
@@ -123,6 +166,9 @@ class TailsClock:
         return
 
     def update_cfg(self,data):
+        """
+        Overwrites the timezone configuration file with the given data.
+        """
         if data.has_key('tz'):
             fh = open(self.cfg_path,'w')
             try:
@@ -135,6 +181,10 @@ class TailsClock:
         return
 
     def launch(self):
+        """
+        Construct the user-interface, stylize the widgets, connect the timers
+        and so on. Basically; launch the applet.
+        """
         # actually populate UI
         self.refresh_cfg()
         self.main_label = Gtk.Label("Initializing...")
@@ -165,6 +215,9 @@ class TailsClock:
         return self
 
     def update_time(self):
+        """
+        Fired once-per second to update the time.
+        """
         utc_dt = datetime.utcnow()
         utc_dt = utc_dt.replace(tzinfo=pytz.utc)
         dt = utc_dt.astimezone(self.tz_info)
@@ -174,10 +227,16 @@ class TailsClock:
         return True
 
     def display_prefs(self,*argv):
+        """
+        Display the Tails Clock Preferences dialog.
+        """
         TailsClockPrefsDialog(self).run()
         pass
 
     def display_menu(self,widget,event):
+        """
+        Trigger the context-menu to popup.
+        """
         if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 1:
             # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
             self.main_menu.popup(None,None,None,None,event.button,event.time)
@@ -188,5 +247,8 @@ class TailsClock:
     
 tc_inst = None
 def applet_factory(applet, iid, data = None):
+    """
+    Construct the clock instance and launch it.
+    """
     tc_inst = TailsClock(applet,iid,data).launch()
     return True
