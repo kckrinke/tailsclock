@@ -20,6 +20,10 @@ from datetime import datetime, tzinfo, timedelta
 import time
 import locale
 import pytz
+import gettext
+gettext.install('tailsclockapplet', './locale', unicode=1)
+# lang_de = gettext.translation('tailsclockapplet','./locale',languages=['de'])
+# lang_de.install()
 
 try:
     from gi.repository import Gtk, GObject, Gdk
@@ -41,25 +45,28 @@ class TailsClockPrefsDialog:
     tz_store = None
 
     def __init__(self,applet):
+        #: store the applet's reference for later
         self.applet = applet
-        self.dialog = Gtk.Dialog("Tails Clock Preferences",None,Gtk.DialogFlags.MODAL,
-                                 ("Close",Gtk.ResponseType.OK)
+        self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),None,Gtk.DialogFlags.MODAL,
+                                 (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
                                  )
+        #: construct the core dialog
         vbox = self.dialog.get_content_area()
         #: Time Zone Configuration
-        tz_label = Gtk.Label("Please select a timezone from the following list:")
+        tz_label = Gtk.Label(_("Please select a timezone from the following list:"))
         tz_label.set_line_wrap(True)
         vbox.pack_start(tz_label,False,False,1)
         self.tz_store = Gtk.ListStore(str)
         self.tz_tview = Gtk.TreeView(self.tz_store)
         self.tz_tview.set_headers_visible(False)
         tz_rndrr = Gtk.CellRendererText()
-        tz_col = Gtk.TreeViewColumn("Timezones", tz_rndrr, text = 0)
+        tz_col = Gtk.TreeViewColumn(_("Timezones"), tz_rndrr, text = 0)
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
         tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,Gtk.PolicyType.AUTOMATIC)
         tz_scroll.add(self.tz_tview)
         vbox.pack_start(tz_scroll,True,True,1)
+        #: Add timezones to the list and pre-select the current timezone
         select = self.tz_tview.get_selection()
         for tz in pytz.common_timezones:
             tmpiter = self.tz_store.append([tz])
@@ -73,6 +80,7 @@ class TailsClockPrefsDialog:
             pass
         select.connect("changed",self.on_timezone_selection_changed)
         select.set_mode(Gtk.SelectionMode.SINGLE)
+        #: try to constrain the dialog's size
         self.dialog.set_size_request(250,250)
         self.dialog.set_resizable(False)
         pass
@@ -136,7 +144,7 @@ class TailsClock:
         Generate a left-click context-menu
         """
         self.main_menu = Gtk.Menu()
-        pref_item = Gtk.MenuItem("Preferences")
+        pref_item = Gtk.MenuItem(_("Preferences"))
         pref_item.connect("activate",self.display_prefs,self)
         pref_item.show()
         self.main_menu.append(pref_item)
@@ -157,7 +165,7 @@ class TailsClock:
                 self.tz_name = contents
             except Exception, e:
                 sys.stderr.write("TailsClock Invalid Timezone: "+str(e)+"\n")
-                os.remove(self.cfg_path)
+                #os.remove(self.cfg_path) #: only used for debugging
                 self.tz_info = None
                 self.tz_name = contents
             fh.close()
@@ -187,7 +195,7 @@ class TailsClock:
         """
         # actually populate UI
         self.refresh_cfg()
-        self.main_label = Gtk.Label("Initializing...")
+        self.main_label = Gtk.Label("...")
         self.main_label.set_name("TailsClockAppletLabel")
         self.main_evbox = Gtk.EventBox()
         self.main_evbox.set_name("TailsClockAppletEvBox")
