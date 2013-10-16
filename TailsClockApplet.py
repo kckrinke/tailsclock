@@ -12,21 +12,62 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gobject as GObject
     import gtk.gdk as Gdk
 
+class TailsClockPrefsDialog:
+    applet = None
+    dialog = None
+    tz_tview = None
+    tz_store = None
 
-class TailsClockPreferences(Gtk.Dialog):
-    tailsclock = None
-    def __init__(self, applet):
-        self.tailsclock = applet
-        Gtk.Dialog.__init__(self, "TailsClock Preferences", None, 0,
-                            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                             Gtk.STOCK_OK, Gtk.ResponseType.OK))
-        self.set_default_size(150, 100)
-        label = Gtk.Label("This is a dialog to display additional information")
-        # need to populate options from pytz.common_timezones
-        box = self.get_content_area()
-        box.add(label)
-        self.show_all()
+    def __init__(self,applet):
+        self.applet = applet
+        self.dialog = Gtk.Dialog("Tails Clock Preferences",None,Gtk.DialogFlags.MODAL,
+                                 ("Close",Gtk.ResponseType.OK)
+                                 )
+        vbox = self.dialog.get_content_area()
+        #: Time Zone Configuration
+        tz_label = Gtk.Label("Please select a timezone from the following list:")
+        tz_label.set_line_wrap(True)
+        vbox.pack_start(tz_label,False,False,1)
+        self.tz_store = Gtk.ListStore(str)
+        self.tz_tview = Gtk.TreeView(self.tz_store)
+        self.tz_tview.set_headers_visible(False)
+        tz_rndrr = Gtk.CellRendererText()
+        tz_col = Gtk.TreeViewColumn("Timezones", tz_rndrr, text = 0)
+        self.tz_tview.append_column(tz_col)
+        tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
+        tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,Gtk.PolicyType.AUTOMATIC)
+        tz_scroll.add(self.tz_tview)
+        vbox.pack_start(tz_scroll,True,True,1)
+        select = self.tz_tview.get_selection()
+        for tz in pytz.common_timezones:
+            tmpiter = self.tz_store.append([tz])
+            if self.applet.tz_name != None:
+                if self.applet.tz_name == tz:
+                    select.select_iter(tmpiter)
+                    tmppath = self.tz_store.get_path(tmpiter)
+                    self.tz_tview.scroll_to_cell(tmppath,None,False,0,0)
+                    pass
+                pass
+            pass
+        select.connect("changed",self.on_timezone_selection_changed)
+        select.set_mode(Gtk.SelectionMode.SINGLE)
+        self.dialog.set_size_request(250,250)
+        self.dialog.set_resizable(False)
         pass
+
+    def on_timezone_selection_changed(self,selection):
+        model, treeiter = selection.get_selected()
+        if treeiter != None:
+            new_tz = model[treeiter][0]
+            self.applet.update_cfg({'tz':new_tz})
+        pass
+
+    def run(self):
+        self.dialog.show_all()
+        rv = self.dialog.run()
+        # retrieve pref values
+        self.dialog.destroy()
+        return
 
 
 class TailsClock:
@@ -39,10 +80,14 @@ class TailsClock:
     panel_data = None
 
     tz_info = None
+    tz_name = None
+    cfg_path = None
 
     def __init__(self,applet,iid,data):
+        self.cfg_path = os.environ['HOME']+"/.config/tails/timezone"
         # transparent background?
-        #applet.set_background_widget(applet)
+        if applet.__class__ is not Gtk.Window:
+            applet.set_background_widget(applet)
         # not sure why, but let's save this
         self.panel_applet = applet
         self.panel_iid = iid
@@ -60,20 +105,33 @@ class TailsClock:
         return True
 
     def refresh_cfg(self):
-        cfg_path = os.environ['HOME']+"/.config/tails/timezone"
-        if os.path.exists(cfg_path):
-            fh = open(cfg_path,'r')
+        if os.path.exists(self.cfg_path):
+            fh = open(self.cfg_path,'r')
             try:
                 contents = fh.read()
-                contents = re.sub("\s","",contents)
-                self.tz_info = pytz.timezone(contents)
+                contents = re.sub("\r??\n","",contents)
+                self.tz_info = pytz.timezone(contents.strip())
+                self.tz_name = contents
             except Exception, e:
                 sys.stderr.write("TailsClock Invalid Timezone: "+str(e)+"\n")
-                os.remove(cfg_path)
+                os.remove(self.cfg_path)
                 self.tz_info = None
+                self.tz_name = contents
             fh.close()
         if self.tz_info is None:
             self.tz_info = pytz.utc
+        return
+
+    def update_cfg(self,data):
+        if data.has_key('tz'):
+            fh = open(self.cfg_path,'w')
+            try:
+                fh.write(data['tz'])
+                pass
+            except Exception, e:
+                os.remove(self.cfg_path)
+            fh.close()
+        self.refresh_cfg()
         return
 
     def launch(self):
@@ -99,10 +157,8 @@ class TailsClock:
         self.main_label.set_text(stamp)
         return True
 
-    def display_prefs(self,widget,event):
-        tcp = TailsClockPreferences(self)
-        tcp.run()
-        tcp.destroy()
+    def display_prefs(self,*argv):
+        TailsClockPrefsDialog(self).run()
         pass
 
     def display_menu(self,widget,event):
