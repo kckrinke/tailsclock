@@ -223,6 +223,7 @@ class TailsClock:
         dt = utc_dt.astimezone(self.tz_info)
         dt_format = locale.nl_langinfo(locale.D_T_FMT)
         stamp = dt.strftime(dt_format)
+        stamp = re.sub("(\d+)\:(\d+)\:(\d+)","\\1:\\2",stamp) #: remove seconds
         self.main_label.set_text(stamp)
         return True
 
