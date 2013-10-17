@@ -23,13 +23,13 @@ import pytz
 import gettext
 gettext.install('tailsclockapplet', unicode=1) #: system default
 
+#: load up Gtk
 try:
     from gi.repository import Gtk, GObject, Gdk
 except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gtk as Gtk
     import gobject as GObject
     import gtk.gdk as Gdk
-
 
 
 class TailsClockPrefsDialog:
@@ -45,7 +45,8 @@ class TailsClockPrefsDialog:
     def __init__(self,applet):
         #: store the applet's reference for later
         self.applet = applet
-        self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),None,Gtk.DialogFlags.MODAL,
+        self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
+                                 None, Gtk.DialogFlags.MODAL,
                                  (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
                                  )
         #: construct the core dialog
@@ -126,14 +127,13 @@ class TailsClock:
         """
         Simple initialization of the class instance.
         """
-        self.cfg_path = os.environ['HOME']+"/.config/tails/timezone"
         # live or debug?
         if applet.__class__ is not Gtk.Window:
             applet.set_background_widget(applet)
-        # not sure why, but let's save this
         else:
             # debug; load translations from "here"
             gettext.install('tailsclockapplet', './locale', unicode=1)
+        self.cfg_path = os.environ['HOME']+"/.config/tails/timezone"
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
@@ -166,7 +166,6 @@ class TailsClock:
                 self.tz_name = contents
             except Exception, e:
                 sys.stderr.write("TailsClock Invalid Timezone: "+str(e)+"\n")
-                #os.remove(self.cfg_path) #: only used for debugging
                 self.tz_info = None
                 self.tz_name = contents
             fh.close()
