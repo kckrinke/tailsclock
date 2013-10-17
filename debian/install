@@ -4,4 +4,4 @@ TailsClock-factory2.py usr/lib/gnome-applets
 TailsClock-factory3.py usr/lib/gnome-applets
 TailsClockApplet.py usr/lib/gnome-applets
 TailsClock.server usr/lib/bonobo/servers 
-locale usr/share/tailsclock/locale
+locale/de/LC_MESSAGES/tailsclockapplet.mo usr/share/locale/de/LC_MESSAGES/tailsclockapplet.mo
