@@ -145,7 +145,7 @@ class TailsClock:
         Generate a left-click context-menu
         """
         self.main_menu = Gtk.Menu()
-        pref_item = Gtk.MenuItem(_("Preferences"))
+        pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
         pref_item.connect("activate",self.display_prefs,self)
         pref_item.show()
         self.main_menu.append(pref_item)
