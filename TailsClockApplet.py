@@ -21,9 +21,7 @@ import time
 import locale
 import pytz
 import gettext
-gettext.install('tailsclockapplet', './locale', unicode=1)
-# lang_de = gettext.translation('tailsclockapplet','./locale',languages=['de'])
-# lang_de.install()
+gettext.install('tailsclockapplet', unicode=1) #: system default
 
 try:
     from gi.repository import Gtk, GObject, Gdk
@@ -129,10 +127,13 @@ class TailsClock:
         Simple initialization of the class instance.
         """
         self.cfg_path = os.environ['HOME']+"/.config/tails/timezone"
-        # transparent background?
+        # live or debug?
         if applet.__class__ is not Gtk.Window:
             applet.set_background_widget(applet)
         # not sure why, but let's save this
+        else:
+            # debug; load translations from "here"
+            gettext.install('tailsclockapplet', './locale', unicode=1)
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
