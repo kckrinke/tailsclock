@@ -173,6 +173,57 @@ class TailsClock:
             self.tz_info = pytz.utc
         return
 
+    def _write_file(self,path,contents):
+        try:
+            fh = open(path,'w')
+            fh.write(contents)
+            fh.close()
+        except Exception, e:
+            sys.stderr.write("TailsClock[_write_file]: " + str(e) + "\n")
+            return False
+        return True
+
+    def _write_yaml(self,path,data):
+        current = self._read_yaml(path)
+        yaml = ""
+        for k in current.keys():
+            if data.has_key(k):
+                yaml += k+":"+str(data[k])+"\n"
+            else:
+                yaml += k+":"+str(current[k])+"\n"
+        return self._write_file(path,yaml)
+
+    def _read_file(self,path):
+        val = ""
+        try:
+            fh = open(path,'r')
+            val = fh.read()
+            fh.close()
+            val = val.strip()
+        except Exception, e:
+            sys.stderr.write("TailsClock[_read_file]: " + str(e) + "\n")
+            return None
+        return val
+
+    def _read_yaml(self,path):
+        val = DEFAULT_CFG_DATA.copy()
+        raw = None
+        try:
+            fh = open(path,'r')
+            raw = fh.read()
+            fh.close()
+        except Exception, e:
+            sys.stderr.write("TailsClock[_read_yaml]: " + str(e) + "\n")
+            return val
+        lines = raw.splitlines()
+        for line in lines:
+            line = line.strip()
+            (k,v) = re.split("\s*:\s*",line)
+            if v == 'True': v = True
+            if v == 'False': v = False
+            val[k] = v
+        return val
+
     def update_cfg(self,data):
         """
         Overwrites the timezone configuration file with the given data.
