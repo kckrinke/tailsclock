@@ -7,6 +7,8 @@
 DESTDIR:=/usr
 PREFIX:=$(DESTDIR)
 
+all: mo
+
 help:
 	@echo "Note: there is nothing to do for 'make all'."
 	@echo
@@ -30,8 +32,6 @@ clean:
 	@$(foreach m,$(wildcard ./locale/*/LC_MESSAGES/*.mo), rm -fv $m)
 	@rm -fv *.pyc
 	@echo "Project is now clean."
-
-all: help
 
 install:
 	@mkdir -p $(PREFIX)/share/gnome-panel/4.0/applets/
