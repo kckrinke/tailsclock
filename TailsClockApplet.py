@@ -387,7 +387,7 @@ class TailsClock:
         """
         Trigger the context-menu to popup.
         """
-        if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 1:
+        if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
             # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
             self.main_menu.popup(None,None,None,None,event.button,event.time)
             return True
