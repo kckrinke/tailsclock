@@ -8,6 +8,9 @@
     * Toggle Seconds display
     * Toggle Timezone display
   * Refactored prefs dialog to accomodate new options
+  * Applet context menu listens for right-click (ignores alt+right-click)
+  * Implemented simple Makefile based build system
+  * Makefile has targets for generating .mo files and for generating messages.pot
 
 0.1 - Kevin C. Krinke <kevin@krinke.ca>
 
