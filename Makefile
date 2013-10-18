@@ -4,7 +4,8 @@
 #: Simple build/install system for Tails Clock
 #
 
-PREFIX:=/usr
+DESTDIR:=/usr
+PREFIX:=$(DESTDIR)
 
 help:
 	@echo "Note: there is nothing to do for 'make all'."
