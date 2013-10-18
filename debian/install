@@ -1,7 +1,0 @@
-org.gnome.applets.TailsClock.panel-applet usr/share/gnome-panel/4.0/applets/
-org.gnome.panel.applet.TailsClock.service usr/share/dbus-1/services/
-TailsClock-factory2.py usr/lib/gnome-applets
-TailsClock-factory3.py usr/lib/gnome-applets
-TailsClockApplet.py usr/lib/gnome-applets
-TailsClock.server usr/lib/bonobo/servers 
-locale/de/LC_MESSAGES/tailsclockapplet.mo usr/share/locale/de/LC_MESSAGES/tailsclockapplet.mo
