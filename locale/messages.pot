@@ -1,33 +1,49 @@
-# Tails Clock Translations
-# Copyright (C) 2013 Kevin C. Krinke
-# Kevin C. Krinke <kevin@krinke.ca>, 2013.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1\n"
-"POT-Creation-Date: 2013-10-16 15:04+EDT\n"
-"PO-Revision-Date: 2013-10-16 15:04+EDT\n"
-"Last-Translator: Kevin C. Krinke <kevin@krinke.ca>\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2013-10-17 19:46+EDT\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: TailsClockApplet.py:27
+#: TailsClockApplet.py:53
 msgid "Tails Clock Preferences"
 msgstr ""
 
-#: TailsClockApplet.py:32
+#: TailsClockApplet.py:66
+msgid "12 Hour Clock?"
+msgstr ""
+
+#: TailsClockApplet.py:70
+msgid "Display Seconds?"
+msgstr ""
+
+#: TailsClockApplet.py:74
+msgid "Display Timezone?"
+msgstr ""
+
+#: TailsClockApplet.py:78
+msgid "General"
+msgstr ""
+
+#: TailsClockApplet.py:81
+msgid "Timezone"
+msgstr ""
+
+#: TailsClockApplet.py:82
 msgid "Please select a timezone from the following list:"
 msgstr ""
 
-#: TailsClockApplet.py:39
+#: TailsClockApplet.py:90
 msgid "Timezones"
-msgstr ""
-
-#: TailsClockApplet.py:104
-msgid "Preferences"
 msgstr ""
 
