@@ -1,8 +1,13 @@
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Minor code cleanups
-  * Tweaks to translation loading
+  * Tweaks/Updates to translations and loading
   * Added CHANGELOG, updated README
+  * Implemented a few more configuration items (stored in ~/.config/tails/tailsclock)
+    * Toggle 12/24 hr display
+    * Toggle Seconds display
+    * Toggle Timezone display
+  * Refactored prefs dialog to accomodate new options
 
 0.1 - Kevin C. Krinke <kevin@krinke.ca>
 
