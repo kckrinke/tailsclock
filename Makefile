@@ -10,12 +10,12 @@ PREFIX:=$(DESTDIR)
 all: mo
 
 help:
-	@echo "Note: there is nothing to do for 'make all'."
-	@echo
+	@echo "'make help' - Display this text"
+	@echo "'make all' - Currently just performs a 'make mo'"
 	@echo "'make mo' - Generate machine readable language translations"
 	@echo "'make pot' - Generate/Update language translation template"
 	@echo "'make clean' - Clean source tree"
-	@echo "'make install' - Install Tails Clock to $(PREFIX)"
+	@echo "'make install' - Install Tails Clock to prefix ($(PREFIX))"
 
 mo:
 	@echo "Generating machine readable translation files..."
