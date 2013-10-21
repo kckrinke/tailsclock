@@ -19,7 +19,7 @@ help:
 
 mo:
 	@echo "Generating machine readable translation files..."
-	@$(foreach p,$(wildcard ./locale/*/LC_MESSAGES/*.po), msgfmt --verbose --output-file $(basename $p).mo $p)
+	@$(foreach p,$(wildcard ./locale/*/LC_MESSAGES/*.po), echo $p; [ -f $(basename $p) ] && rm -f $(basename $p); msgfmt --verbose --output-file $(basename $p).mo $p;)
 	@echo "All translation files re-formatted."
 
 pot:
@@ -44,8 +44,7 @@ install:
 	@cp -v TailsClockApplet.py $(PREFIX)/lib/gnome-applets
 	@mkdir -p $(PREFIX)/lib/bonobo/servers/
 	@cp -v TailsClock.server $(PREFIX)/lib/bonobo/servers/
-	@mkdir -p $(PREFIX)/share/locale/de/LC_MESSAGES/
-	@cp -v locale/de/LC_MESSAGES/tailsclockapplet.mo $(PREFIX)/share/locale/de/LC_MESSAGES/tailsclockapplet.mo
+	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), echo $c; cp -fv "$c" "$(PREFIX)/share/$c";)
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
@@ -55,5 +54,5 @@ uninstall:
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory3.py
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClockApplet.py
 	@rm -fv $(PREFIX)/lib/bonobo/servers/TailsClock.server
-	@rm -fv $(PREFIX)/share/locale/de/LC_MESSAGES/tailsclockapplet.mo
+	@$(foreach m,$(wildcard $(PREFIX)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo), rm -fv $m;)
 	@echo "Uninstall of the Tails Clock applet is complete."
