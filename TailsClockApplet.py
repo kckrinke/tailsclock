@@ -189,8 +189,8 @@ class TailsClock:
         else:
             # debug; load translations from "here"
             gettext.install('tailsclockapplet', './locale', unicode=1)
-        self.cfg_path = os.environ['HOME']+"/.config/tails/tailsclock"
-        self.cfg_tz_path = os.environ['HOME']+"/.config/tails/timezone"
+        self.cfg_path = os.environ['HOME']+"/.config/tailsclock/settings"
+        self.cfg_tz_path = os.environ['HOME']+"/.config/tailsclock/timezone"
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
