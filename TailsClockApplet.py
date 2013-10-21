@@ -172,7 +172,8 @@ class TailsClock:
 
     tz_info = None
     tz_name = None
-    cfg_path = None
+    cfg_base = None
+    cfg_rc_path = None
     cfg_tz_path = None
 
     show_tz = DEFAULT_CFG_DATA['show_tz']
@@ -189,8 +190,14 @@ class TailsClock:
         else:
             # debug; load translations from "here"
             gettext.install('tailsclockapplet', './locale', unicode=1)
-        self.cfg_path = os.environ['HOME']+"/.config/tailsclock/settings"
-        self.cfg_tz_path = os.environ['HOME']+"/.config/tailsclock/timezone"
+        self.cfg_base = os.environ['HOME']+"/.config/tailsclock"
+        if not os.path.exists(self.cfg_base):
+            try:
+                os.makedirs(self.cfg_base)
+            except Exception, e:
+                sys.stderr.write("Failed to make tailsclock config path: "+str(e))
+        self.cfg_rc_path = self.cfg_base + "/settings"
+        self.cfg_tz_path = self.cfg_base + "/timezone"
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
@@ -225,8 +232,8 @@ class TailsClock:
         if self.tz_info is None:
             self.tz_name = "UTC"
             self.tz_info = pytz.utc
-        if os.path.exists(self.cfg_path):
-            data = self._read_yaml(self.cfg_path)
+        if os.path.exists(self.cfg_rc_path):
+            data = self._read_yaml(self.cfg_rc_path)
             if data.has_key('show_tz'):
                 self.show_tz = bool(data['show_tz'])
             if data.has_key('show_sec'):
@@ -294,7 +301,7 @@ class TailsClock:
             self._write_file(self.cfg_tz_path,data['tz'])
             del data['tz']
         if len(data) > 0:
-            self._write_yaml(self.cfg_path,data)
+            self._write_yaml(self.cfg_rc_path,data)
         self.refresh_cfg()
         self.update_time()
         return
