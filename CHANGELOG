@@ -11,6 +11,13 @@
   * Applet context menu listens for right-click (ignores alt+right-click)
   * Implemented simple Makefile based build system
   * Makefile has targets for generating .mo files and for generating messages.pot
+  * Renamed README to README.md so github displays markdown correctly
+  * Renamed/Moved configs:
+    * ~/.config/tails/timezone   -> ~/.config/tailsclock/timezone
+    * ~/.config/tails/tailsclock -> ~/.config/tailsclock/settings
+  * If ~/.config/tailsclock doesn't exist; create it
+  * Added more translations (translated via free web services)
+  * Refactored Makefile to not be hard-coded for the locale work
 
 0.1 - Kevin C. Krinke <kevin@krinke.ca>
 
