@@ -4,7 +4,7 @@
 #: Simple build/install system for Tails Clock
 #
 
-DESTDIR:=/usr
+DESTDIR:=/opt
 PREFIX:=$(DESTDIR)
 
 all: mo
