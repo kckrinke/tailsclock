@@ -10,12 +10,15 @@ PREFIX:=$(DESTDIR)
 all: mo
 
 help:
+	@echo "# Tails Clock Makefile Usage #"
+	@echo
 	@echo "'make help' - Display this text"
 	@echo "'make all' - Currently just performs a 'make mo'"
 	@echo "'make mo' - Generate machine readable language translations"
 	@echo "'make pot' - Generate/Update language translation template"
 	@echo "'make clean' - Clean source tree"
 	@echo "'make install' - Install Tails Clock to prefix ($(PREFIX))"
+	@echo "'make uninstall' - Uninstall Tails Clock from prefix ($(PREFIX))"
 
 mo:
 	@echo "Generating machine readable translation files..."
@@ -50,7 +53,8 @@ install:
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
-	@echo "Removing installed files..."
+	@echo "Removing installed files from $(PREFIX) ..."
+	@echo "(Note that this does not remove any paths.)"
 	@rm -fv $(PREFIX)/share/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
 	@rm -fv $(PREFIX)/share/dbus-1/services/org.gnome.panel.applet.TailsClock.service
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory2.py
