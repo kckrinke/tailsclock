@@ -34,6 +34,7 @@ clean:
 	@echo "Project is now clean."
 
 install:
+	@echo "Installing Tails Clock to $(PREFIX)..."
 	@mkdir -p $(PREFIX)/share/gnome-panel/4.0/applets/
 	@cp -v org.gnome.applets.TailsClock.panel-applet $(PREFIX)/share/gnome-panel/4.0/applets/
 	@mkdir -p $(PREFIX)/share/dbus-1/services/
@@ -45,9 +46,11 @@ install:
 	@mkdir -p $(PREFIX)/lib/bonobo/servers/
 	@cp -v TailsClock.server $(PREFIX)/lib/bonobo/servers/
 	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), echo $c; cp -fv "$c" "$(PREFIX)/share/$c";)
+	@echo "Installing language translations to $(PREFIX)/share/locale..."
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
+	@echo "Removing installed files..."
 	@rm -fv $(PREFIX)/share/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
 	@rm -fv $(PREFIX)/share/dbus-1/services/org.gnome.panel.applet.TailsClock.service
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory2.py
