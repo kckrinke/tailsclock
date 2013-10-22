@@ -278,6 +278,8 @@ class TailsClock:
         return self._write_file(path,yaml)
 
     def _read_file(self,path):
+        if not os.path.exists(path):
+            return None
         val = ""
         try:
             fh = open(path,'r')
@@ -291,6 +293,8 @@ class TailsClock:
 
     def _read_yaml(self,path):
         val = DEFAULT_CFG_DATA.copy()
+        if not os.path.exists(path):
+            return val
         raw = None
         try:
             fh = open(path,'r')
