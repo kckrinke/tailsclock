@@ -50,10 +50,16 @@ class TailsClockPrefsDialog:
     def __init__(self,applet):
         #: store the applet's reference for later
         self.applet = applet
-        self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
-                                 None, Gtk.DialogFlags.MODAL,
-                                 (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
-                                 )
+        try:
+            self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
+                                     None, Gtk.DialogFlags.MODAL,
+                                     (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
+                                     )
+        except Exception, e:
+            self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
+                                     None, Gtk.DIALOG_MODAL,
+                                     (Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+                                     )
         #: construct the core dialog
         vbox = self.dialog.get_content_area()
         #: setup a notebook
@@ -90,7 +96,10 @@ class TailsClockPrefsDialog:
         tz_col = Gtk.TreeViewColumn(_("Timezones"), tz_rndrr, text = 0)
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
-        tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,Gtk.PolicyType.AUTOMATIC)
+        try: # Gtk 3.0
+            tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,Gtk.PolicyType.AUTOMATIC)
+        except Exception, e: # Gtk 2.0
+            tz_scroll.set_policy(Gtk.POLICY_AUTOMATIC,Gtk.POLICY_AUTOMATIC)
         tz_scroll.add(self.tz_tview)
         tz_frame = Gtk.Frame()
         tz_frame.add(tz_scroll)
@@ -108,7 +117,10 @@ class TailsClockPrefsDialog:
             pass
         tz_vbox.pack_start(tz_frame,True,True,8)
         select.connect("changed",self.on_timezone_selection_changed)
-        select.set_mode(Gtk.SelectionMode.SINGLE)
+        try: # Gtk 3.0
+            select.set_mode(Gtk.SelectionMode.SINGLE)
+        except Exception, e: # Gtk 2.0
+            select.set_mode(Gtk.SELECTION_SINGLE)
         #: try to constrain the dialog's size
         nbook.show_all()
         self.dialog.set_size_request(280,280)
@@ -209,7 +221,10 @@ class TailsClock:
         Generate a left-click context-menu
         """
         self.main_menu = Gtk.Menu()
-        pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
+        try: # Gtk 3.0
+            pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
+        except Exception, e: # Gtk 2.0
+            pref_item = Gtk.ImageMenuItem(stock_id=Gtk.STOCK_PREFERENCES)
         pref_item.connect("activate",self.display_prefs,self)
         pref_item.show()
         self.main_menu.append(pref_item)
@@ -319,19 +334,22 @@ class TailsClock:
         self.main_evbox.add(self.main_label)
         self.main_evbox.connect("button-release-event",self.display_menu)
         # transparent background style
-        style_provider = Gtk.CssProvider()
-        css = """
-        #TailsClockAppletLabel,#TailsClockAppletEvBox {
-            background-color: rgba(0,0,0,0);
-            font-weight: bold;
-        }
-        """
-        style_provider.load_from_data(css)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-            )
+        try: # Gtk 3.0
+            style_provider = Gtk.CssProvider()
+            css = """
+            #TailsClockAppletLabel,#TailsClockAppletEvBox {
+                background-color: rgba(0,0,0,0);
+                font-weight: bold;
+            }
+            """
+            style_provider.load_from_data(css)
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(),
+                style_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+        except Exception, e: # Gtk 2.0
+            pass
         # add/show all
         self.panel_applet.add(self.main_evbox)
         self.panel_applet.show_all()
@@ -394,10 +412,15 @@ class TailsClock:
         """
         Trigger the context-menu to popup.
         """
-        if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
-            # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
-            self.main_menu.popup(None,None,None,None,event.button,event.time)
-            return True
+        try: # Gtk 3.0
+            if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
+                # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
+                self.main_menu.popup(None,None,None,None,event.button,event.time)
+                return True
+        except Exception, e: # Gtk 2.0
+            if event.type == Gdk.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.MOD1_MASK) == False:
+                self.main_menu.popup(None,None,None,event.button,event.time,None)
+                return True
         return False
 
 
