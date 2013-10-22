@@ -45,8 +45,8 @@ install:
 	@cp -v TailsClockApplet.py $(PREFIX)/lib/gnome-applets
 	@mkdir -p $(PREFIX)/lib/bonobo/servers/
 	@cp -v TailsClock.server $(PREFIX)/lib/bonobo/servers/
-	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), echo $c; cp -fv "$c" "$(PREFIX)/share/$c";)
 	@echo "Installing language translations to $(PREFIX)/share/locale..."
+	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), mkdir -pv $(PREFIX)/share/$(shell sh -c "echo $c | sed -re 's/tailsclockapplet.mo//'"); cp -fv "$c" "$(PREFIX)/share/$c";)
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
