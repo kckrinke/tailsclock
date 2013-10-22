@@ -46,7 +46,7 @@ install:
 	@mkdir -p $(PREFIX)/lib/bonobo/servers/
 	@cp -v TailsClock.server $(PREFIX)/lib/bonobo/servers/
 	@echo "Installing language translations to $(PREFIX)/share/locale..."
-	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), mkdir -pv $(PREFIX)/share/$(shell sh -c "echo $c | sed -re 's/tailsclockapplet.mo//'"); cp -fv "$c" "$(PREFIX)/share/$c";)
+	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), mkdir -pv $(PREFIX)/share/$(shell sh -c "echo $(c) | sed -re 's/tailsclockapplet.mo//'"); cp -fv "$(c)" "$(PREFIX)/share/$(c)";)
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
@@ -54,8 +54,10 @@ uninstall:
 	@rm -fv $(PREFIX)/share/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
 	@rm -fv $(PREFIX)/share/dbus-1/services/org.gnome.panel.applet.TailsClock.service
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory2.py
+	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory2.pyc
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory3.py
+	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClock-factory3.pyc
 	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClockApplet.py
+	@rm -fv $(PREFIX)/lib/gnome-applets/TailsClockApplet.pyc
 	@rm -fv $(PREFIX)/lib/bonobo/servers/TailsClock.server
-	@$(foreach m,$(wildcard $(PREFIX)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo), rm -fv $m;)
-	@echo "Uninstall of the Tails Clock applet is complete."
+	@$(foreach m,$(wildcard $(PREFIX)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo), rm -fv $(m);)
