@@ -39,7 +39,7 @@ mo:
 	@echo "All translation files re-formatted."
 
 in:
-	@echo "Configuring template files..."
+	@echo "Configuring template files for $(PREFIX) ..."
 	@$(foreach i,$(wildcard *.in),sed -e "s#{{PREFIX}}#$(PREFIX)#" $(i) > $(basename $(i));echo "  $(i)";true;)
 	@echo "Configuration of template files complete."
 
