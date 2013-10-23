@@ -23,6 +23,20 @@ import pytz
 import gettext
 gettext.install('tailsclockapplet', unicode=1) #: system default
 
+IS_DEBUG=False
+def debug_log(message):
+    global IS_DEBUG
+    if not IS_DEBUG:
+        return False
+    try:
+        fh = open("/tmp/tailsclockapplet.log","a")
+        fh.write(message+"\n")
+        fh.close()
+    except Exception, e:
+        sys.stderr.write("TailsClock: ("+str(e)+")\n")
+        sys.stderr.write(" - TailsClock: "+message+"\n")
+    return True
+
 #: load up Gtk
 IS_GTK3=True
 try:
@@ -35,6 +49,7 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
 
 # Consolidate default values
 DEFAULT_CFG_DATA = {'show_sec':False,'show_12hr':False,'show_tz':False,'tz':'UTC'}
+
 
 class TailsClockPrefsDialog:
     """
@@ -198,6 +213,10 @@ class TailsClock:
         """
         Simple initialization of the class instance.
         """
+        if IS_GTK3:
+            debug_log("IS_GTK3")
+        else:
+            debug_log("NOT_GTK3")
         # live or debug?
         if applet.__class__ is not Gtk.Window:
             applet.set_background_widget(applet)
@@ -209,7 +228,7 @@ class TailsClock:
             try:
                 os.makedirs(self.cfg_base)
             except Exception, e:
-                sys.stderr.write("Failed to make tailsclock config path: "+str(e))
+                debug_log("Failed to make tailsclock config path: "+str(e))
         self.cfg_rc_path = self.cfg_base + "/settings"
         self.cfg_tz_path = self.cfg_base + "/timezone"
         self.panel_applet = applet
@@ -225,6 +244,7 @@ class TailsClock:
         """
         Generate a left-click context-menu
         """
+        debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
         pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
         pref_item.connect("activate",self.display_prefs,self)
@@ -234,6 +254,7 @@ class TailsClock:
         return True
 
     def create_menu2(self):
+        debug_log("create_menu2")
         xml = '''
         <popup name="button3">
         <menuitem name="ItemPreferences"
@@ -258,7 +279,7 @@ class TailsClock:
                 self.tz_info = pytz.timezone(contents.strip())
                 self.tz_name = contents
             except Exception, e:
-                sys.stderr.write("TailsClock Invalid Timezone: "+str(e)+"\n")
+                debug_log("TailsClock Invalid Timezone: "+str(e)+"\n")
                 self.tz_info = None
         if self.tz_info is None:
             self.tz_name = "UTC"
@@ -279,7 +300,7 @@ class TailsClock:
             fh.write(contents)
             fh.close()
         except Exception, e:
-            sys.stderr.write("TailsClock[_write_file]: " + str(e) + "\n")
+            debug_log("TailsClock[_write_file]: " + str(e) + "\n")
             return False
         return True
 
@@ -303,7 +324,7 @@ class TailsClock:
             fh.close()
             val = val.strip()
         except Exception, e:
-            sys.stderr.write("TailsClock[_read_file]: " + str(e) + "\n")
+            debug_log("TailsClock[_read_file]: " + str(e) + "\n")
             return None
         return val
 
@@ -317,7 +338,7 @@ class TailsClock:
             raw = fh.read()
             fh.close()
         except Exception, e:
-            sys.stderr.write("TailsClock[_read_yaml]: " + str(e) + "\n")
+            debug_log("TailsClock[_read_yaml]: " + str(e) + "\n")
             return val
         lines = raw.splitlines()
         for line in lines:
@@ -413,7 +434,7 @@ class TailsClock:
                     dt_format = re.sub("%r","%H:%M",dt_format)
                 pass
         else:
-            sys.stderr.write("TailsClock: there's no %%r?!")
+            debug_log("TailsClock: there's no %%r?!")
         if '%Z' in dt_format and not self.show_tz:
             dt_format = re.sub("\s*%Z","",dt_format)
         stamp = dt.strftime(dt_format)
@@ -446,9 +467,11 @@ class TailsClock:
 
     
 tc_inst = None
-def applet_factory(applet, iid, data = None):
+def applet_factory(applet, iid, data = None, is_debug = False):
     """
     Construct the clock instance and launch it.
     """
+    global IS_DEBUG
+    IS_DEBUG = is_debug
     tc_inst = TailsClock(applet,iid,data).launch()
     return True

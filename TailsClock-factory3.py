@@ -12,7 +12,7 @@ if __name__ == '__main__':    # testing for execution
         mainWindow = Gtk.Window()
         mainWindow.set_title('Applet window')
         mainWindow.connect('destroy', Gtk.main_quit)
-        applet_factory(mainWindow, None)
+        applet_factory(mainWindow, None, None, True)
         mainWindow.show_all()
         Gtk.main()
         sys.exit()

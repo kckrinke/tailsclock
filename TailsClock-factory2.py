@@ -15,7 +15,7 @@ if __name__ == '__main__':	 # testing for execution
 		mainWindow.set_title('Applet window')
 		mainWindow.connect('destroy', gtk.main_quit)
 		applet = gnomeapplet.Applet()
-		applet_factory(applet, None)
+		applet_factory(applet, None, None, True)
 		applet.reparent(mainWindow)
 		mainWindow.show_all()
 		gtk.main()
