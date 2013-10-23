@@ -7,6 +7,12 @@
 DESTDIR:=/opt
 PREFIX:=$(DESTDIR)
 
+define _install_file
+	@mkdir -vp $3;
+	@cp -fv $2 $3;
+	@chmod -v $1 $3/$2;
+endef
+
 all: mo
 
 help:
@@ -38,18 +44,14 @@ clean:
 
 install:
 	@echo "Installing Tails Clock to $(PREFIX)..."
-	@mkdir -p $(PREFIX)/share/gnome-panel/4.0/applets/
-	@cp -v org.gnome.applets.TailsClock.panel-applet $(PREFIX)/share/gnome-panel/4.0/applets/
-	@mkdir -p $(PREFIX)/share/dbus-1/services/
-	@cp -v org.gnome.panel.applet.TailsClock.service $(PREFIX)/share/dbus-1/services/
-	@mkdir -p $(PREFIX)/lib/gnome-applets
-	@cp -v TailsClock-factory2.py $(PREFIX)/lib/gnome-applets
-	@cp -v TailsClock-factory3.py $(PREFIX)/lib/gnome-applets
-	@cp -v TailsClockApplet.py $(PREFIX)/lib/gnome-applets
-	@mkdir -p $(PREFIX)/lib/bonobo/servers/
-	@cp -v TailsClock.server $(PREFIX)/lib/bonobo/servers/
+	@$(call _install_file,644,org.gnome.applets.TailsClock.panel-applet,$(PREFIX)/share/gnome-panel/4.0/applets/)
+	@$(call _install_file,644,org.gnome.panel.applet.TailsClock.service,$(PREFIX)/share/dbus-1/services/)
+	@$(call _install_file,755,TailsClock-factory2.py,$(PREFIX)/lib/gnome-applets/)
+	@$(call _install_file,755,TailsClock-factory3.py,$(PREFIX)/lib/gnome-applets/)
+	@$(call _install_file,755,TailsClockApplet.py,$(PREFIX)/lib/gnome-applets/)
+	@$(call _install_file,644,TailsClock.server,$(PREFIX)/lib/bonobo/servers/)
 	@echo "Installing language translations to $(PREFIX)/share/locale..."
-	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), mkdir -pv $(PREFIX)/share/$(shell sh -c "echo $(c) | sed -re 's/tailsclockapplet.mo//'"); cp -fv "$(c)" "$(PREFIX)/share/$(c)";)
+	@$(foreach c,$(wildcard locale/*/LC_MESSAGES/*.mo), mkdir -pv $(PREFIX)/share/$(shell sh -c "echo $(c) | sed -re 's/tailsclockapplet.mo//'"); cp -fv "$(c)" "$(PREFIX)/share/$(c)"; chmod -v 644 "$(PREFIX)/share/$(c)";)
 	@echo "Install of the Tails Clock applet is complete."
 
 uninstall:
