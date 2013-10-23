@@ -4,10 +4,10 @@
 
 This project is a simple GNOME panel applet for displaying the date and time.
 There are very few configurable options, no weather reports or other fanciness.
-The only configurable option at this time is the Time Zone. Users can left-
-click on the applet, select the Preferences option and change the Time Zone
-from there. That option is system-independent and is intended to allow the
-user to view the time in a different Time Zone than the system settings.
+Users can right-click on the applet, select the Preferences option and change
+the Time Zone along with a few other general options from there. The timezone
+is system-independent and is intended to allow the user to view the time in a
+different Time Zone than the system settings.
 
 ## Purpose ##
 
@@ -17,13 +17,45 @@ the locale of the system and users of Tails are typically getting confused by
 the time being displayed in UTC. This simple applet is intended to solve that
 problem for Tails users.
 
+## Installing ##
+
+Currently, Tails Clock uses a hand-crafted Makefile as an interim build system.
+Installation defaults to /opt though that's probably not "correct" for any
+linux distribution. The following steps walk you through the installation.
+
+```
+# First step is to generate the files and translations
+make DESTDIR=/usr
+# Second step is to copy the files to the correct locations
+sudo make install DESTDIR=/usr
+# If you're installing this onto a GNOME2.x system, you'll need to logout
+# and log back in, or restart the gnome-panel to see the new applet
+```
+
+Notice that the DESTDIR=/usr option is provided at each step. While this isn't
+typical Makefile behaviour, this Makefile isn't setup via a ```./configure```
+script either so please don't expect too much.
+
+Try running ```make help``` to get some extra feedback on how to use the
+Makefile as-is.
+
 ## Hacking / Contributing ##
 
 All help in maintaining this project is welcome.
 
+For GNOME2.x development:
+ * TailsClock-factory2.py is the actual applet loader script
+ * The factory script is registered with bonobo via TailsClock.server
+
+For GNOME3.x development:
+ * TailsClock-factory3.py is the applet loader script
+ * The factory script is registered with DBUS/GNOME via:
+   * org.gnome.TailsClock.panel-applet
+   * org.gnome.panel.applet.TailsClock.service
+
 ## TODO ##
 
-- [ ] Implement a standardized build system (setup.py? Makefile?)
+- [ ] Implement a standards compliant build system
 - [ ] Custom icons / artwork
 - [ ] More / Update translations
 
