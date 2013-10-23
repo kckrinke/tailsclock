@@ -4,9 +4,9 @@
   * Tweaks/Updates to translations and loading
   * Added CHANGELOG, updated README
   * Implemented a few more configuration items (stored in ~/.config/tails/tailsclock)
-    * Toggle 12/24 hr display
-    * Toggle Seconds display
-    * Toggle Timezone display
+    * Toggle 12/24 hr display (default 24hr)
+    * Toggle Seconds display (default off)
+    * Toggle Timezone display (default off)
   * Refactored prefs dialog to accomodate new options
   * Applet context menu listens for right-click (ignores alt+right-click)
   * Implemented simple Makefile based build system
@@ -18,6 +18,10 @@
   * If ~/.config/tailsclock doesn't exist; create it
   * Added more translations (translated via free web services)
   * Refactored Makefile to not be hard-coded for the locale work
+  * Refactored Makefile to consolidate file installation (incl. perms)
+  * (Debian Squeeze) Gtk2.x now functions 100%
+    * Split the context menu creation into Gtk2/Gtk3 counterparts
+    * Detect the Gtk2/3 environment better (avoid try/except for logic flow control)
 
 0.1 - Kevin C. Krinke <kevin@krinke.ca>
 
