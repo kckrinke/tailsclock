@@ -265,7 +265,7 @@ class TailsClock:
         </popup>
         '''
         verbs = [('Preferences', self.display_prefs),]
-        self.applet.setup_menu(xml, verbs, self)
+        self.panel_applet.setup_menu(xml, verbs, self)
         return True
 
     def refresh_cfg(self):
