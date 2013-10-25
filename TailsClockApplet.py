@@ -421,7 +421,6 @@ class TailsClock:
         self.config.load()
         return
 
-
     def update_cfg(self,data):
         """
         Overwrites the timezone configuration file with the given data.
@@ -551,7 +550,6 @@ class TailsClock:
         return False
 
 
-    
 tc_inst = None
 def applet_factory(applet, iid, data = None, is_debug = False):
     """
