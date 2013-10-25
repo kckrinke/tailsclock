@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-10-17 19:46+EDT\n"
+"POT-Creation-Date: 2013-10-25 14:15+EDT\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,35 +15,51 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: TailsClockApplet.py:53
+#: TailsClockApplet.py:229
 msgid "Tails Clock Preferences"
 msgstr ""
 
-#: TailsClockApplet.py:66
+#: TailsClockApplet.py:243
 msgid "12 Hour Clock?"
 msgstr ""
 
-#: TailsClockApplet.py:70
-msgid "Display Seconds?"
+#: TailsClockApplet.py:244
+msgid "Display seconds?"
 msgstr ""
 
-#: TailsClockApplet.py:74
+#: TailsClockApplet.py:245
 msgid "Display Timezone?"
 msgstr ""
 
-#: TailsClockApplet.py:78
+#: TailsClockApplet.py:246
+msgid "Display Year?"
+msgstr ""
+
+#: TailsClockApplet.py:247
+msgid "Display Date?"
+msgstr ""
+
+#: TailsClockApplet.py:248
 msgid "General"
 msgstr ""
 
-#: TailsClockApplet.py:81
+#: TailsClockApplet.py:251
 msgid "Timezone"
 msgstr ""
 
-#: TailsClockApplet.py:82
-msgid "Please select a timezone from the following list:"
+#: TailsClockApplet.py:253
+msgid "Changing the timezone only affects the Tails Clock."
 msgstr ""
 
-#: TailsClockApplet.py:90
+#: TailsClockApplet.py:262
 msgid "Timezones"
+msgstr ""
+
+#: TailsClockApplet.py:441
+msgid "Copy Date"
+msgstr ""
+
+#: TailsClockApplet.py:445
+msgid "Copy Time"
 msgstr ""
 
