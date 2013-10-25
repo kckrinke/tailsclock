@@ -48,7 +48,14 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gtk.gdk as Gdk
 
 # Consolidate default values
-DEFAULT_CFG_DATA = {'show_sec':False,'show_12hr':False,'show_tz':False,'tz':'UTC'}
+DEFAULT_CFG_DATA = {
+    'show_sec':False,
+    'show_12hr':True,
+    'show_tz':False,
+    'tz':'UTC',
+    'show_yr':False,
+    'show_dt':True,
+    }
 
 
 class TailsClockPrefsDialog(Gtk.Dialog):
@@ -63,6 +70,17 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     show_12hr = None
     show_tz = None
     show_sec = None
+    show_yr = None
+    show_dt = None
+
+    def _add_pref_checkbox(self,box,title,state,func):
+        bttn = Gtk.CheckButton(title)
+        bttn.set_active(state)
+        bttn.connect('toggled',func)
+        hbox = Gtk.HBox()
+        hbox.pack_start(bttn,True,True,8)
+        box.pack_start(hbox,True,True,8)
+        return bttn
 
     def __init__(self,applet):
         #: store the applet's reference for later
@@ -89,24 +107,11 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.vbox.pack_start(content_hbox,True,True,8)
         #: General Settings
         tbl = Gtk.VBox()
-        self.show_12hr = Gtk.CheckButton(_("12 Hour Clock?"))
-        self.show_12hr.set_active(self.panel_applet.show_12hr)
-        self.show_12hr.connect('toggled',self.toggled_12hr)
-        hbox_12hr = Gtk.HBox()
-        hbox_12hr.pack_start(self.show_12hr,True,True,8)
-        tbl.pack_start(hbox_12hr,True,True,8)
-        self.show_sec = Gtk.CheckButton(_("Display Seconds?"))
-        self.show_sec.set_active(self.panel_applet.show_sec)
-        self.show_sec.connect('toggled',self.toggled_sec)
-        hbox_sec = Gtk.HBox()
-        hbox_sec.pack_start(self.show_sec,True,True,8)
-        tbl.pack_start(hbox_sec,True,True,8)
-        self.show_tz = Gtk.CheckButton(_("Display Timezone?"))
-        self.show_tz.set_active(self.panel_applet.show_tz)
-        self.show_tz.connect('toggled',self.toggled_tz)
-        hbox_tz = Gtk.HBox()
-        hbox_tz.pack_start(self.show_tz,True,True,8)
-        tbl.pack_start(hbox_tz,True,True,8)
+        self.show_12hr = self._add_pref_checkbox(tbl,_("12 Hour Clock?"),self.panel_applet.show_12hr,self.toggled_12hr)
+        self.show_sec = self._add_pref_checkbox(tbl,_("Display seconds?"),self.panel_applet.show_sec,self.toggled_sec)
+        self.show_tz = self._add_pref_checkbox(tbl,_("Display Timezone?"),self.panel_applet.show_tz,self.toggled_tz)
+        self.show_yr = self._add_pref_checkbox(tbl,_("Display Year?"),self.panel_applet.show_yr,self.toggled_yr)
+        self.show_dt = self._add_pref_checkbox(tbl,_("Display Date?"),self.panel_applet.show_dt,self.toggled_dt)
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
@@ -160,6 +165,8 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         data['show_12hr'] = self.show_12hr.get_active()
         data['show_sec'] = self.show_sec.get_active()
         data['show_tz'] = self.show_tz.get_active()
+        data['show_yr'] = self.show_yr.get_active()
+        data['show_dt'] = self.show_dt.get_active()
         self.panel_applet.update_cfg(data)
         pass
 
@@ -170,6 +177,12 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.update_general()
         pass
     def toggled_tz(self,widget):
+        self.update_general()
+        pass
+    def toggled_yr(self,widget):
+        self.update_general()
+        pass
+    def toggled_dt(self,widget):
         self.update_general()
         pass
 
@@ -218,6 +231,8 @@ class TailsClock:
     show_tz = DEFAULT_CFG_DATA['show_tz']
     show_sec = DEFAULT_CFG_DATA['show_sec']
     show_12hr = DEFAULT_CFG_DATA['show_12hr']
+    show_yr = DEFAULT_CFG_DATA['show_yr']
+    show_dt = DEFAULT_CFG_DATA['show_dt']
 
     def __init__(self,applet,iid,data):
         """
@@ -302,6 +317,10 @@ class TailsClock:
                 self.show_sec = bool(data['show_sec'])
             if data.has_key('show_12hr'):
                 self.show_12hr = bool(data['show_12hr'])
+            if data.has_key('show_yr'):
+                self.show_yr = bool(data['show_yr'])
+            if data.has_key('show_dt'):
+                self.show_dt = bool(data['show_dt'])
         return
 
     def _write_file(self,path,contents):
@@ -310,7 +329,7 @@ class TailsClock:
             fh.write(contents)
             fh.close()
         except Exception, e:
-            debug_log("TailsClock[_write_file]: " + str(e) + "\n")
+            debug_log("[_write_file]: " + str(e) + "\n")
             return False
         return True
 
@@ -334,7 +353,7 @@ class TailsClock:
             fh.close()
             val = val.strip()
         except Exception, e:
-            debug_log("TailsClock[_read_file]: " + str(e) + "\n")
+            debug_log("[_read_file]: " + str(e) + "\n")
             return None
         return val
 
@@ -355,7 +374,7 @@ class TailsClock:
             line = line.strip()
             (k,v) = re.split("\s*:\s*",line)
             if v == 'True': v = True
-            if v == 'False': v = False
+            else: v = False
             val[k] = v
         return val
 
@@ -416,7 +435,9 @@ class TailsClock:
             self.glib_timer = GObject.timeout_add(1000,self.update_time)
         else:
             now = datetime.now()
-            min = datetime(now.year,now.month,now.day,now.hour,now.minute+1)
+            nmin = now.minute + 1
+            if nmin > 59: nmin = 0
+            min = datetime(now.year,now.month,now.day,now.hour,nmin)
             delta = (min-now).seconds * 1000 + 999
             self.glib_timer = GObject.timeout_add(delta,self.update_time)
         return False
@@ -430,7 +451,11 @@ class TailsClock:
         utc_dt = utc_dt.replace(tzinfo=pytz.utc)
         dt = utc_dt.astimezone(self.tz_info)
         # format the date/time stamp
-        dt_format = locale.nl_langinfo(locale.D_T_FMT)
+        dt_format = ""
+        if self.show_dt:
+            dt_format = locale.nl_langinfo(locale.D_T_FMT)
+        else: # NOT show_dt
+            dt_format = locale.nl_langinfo(locale.T_FMT)
         if '%r' in dt_format:
             if self.show_sec:
                 if self.show_12hr:
@@ -442,11 +467,22 @@ class TailsClock:
                     dt_format = re.sub("%r","%I:%M %p",dt_format)
                 else:
                     dt_format = re.sub("%r","%H:%M",dt_format)
-                pass
+        if ' %Y' in dt_format:
+            if self.show_yr:
+                dt_format = re.sub(" %Y",", %Y",dt_format)
+            else:
+                dt_format = re.sub(" %Y","",dt_format)
+        if self.show_tz:
+            if '%Z' not in dt_format:
+                dt_format = dt_format + " %Z"
         else:
-            debug_log("TailsClock: there's no %%r?!")
-        if '%Z' in dt_format and not self.show_tz:
-            dt_format = re.sub("\s*%Z","",dt_format)
+            if '%Z' in dt_format:
+                dt_format = re.sub("\s*%Z","",dt_format)
+        if self.show_yr and not self.show_dt:
+            dt_format = "%Y, " + dt_format
+        if not self.show_yr and self.show_dt:
+            dt_format = re.sub("%b ","%b, ",dt_format)
+        #debug_log("Format: "+dt_format)
         stamp = dt.strftime(dt_format)
         # actually update the label
         self.main_label.set_text(stamp)
