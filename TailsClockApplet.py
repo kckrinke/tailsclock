@@ -56,6 +56,140 @@ DEFAULT_CFG_DATA = {
     'show_dt':True,
     }
 
+class TailsClockConfig:
+    cfg_base = None
+    cfg_rc_path = None
+    cfg_tz_path = None
+    
+    show_tz = DEFAULT_CFG_DATA['show_tz']
+    show_sec = DEFAULT_CFG_DATA['show_sec']
+    show_12hr = DEFAULT_CFG_DATA['show_12hr']
+    show_yr = DEFAULT_CFG_DATA['show_yr']
+    show_dt = DEFAULT_CFG_DATA['show_dt']
+    show_time = True #< don't actually store this setting
+
+    tz_info = pytz.timezone('UTC')
+    tz_name = 'UTC'
+
+    def __init__(self):
+        self.cfg_base = os.environ['HOME']+"/.config/tailsclock"
+        if not os.path.exists(self.cfg_base):
+            try:
+                os.makedirs(self.cfg_base)
+            except Exception, e:
+                debug_log("Failed to make tailsclock config path: "+str(e))
+        self.cfg_rc_path = self.cfg_base + "/settings"
+        self.cfg_tz_path = self.cfg_base + "/timezone"
+        self.load()
+        pass
+
+    def load(self):
+        if os.path.exists(self.cfg_tz_path):
+            contents = self._read_file(self.cfg_tz_path)
+            try:
+                self.tz_info = pytz.timezone(contents.strip())
+                self.tz_name = contents
+            except Exception, e:
+                debug_log("Invalid Timezone: "+str(e)+"\n")
+                self.tz_info = None
+        if self.tz_info is None:
+            self.tz_name = "UTC"
+            self.tz_info = pytz.utc
+        if os.path.exists(self.cfg_rc_path):
+            data = self._read_yaml(self.cfg_rc_path)
+            if data.has_key('show_tz'):   self.show_tz   = bool(data['show_tz'])
+            if data.has_key('show_sec'):  self.show_sec  = bool(data['show_sec'])
+            if data.has_key('show_12hr'): self.show_12hr = bool(data['show_12hr'])
+            if data.has_key('show_yr'):   self.show_yr   = bool(data['show_yr'])
+            if data.has_key('show_dt'):   self.show_dt   = bool(data['show_dt'])
+        return True
+
+    def save(self,data=None):
+        if data is None:
+            data = {
+                'show_tz': self.show_tz,
+                'show_sec': self.show_sec,
+                'show_12hr': self.show_12hr,
+                'show_yr': self.show_yr,
+                'show_dt': self.show_dt,
+                }
+        if data.has_key('tz'):
+            self._write_file(self.cfg_tz_path,data['tz'])
+            del data['tz']
+        if len(data) > 0:
+            self._write_yaml(self.cfg_rc_path,data)
+        return True
+
+    def copy(self):
+        clone = TailsClockConfig()
+        clone.tz_info = self.tz_info
+        clone.tz_name = self.tz_name
+        clone.show_tz = self.show_tz
+        clone.show_sec = self.show_sec
+        clone.show_12hr = self.show_12hr
+        clone.show_yr = self.show_yr
+        clone.show_dt = self.show_dt
+        return clone
+
+    def _write_file(self,path,contents):
+        try:
+            fh = open(path,'w')
+            fh.write(contents)
+            fh.close()
+        except Exception, e:
+            debug_log("_write_file: " + str(e) + "\n")
+            return False
+        return True
+
+    def _write_yaml(self,path,data):
+        current = self._read_yaml(path)
+        yaml = ""
+        for k in current.keys():
+            if k is 'tz':
+                next
+            if data.has_key(k):
+                yaml += k+":"+str(data[k])+"\n"
+            else:
+                yaml += k+":"+str(current[k])+"\n"
+        return self._write_file(path,yaml)
+
+    def _read_file(self,path):
+        if not os.path.exists(path):
+            return None
+        val = ""
+        try:
+            fh = open(path,'r')
+            val = fh.read()
+            fh.close()
+            val = val.strip()
+        except Exception, e:
+            debug_log("_read_file: " + str(e) + "\n")
+            return None
+        return val
+
+    def _read_yaml(self,path):
+        val = DEFAULT_CFG_DATA.copy()
+        if not os.path.exists(path):
+            return val
+        raw = None
+        try:
+            fh = open(path,'r')
+            raw = fh.read()
+            fh.close()
+        except Exception, e:
+            debug_log("_read_yaml: " + str(e) + "\n")
+            return val
+        lines = raw.splitlines()
+        for line in lines:
+            line = line.strip()
+            (k,v) = re.split("\s*:\s*",line)
+            if v == 'True': v = True
+            else: v = False
+            val[k] = v
+        return val
+
+
+
 
 class TailsClockPrefsDialog(Gtk.Dialog):
     """
