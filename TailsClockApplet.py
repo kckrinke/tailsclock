@@ -52,7 +52,6 @@ DEFAULT_CFG_DATA = {
     'show_sec':False,
     'show_12hr':True,
     'show_tz':False,
-    'tz':'UTC',
     'show_yr':False,
     'show_dt':True,
     }
