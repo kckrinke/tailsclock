@@ -436,17 +436,38 @@ class TailsClock:
         """
         debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
+        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Date"))
+        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
+        pref_item.connect("activate",self.copy_date,self)
+        self.main_menu.append(pref_item)
+        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Time"))
+        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
+        pref_item.connect("activate",self.copy_time,self)
+        self.main_menu.append(pref_item)
         pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
         pref_item.connect("activate",self.display_prefs,self)
-        pref_item.show()
         self.main_menu.append(pref_item)
         self.main_menu.show_all()
         return True
 
     def create_menu2(self):
+        """
+        Setup Gtk2 panel applet context-menu
+        """
         debug_log("create_menu2")
         xml = '''
         <popup name="button3">
+        <menuitem name="ItemCopy"
+            verb="CopyDate"
+            label="Copy Date"
+            pixtype="stock"
+            pixname="gtk-copy" />
+        <menuitem name="ItemCopy"
+            verb="CopyTime"
+            label="Copy Time"
+            pixtype="stock"
+            pixname="gtk-copy" />
+        <separator/>
         <menuitem name="ItemPreferences"
             verb="Preferences"
             label="_Preferences"
@@ -454,7 +475,9 @@ class TailsClock:
             pixname="gtk-preferences" />
         </popup>
         '''
-        verbs = [('Preferences', self.display_prefs),]
+        verbs = [('CopyDate', self.copy_date),
+                 ('CopyTime', self.copy_time),
+                 ('Preferences', self.display_prefs)]
         self.panel_applet.setup_menu(xml, verbs, self)
         return True
 
@@ -567,6 +590,41 @@ class TailsClock:
                 self.main_menu.popup(None,None,None,event.button,event.time,None)
                 return True
         return False
+
+    def copy_date(self,widget,event):
+        cfg = self.config.copy()
+        cfg.show_time = False
+        cfg.show_dt = True
+        cfg.show_yr = True
+        dt_format = self._dt_format(cfg)
+        utc_dt = datetime.utcnow()
+        utc_dt = utc_dt.replace(tzinfo=pytz.utc)
+        dt = utc_dt.astimezone(cfg.tz_info)
+        stamp = dt.strftime(dt_format)
+        debug_log("copy_date: "+dt_format+" -> "+stamp)
+        display = Gdk.Display.get_default()
+        clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(stamp,-1)
+        clipboard.store()
+        return True
+
+    def copy_time(self,widget,event):
+        cfg = self.config.copy()
+        cfg.show_time = True
+        cfg.show_tz = True
+        cfg.show_dt = False
+        cfg.show_yr = False
+        dt_format = self._dt_format(cfg)
+        utc_dt = datetime.utcnow()
+        utc_dt = utc_dt.replace(tzinfo=pytz.utc)
+        dt = utc_dt.astimezone(cfg.tz_info)
+        stamp = dt.strftime(dt_format)
+        debug_log("copy_time: "+dt_format+" -> "+stamp)
+        display = Gdk.Display.get_default()
+        clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(stamp,-1)
+        clipboard.store()
+        return True
 
 
 tc_inst = None
