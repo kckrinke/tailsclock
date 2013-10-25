@@ -467,6 +467,12 @@ class TailsClock:
         return self
 
     def update_glib_timer(self):
+        """
+        Depending on whether we're showing seconds or not, schedule then
+        next 'tick' appropriately. For example, if we're showing seconds
+        then set timer to 1s, however, if not showing seconds; set timer
+        to the number of seconds until next minute.
+        """
         if self.glib_timer != None:
             GObject.source_remove(self.glib_timer)
             self.glib_timer = None
