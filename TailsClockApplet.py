@@ -240,11 +240,11 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.vbox.pack_start(content_hbox,True,True,8)
         #: General Settings
         tbl = Gtk.VBox()
-        self.show_12hr = self._add_pref_checkbox(tbl,_("12 Hour Clock?"),self.panel_applet.show_12hr,self.toggled_12hr)
-        self.show_sec = self._add_pref_checkbox(tbl,_("Display seconds?"),self.panel_applet.show_sec,self.toggled_sec)
-        self.show_tz = self._add_pref_checkbox(tbl,_("Display Timezone?"),self.panel_applet.show_tz,self.toggled_tz)
-        self.show_yr = self._add_pref_checkbox(tbl,_("Display Year?"),self.panel_applet.show_yr,self.toggled_yr)
-        self.show_dt = self._add_pref_checkbox(tbl,_("Display Date?"),self.panel_applet.show_dt,self.toggled_dt)
+        self.show_12hr = self._add_pref_checkbox(tbl,_("12 Hour Clock?"),self.panel_applet.config.show_12hr,self.toggled_12hr)
+        self.show_sec = self._add_pref_checkbox(tbl,_("Display seconds?"),self.panel_applet.config.show_sec,self.toggled_sec)
+        self.show_tz = self._add_pref_checkbox(tbl,_("Display Timezone?"),self.panel_applet.config.show_tz,self.toggled_tz)
+        self.show_yr = self._add_pref_checkbox(tbl,_("Display Year?"),self.panel_applet.config.show_yr,self.toggled_yr)
+        self.show_dt = self._add_pref_checkbox(tbl,_("Display Date?"),self.panel_applet.config.show_dt,self.toggled_dt)
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
@@ -271,8 +271,8 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         select = self.tz_tview.get_selection()
         for tz in pytz.common_timezones:
             tmpiter = self.tz_store.append([tz])
-            if self.panel_applet.tz_name != None:
-                if self.panel_applet.tz_name == tz:
+            if self.panel_applet.config.tz_name != None:
+                if self.panel_applet.config.tz_name == tz:
                     select.select_iter(tmpiter)
                     tmppath = self.tz_store.get_path(tmpiter)
                     self.tz_tview.scroll_to_cell(tmppath,None,False,0,0)
@@ -355,17 +355,11 @@ class TailsClock:
 
     glib_timer = None
 
-    tz_info = None
-    tz_name = None
     cfg_base = None
     cfg_rc_path = None
     cfg_tz_path = None
 
-    show_tz = DEFAULT_CFG_DATA['show_tz']
-    show_sec = DEFAULT_CFG_DATA['show_sec']
-    show_12hr = DEFAULT_CFG_DATA['show_12hr']
-    show_yr = DEFAULT_CFG_DATA['show_yr']
-    show_dt = DEFAULT_CFG_DATA['show_dt']
+    config = None
 
     def __init__(self,applet,iid,data):
         """
@@ -381,14 +375,7 @@ class TailsClock:
         else:
             # debug; load translations from "here"
             gettext.install('tailsclockapplet', './locale', unicode=1)
-        self.cfg_base = os.environ['HOME']+"/.config/tailsclock"
-        if not os.path.exists(self.cfg_base):
-            try:
-                os.makedirs(self.cfg_base)
-            except Exception, e:
-                debug_log("Failed to make tailsclock config path: "+str(e))
-        self.cfg_rc_path = self.cfg_base + "/settings"
-        self.cfg_tz_path = self.cfg_base + "/timezone"
+        self.config = TailsClockConfig()
         self.panel_applet = applet
         self.panel_iid = iid
         self.panel_data = data
@@ -431,95 +418,15 @@ class TailsClock:
         Read the contents of the configuration file and update the clock
         accordingly. Tries to handle failures gracefully.
         """
-        if os.path.exists(self.cfg_tz_path):
-            contents = self._read_file(self.cfg_tz_path)
-            try:
-                self.tz_info = pytz.timezone(contents.strip())
-                self.tz_name = contents
-            except Exception, e:
-                debug_log("Invalid Timezone: "+str(e)+"\n")
-                self.tz_info = None
-        if self.tz_info is None:
-            self.tz_name = "UTC"
-            self.tz_info = pytz.utc
-        if os.path.exists(self.cfg_rc_path):
-            data = self._read_yaml(self.cfg_rc_path)
-            if data.has_key('show_tz'):
-                self.show_tz = bool(data['show_tz'])
-            if data.has_key('show_sec'):
-                self.show_sec = bool(data['show_sec'])
-            if data.has_key('show_12hr'):
-                self.show_12hr = bool(data['show_12hr'])
-            if data.has_key('show_yr'):
-                self.show_yr = bool(data['show_yr'])
-            if data.has_key('show_dt'):
-                self.show_dt = bool(data['show_dt'])
+        self.config.load()
         return
 
-    def _write_file(self,path,contents):
-        try:
-            fh = open(path,'w')
-            fh.write(contents)
-            fh.close()
-        except Exception, e:
-            debug_log("_write_file: " + str(e) + "\n")
-            return False
-        return True
-
-    def _write_yaml(self,path,data):
-        current = self._read_yaml(path)
-        yaml = ""
-        for k in current.keys():
-            if data.has_key(k):
-                yaml += k+":"+str(data[k])+"\n"
-            else:
-                yaml += k+":"+str(current[k])+"\n"
-        return self._write_file(path,yaml)
-
-    def _read_file(self,path):
-        if not os.path.exists(path):
-            return None
-        val = ""
-        try:
-            fh = open(path,'r')
-            val = fh.read()
-            fh.close()
-            val = val.strip()
-        except Exception, e:
-            debug_log("_read_file: " + str(e) + "\n")
-            return None
-        return val
-
-    def _read_yaml(self,path):
-        val = DEFAULT_CFG_DATA.copy()
-        if not os.path.exists(path):
-            return val
-        raw = None
-        try:
-            fh = open(path,'r')
-            raw = fh.read()
-            fh.close()
-        except Exception, e:
-            debug_log("_read_yaml: " + str(e) + "\n")
-            return val
-        lines = raw.splitlines()
-        for line in lines:
-            line = line.strip()
-            (k,v) = re.split("\s*:\s*",line)
-            if v == 'True': v = True
-            else: v = False
-            val[k] = v
-        return val
 
     def update_cfg(self,data):
         """
         Overwrites the timezone configuration file with the given data.
         """
-        if data.has_key('tz'):
-            self._write_file(self.cfg_tz_path,data['tz'])
-            del data['tz']
-        if len(data) > 0:
-            self._write_yaml(self.cfg_rc_path,data)
+        self.config.save(data)
         self.refresh_cfg()
         self.update_time()
         return
@@ -564,7 +471,7 @@ class TailsClock:
         if self.glib_timer != None:
             GObject.source_remove(self.glib_timer)
             self.glib_timer = None
-        if self.show_sec:
+        if self.config.show_sec:
             self.glib_timer = GObject.timeout_add(1000,self.update_time)
         else:
             now = datetime.now()
@@ -582,7 +489,7 @@ class TailsClock:
         # get the date/time and apply tz_info to it
         utc_dt = datetime.utcnow()
         utc_dt = utc_dt.replace(tzinfo=pytz.utc)
-        dt = utc_dt.astimezone(self.tz_info)
+        dt = utc_dt.astimezone(self.config.tz_info)
         # format the date/time stamp
         dt_format = ""
         if self.show_dt:
