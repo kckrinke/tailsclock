@@ -385,6 +385,51 @@ class TailsClock:
             self.create_menu2()
         pass
 
+    def _dt_format(self,cfg=None):
+        """
+        Not sure how reliable this method of formatting the dt string is.
+        Different locales may impact formatting items. Need unit-tests heh
+        """
+        if cfg is None:
+            cfg = self.config
+        dt_format = ""
+        if cfg.show_time:
+            if cfg.show_dt:
+                dt_format = locale.nl_langinfo(locale.D_T_FMT)
+            else: # NOT show_dt
+                dt_format = locale.nl_langinfo(locale.T_FMT)
+            if '%r' in dt_format:
+                if cfg.show_sec:
+                    if cfg.show_12hr:
+                        dt_format = re.sub("%r","%I:%M:%S %p",dt_format)
+                    else:
+                        dt_format = re.sub("%r","%H:%M:%S",dt_format)
+                else:
+                    if cfg.show_12hr:
+                        dt_format = re.sub("%r","%I:%M %p",dt_format)
+                    else:
+                        dt_format = re.sub("%r","%H:%M",dt_format)
+            if cfg.show_tz:
+                if '%Z' not in dt_format:
+                    dt_format = dt_format + " %Z"
+            else:
+                if '%Z' in dt_format:
+                    dt_format = re.sub("\s*%Z","",dt_format)
+        else: # NOT show_time
+            dt_format = locale.nl_langinfo(locale.D_T_FMT)
+            if '%r' in dt_format:
+                dt_format = re.sub("\s??%r","",dt_format)
+            if '%Z' in dt_format:
+                dt_format = re.sub("\s??%Z","",dt_format)
+        if ' %Y' in dt_format:
+            if cfg.show_yr:
+                dt_format = re.sub(" %Y",", %Y",dt_format)
+            else:
+                dt_format = re.sub(" %Y","",dt_format)
+        if cfg.show_yr and not self.config.show_dt:
+            dt_format = "%Y, " + dt_format
+        return dt_format
+
     def create_menu3(self):
         """
         Generate a left-click context-menu
@@ -494,37 +539,7 @@ class TailsClock:
         utc_dt = utc_dt.replace(tzinfo=pytz.utc)
         dt = utc_dt.astimezone(self.config.tz_info)
         # format the date/time stamp
-        dt_format = ""
-        if self.show_dt:
-            dt_format = locale.nl_langinfo(locale.D_T_FMT)
-        else: # NOT show_dt
-            dt_format = locale.nl_langinfo(locale.T_FMT)
-        if '%r' in dt_format:
-            if self.show_sec:
-                if self.show_12hr:
-                    dt_format = re.sub("%r","%I:%M:%S %p",dt_format)
-                else:
-                    dt_format = re.sub("%r","%H:%M:%S",dt_format)
-            else:
-                if self.show_12hr:
-                    dt_format = re.sub("%r","%I:%M %p",dt_format)
-                else:
-                    dt_format = re.sub("%r","%H:%M",dt_format)
-        if ' %Y' in dt_format:
-            if self.show_yr:
-                dt_format = re.sub(" %Y",", %Y",dt_format)
-            else:
-                dt_format = re.sub(" %Y","",dt_format)
-        if self.show_tz:
-            if '%Z' not in dt_format:
-                dt_format = dt_format + " %Z"
-        else:
-            if '%Z' in dt_format:
-                dt_format = re.sub("\s*%Z","",dt_format)
-        if self.show_yr and not self.show_dt:
-            dt_format = "%Y, " + dt_format
-        if not self.show_yr and self.show_dt:
-            dt_format = re.sub("%b ","%b, ",dt_format)
+        dt_format = self._dt_format()
         #debug_log("Format: "+dt_format)
         stamp = dt.strftime(dt_format)
         # actually update the label
