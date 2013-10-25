@@ -249,10 +249,12 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
         nbook.append_page(tz_vbox,Gtk.Label(_("Timezone")))
-        tz_label = Gtk.Label(_("Please select a timezone from the following list:"))
+        tz_hbox = Gtk.HBox()
+        tz_label = Gtk.Label(_("Changing the timezone only affects the Tails Clock."))
         tz_label.set_line_wrap(True)
-        tz_label.set_width_chars(42)
-        tz_vbox.pack_start(tz_label,False,False,8)
+        tz_hbox.pack_start(tz_label,True,False,8)
+        tz_vbox.pack_start(tz_hbox,False,True,8)
+        tz_vbox.pack_start(Gtk.Separator(),False,False,2)
         self.tz_store = Gtk.ListStore(str)
         self.tz_tview = Gtk.TreeView(self.tz_store)
         self.tz_tview.set_headers_visible(False)
@@ -279,7 +281,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
                     pass
                 pass
             pass
-        tz_vbox.pack_start(tz_frame,True,True,8)
+        tz_vbox.pack_start(tz_frame,True,True,0)
         select.connect("changed",self.on_timezone_selection_changed)
         if IS_GTK3:
             select.set_mode(Gtk.SelectionMode.SINGLE)
