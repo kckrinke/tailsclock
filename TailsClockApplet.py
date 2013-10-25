@@ -474,10 +474,8 @@ class TailsClock:
             self.glib_timer = GObject.timeout_add(1000,self.update_time)
         else:
             now = datetime.now()
-            nmin = now.minute + 1
-            if nmin > 59: nmin = 0
-            min = datetime(now.year,now.month,now.day,now.hour,nmin)
-            delta = (min-now).seconds * 1000 + 999
+            one_min = timedelta(minutes=1)
+            delta = ((now + one_min) - now).seconds * 1000
             self.glib_timer = GObject.timeout_add(delta,self.update_time)
         return False
 
