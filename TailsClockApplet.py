@@ -97,7 +97,6 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.set_size_request(280,280)
         self.set_resizable(False)
         #: construct the core dialog
-        #vbox = self.get_content_area()
         #: setup a notebook
         nbook = Gtk.Notebook()
         nbook.set_show_tabs(True)
@@ -304,7 +303,7 @@ class TailsClock:
                 self.tz_info = pytz.timezone(contents.strip())
                 self.tz_name = contents
             except Exception, e:
-                debug_log("TailsClock Invalid Timezone: "+str(e)+"\n")
+                debug_log("Invalid Timezone: "+str(e)+"\n")
                 self.tz_info = None
         if self.tz_info is None:
             self.tz_name = "UTC"
@@ -329,7 +328,7 @@ class TailsClock:
             fh.write(contents)
             fh.close()
         except Exception, e:
-            debug_log("[_write_file]: " + str(e) + "\n")
+            debug_log("_write_file: " + str(e) + "\n")
             return False
         return True
 
@@ -353,7 +352,7 @@ class TailsClock:
             fh.close()
             val = val.strip()
         except Exception, e:
-            debug_log("[_read_file]: " + str(e) + "\n")
+            debug_log("_read_file: " + str(e) + "\n")
             return None
         return val
 
@@ -367,7 +366,7 @@ class TailsClock:
             raw = fh.read()
             fh.close()
         except Exception, e:
-            debug_log("TailsClock[_read_yaml]: " + str(e) + "\n")
+            debug_log("_read_yaml: " + str(e) + "\n")
             return val
         lines = raw.splitlines()
         for line in lines:
