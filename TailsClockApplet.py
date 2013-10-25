@@ -51,7 +51,7 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
 DEFAULT_CFG_DATA = {'show_sec':False,'show_12hr':False,'show_tz':False,'tz':'UTC'}
 
 
-class TailsClockPrefsDialog:
+class TailsClockPrefsDialog(Gtk.Dialog):
     """
     Simple preferences dialog for Tails Clock. Currently supports changing
     the timezone for the clock display. Changes propagate immediately.
@@ -66,38 +66,47 @@ class TailsClockPrefsDialog:
 
     def __init__(self,applet):
         #: store the applet's reference for later
-        self.applet = applet
+        self.panel_applet = applet
+        #: initialize self
         if IS_GTK3:
-            self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
-                                     None, Gtk.DialogFlags.MODAL,
-                                     (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
-                                     )
-        else: # NOT_GTK3
-            self.dialog = Gtk.Dialog(_("Tails Clock Preferences"),
-                                     None, Gtk.DIALOG_MODAL,
-                                     (Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
-                                     )
+            flags = Gtk.DialogFlags.MODAL
+            buttons = (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
+        else:
+            flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
+            buttons = (Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+        Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),None,flags,buttons)
+        self.set_modal(True)
+        self.set_size_request(280,280)
+        self.set_resizable(False)
         #: construct the core dialog
-        vbox = self.dialog.get_content_area()
+        #vbox = self.get_content_area()
         #: setup a notebook
         nbook = Gtk.Notebook()
         nbook.set_show_tabs(True)
         nbook.set_show_border(True)
-        vbox.pack_start(nbook,True,True,8)
+        content_hbox = Gtk.HBox()
+        content_hbox.pack_start(nbook,True,True,6)
+        self.vbox.pack_start(content_hbox,True,True,8)
         #: General Settings
         tbl = Gtk.VBox()
         self.show_12hr = Gtk.CheckButton(_("12 Hour Clock?"))
-        self.show_12hr.set_active(self.applet.show_12hr)
+        self.show_12hr.set_active(self.panel_applet.show_12hr)
         self.show_12hr.connect('toggled',self.toggled_12hr)
-        tbl.pack_start(self.show_12hr,True,True,8)
+        hbox_12hr = Gtk.HBox()
+        hbox_12hr.pack_start(self.show_12hr,True,True,8)
+        tbl.pack_start(hbox_12hr,True,True,8)
         self.show_sec = Gtk.CheckButton(_("Display Seconds?"))
-        self.show_sec.set_active(self.applet.show_sec)
+        self.show_sec.set_active(self.panel_applet.show_sec)
         self.show_sec.connect('toggled',self.toggled_sec)
-        tbl.pack_start(self.show_sec,True,True,8)
+        hbox_sec = Gtk.HBox()
+        hbox_sec.pack_start(self.show_sec,True,True,8)
+        tbl.pack_start(hbox_sec,True,True,8)
         self.show_tz = Gtk.CheckButton(_("Display Timezone?"))
-        self.show_tz.set_active(self.applet.show_tz)
+        self.show_tz.set_active(self.panel_applet.show_tz)
         self.show_tz.connect('toggled',self.toggled_tz)
-        tbl.pack_start(self.show_tz,True,True,8)
+        hbox_tz = Gtk.HBox()
+        hbox_tz.pack_start(self.show_tz,True,True,8)
+        tbl.pack_start(hbox_tz,True,True,8)
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
@@ -124,8 +133,8 @@ class TailsClockPrefsDialog:
         select = self.tz_tview.get_selection()
         for tz in pytz.common_timezones:
             tmpiter = self.tz_store.append([tz])
-            if self.applet.tz_name != None:
-                if self.applet.tz_name == tz:
+            if self.panel_applet.tz_name != None:
+                if self.panel_applet.tz_name == tz:
                     select.select_iter(tmpiter)
                     tmppath = self.tz_store.get_path(tmpiter)
                     self.tz_tview.scroll_to_cell(tmppath,None,False,0,0)
@@ -140,16 +149,18 @@ class TailsClockPrefsDialog:
             select.set_mode(Gtk.SELECTION_SINGLE)
         #: try to constrain the dialog's size
         nbook.show_all()
-        self.dialog.set_size_request(280,280)
-        self.dialog.set_resizable(False)
         pass
+
+    def close(self,widget,event):
+        self.destroy()
+        return True
 
     def update_general(self):
         data = DEFAULT_CFG_DATA.copy()
         data['show_12hr'] = self.show_12hr.get_active()
         data['show_sec'] = self.show_sec.get_active()
         data['show_tz'] = self.show_tz.get_active()
-        self.applet.update_cfg(data)
+        self.panel_applet.update_cfg(data)
         pass
 
     def toggled_12hr(self,widget):
@@ -170,7 +181,7 @@ class TailsClockPrefsDialog:
         model, treeiter = selection.get_selected()
         if treeiter != None:
             new_tz = model[treeiter][0]
-            self.applet.update_cfg({'tz':new_tz})
+            self.panel_applet.update_cfg({'tz':new_tz})
         pass
 
     def run(self):
@@ -178,10 +189,9 @@ class TailsClockPrefsDialog:
         Helper method to actually display the dialog (and all of the
         widgets contained therein.
         """
-        self.dialog.show_all()
-        rv = self.dialog.run()
-        # retrieve pref values
-        self.dialog.destroy()
+        self.show_all()
+        rv = super(Gtk.Dialog,self).run()
+        self.destroy()
         return
 
 
