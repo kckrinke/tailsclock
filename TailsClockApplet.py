@@ -66,6 +66,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     dialog = None
     tz_tview = None
     tz_store = None
+    # note: the following vars are widgets, not actual config
     show_12hr = None
     show_tz = None
     show_sec = None
