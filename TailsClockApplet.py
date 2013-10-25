@@ -28,13 +28,13 @@ def debug_log(message):
     global IS_DEBUG
     if not IS_DEBUG:
         return False
+    sys.stderr.write("TailsClock: "+message+"\n")
     try:
         fh = open("/tmp/tailsclockapplet.log","a")
         fh.write(message+"\n")
         fh.close()
     except Exception, e:
-        sys.stderr.write("TailsClock: ("+str(e)+")\n")
-        sys.stderr.write(" - TailsClock: "+message+"\n")
+        sys.stderr.write("TailsClock: Exception caught: ("+str(e)+")\n")
     return True
 
 #: load up Gtk
