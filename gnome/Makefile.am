@@ -9,9 +9,9 @@ do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' 
 
-.in: Makefile
-	$(do_substitution) < $@ > $(basename $@)
-	chmod 444 $(basename $@)
+all:
+	@$(foreach i,$(wildcard *.in),\
+		$(do_substitution) < $(i) > $(basename $(i));)
 
 install:
 	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet \

@@ -275,12 +275,13 @@ uninstall-am: uninstall-info-am
 gen-pot:
 	@pygettext -o $(MESSAGES_POT) ../src/TailsClockApplet.py
 
-.po:
-	@msgfmt --output-file $(basename $@).mo $@
+all:
+	@$(foreach p,$(wildcard */LC_MESSAGES/*.po),\
+		msgfmt --output-file "$(basename $(p)).mo" "$(p)";)
 
-install: .po
+install:
 	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\
-		install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)"; \
+		install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)";\
 	)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

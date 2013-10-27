@@ -276,9 +276,9 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
-.in: Makefile
-	$(do_substitution) < $@ > $(basename $@)
-	chmod 444 $(basename $@)
+all:
+	@$(foreach i,$(wildcard *.in),\
+		$(do_substitution) < $(i) > $(basename $(i));)
 
 install:
 	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet \

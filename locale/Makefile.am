@@ -8,10 +8,11 @@ EXTRA_DIST = *.po *.pot
 gen-pot:
 	@pygettext -o $(MESSAGES_POT) ../src/TailsClockApplet.py
 
-.po:
-	@msgfmt --output-file $(basename $@).mo $@
+all:
+	@$(foreach p,$(wildcard */LC_MESSAGES/*.po),\
+		msgfmt --output-file "$(basename $(p)).mo" "$(p)";)
 
-install: .po
+install:
 	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\
-		install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)"; \
+		install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)";\
 	)
