@@ -1,6 +1,6 @@
 
-custom_files = $(foreach p,$(wildcard *.in),$(basename $(p));)
-CLEANFILES = $(custom_files)
+gnome_files = $(foreach p,$(wildcard *.in),$(basename $(p));)
+CLEANFILES = $(gnome_files)
 EXTRA_DIST = *.in
 
 appletdir = $(prefix)/lib/gnome-applets/
@@ -8,6 +8,11 @@ appletdir = $(prefix)/lib/gnome-applets/
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' 
+
+clean:
+	@rm -f org.gnome.applets.TailsClock.panel-applet
+	@rm -f org.gnome.panel.applet.TailsClock.service
+	@rm -f TailsClock.server
 
 all:
 	@$(foreach i,$(wildcard *.in),\

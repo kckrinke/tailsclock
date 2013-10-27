@@ -117,8 +117,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-tailsclockdir = $(prefix)/lib/gnome-applets/
-tailsclock = $(wildcard *.py)
+appletdir = $(prefix)/lib/gnome-applets/
 EXTRA_DIST = $(tailsclock)
 all: all-am
 
@@ -271,9 +270,9 @@ uninstall-am: uninstall-info-am
 
 
 install:
-	@install -D -m 644 TailsClockApplet.py $(tailsclockdir)
-	@install -D -m 755 TailsClock-factory2.py $(tailsclockdir)
-	@install -D -m 755 TailsClock-factory3.py $(tailsclockdir)
+	@install -D -m 644 TailsClockApplet.py $(appletdir)
+	@install -D -m 755 TailsClock-factory2.py $(appletdir)
+	@install -D -m 755 TailsClock-factory3.py $(appletdir)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

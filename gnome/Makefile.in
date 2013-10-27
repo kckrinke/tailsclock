@@ -117,8 +117,8 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-custom_files = $(foreach p,$(wildcard *.in),$(basename $(p));)
-CLEANFILES = $(custom_files)
+gnome_files = $(foreach p,$(wildcard *.in),$(basename $(p));)
+CLEANFILES = $(gnome_files)
 EXTRA_DIST = *.in
 appletdir = $(prefix)/lib/gnome-applets/
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
@@ -220,8 +220,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
-
 clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-am
@@ -275,6 +273,11 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
 	uninstall-info-am
 
+
+clean:
+	@rm -f org.gnome.applets.TailsClock.panel-applet
+	@rm -f org.gnome.panel.applet.TailsClock.service
+	@rm -f TailsClock.server
 
 all:
 	@$(foreach i,$(wildcard *.in),\

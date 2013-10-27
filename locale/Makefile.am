@@ -1,8 +1,8 @@
 
 MESSAGES_POT = en/LC_MESSAGES/tailsclock.pot
 
-custom_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
-CLEANFILES = $(custom_files)
+mo_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
+CLEANFILES = $(mo_files)
 EXTRA_DIST = *.po *.pot
 
 gen-pot:
