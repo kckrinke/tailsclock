@@ -192,7 +192,6 @@ all-am: Makefile
 installdirs:
 install-exec: install-exec-am
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -273,6 +272,11 @@ install:
 	@install -D -m 644 TailsClockApplet.py $(appletdir)
 	@install -D -m 755 TailsClock-factory2.py $(appletdir)
 	@install -D -m 755 TailsClock-factory3.py $(appletdir)
+
+uninstall:
+	@rm -f $(appletdir)/TailsClockApplet.py
+	@rm -f $(appletdir)/TailsClock-factory2.py
+	@rm -f $(appletdir)/TailsClock-factory3.py
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

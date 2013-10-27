@@ -117,7 +117,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-MESSAGES_POT = en/LC_MESSAGES/tailsclock.pot
+MESSAGES_POT = en/LC_MESSAGES/tailsclockapplet.pot
 mo_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
 CLEANFILES = $(mo_files)
 EXTRA_DIST = *.po *.pot
@@ -194,7 +194,6 @@ all-am: Makefile
 installdirs:
 install-exec: install-exec-am
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -276,13 +275,13 @@ gen-pot:
 	@pygettext -o $(MESSAGES_POT) ../src/TailsClockApplet.py
 
 all:
-	@$(foreach p,$(wildcard */LC_MESSAGES/*.po),\
-		msgfmt --output-file "$(basename $(p)).mo" "$(p)";)
+	@$(foreach p,$(wildcard */LC_MESSAGES/*.po),msgfmt --output-file "$(basename $(p)).mo" "$(p)";)
 
 install:
-	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\
-		install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)";\
-	)
+	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)";)
+
+uninstall:
+	@$(foreach t,$(wildcard $(prefix)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -f $(t);)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
