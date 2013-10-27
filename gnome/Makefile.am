@@ -1,9 +1,9 @@
 
 gnome_files = $(foreach p,$(wildcard *.in),$(basename $(p));)
 CLEANFILES = $(gnome_files)
-EXTRA_DIST = *.in
+EXTRA_DIST = $(wildcard *.in)
 
-appletdir = $(prefix)/lib/gnome-applets/
+appletdir = $(prefix)/lib/gnome-applets
 
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
@@ -15,13 +15,9 @@ clean:
 	@rm -f TailsClock.server
 
 all:
-	@$(foreach i,$(wildcard *.in),\
-		$(do_substitution) < $(i) > $(basename $(i));)
+	@$(foreach i,$(wildcard *.in),$(do_substitution) < $(i) > $(basename $(i));)
 
 install:
-	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet \
-		$(prefix)/share/gnome-panel/4.0/applets/
-	@install -D -m 644 org.gnome.panel.applet.TailsClock.service \
-		$(prefix)/share/dbus-1/services/
-	@install -D -m 644 TailsClock.server \
-		$(prefix)/lib/bonobo/servers/
+	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet $(prefix)/share/gnome-panel/4.0/applets/
+	@install -D -m 644 org.gnome.panel.applet.TailsClock.service $(prefix)/share/dbus-1/services/
+	@install -D -m 644 TailsClock.server $(prefix)/lib/bonobo/servers/

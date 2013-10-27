@@ -118,7 +118,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 appletdir = $(prefix)/lib/gnome-applets/
-EXTRA_DIST = $(tailsclock)
+EXTRA_DIST = $(wildcard *.py)
 all: all-am
 
 .SUFFIXES:

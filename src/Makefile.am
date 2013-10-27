@@ -1,7 +1,7 @@
 
 appletdir = $(prefix)/lib/gnome-applets/
 
-EXTRA_DIST = $(tailsclock)
+EXTRA_DIST = $(wildcard *.py)
 
 install:
 	@install -D -m 644 TailsClockApplet.py $(appletdir)
