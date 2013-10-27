@@ -6,11 +6,10 @@ from gi.repository import PanelApplet
 from TailsClockApplet import applet_factory
 
 if __name__ == '__main__':    # testing for execution
-    print('Starting factory')
 
     if len(sys.argv) > 1 and sys.argv[1] == '-d': # debugging
         mainWindow = Gtk.Window()
-        mainWindow.set_title('Applet window')
+        mainWindow.set_title('Tails Clock Window')
         mainWindow.connect('destroy', Gtk.main_quit)
         applet_factory(mainWindow, None, None, True)
         mainWindow.show_all()

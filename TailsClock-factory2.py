@@ -8,11 +8,10 @@ import gnomeapplet
 from TailsClockApplet import applet_factory
 
 if __name__ == '__main__':	 # testing for execution
-	print('Starting factory')
 
 	if len(sys.argv) > 1 and sys.argv[1] == '-d': # debugging
 		mainWindow = gtk.Window()
-		mainWindow.set_title('Applet window')
+		mainWindow.set_title('Tails Clock Window')
 		mainWindow.connect('destroy', gtk.main_quit)
 		applet = gnomeapplet.Applet()
 		applet_factory(applet, None, None, True)
