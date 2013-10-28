@@ -1,16 +1,12 @@
-DESTDIR := $(prefix)
-PREFIX := $(DESTDIR)
-
-appletdir = $(PREFIX)/lib/gnome-applets/
-
 EXTRA_DIST = $(wildcard *.py)
+DESTDIR := $(prefix)
 
 install:
-	@install -D -m 644 TailsClockApplet.py $(appletdir)
-	@install -D -m 755 TailsClock-factory2.py $(appletdir)
-	@install -D -m 755 TailsClock-factory3.py $(appletdir)
+	@install -D -m 644 TailsClockApplet.py $(DESTDIR)/lib/gnome-applets/
+	@install -D -m 755 TailsClock-factory2.py $(DESTDIR)/lib/gnome-applets/
+	@install -D -m 755 TailsClock-factory3.py $(DESTDIR)/lib/gnome-applets/
 
 uninstall:
-	@rm -f $(appletdir)/TailsClockApplet.py
-	@rm -f $(appletdir)/TailsClock-factory2.py
-	@rm -f $(appletdir)/TailsClock-factory3.py
+	@rm -f $(DESTDIR)/lib/gnome-applets/TailsClockApplet.py
+	@rm -f $(DESTDIR)/lib/gnome-applets/TailsClock-factory2.py
+	@rm -f $(DESTDIR)/lib/gnome-applets/TailsClock-factory3.py

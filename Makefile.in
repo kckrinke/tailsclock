@@ -140,8 +140,6 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-DESTDIR := $(prefix)
-PREFIX := $(DESTDIR)
 SUBDIRS = gnome locale src
 all: all-recursive
 
