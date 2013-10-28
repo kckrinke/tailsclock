@@ -295,6 +295,7 @@ clean:
 	@rm -f TailsClock.server
 
 install:
+	@echo "Installing gnome to: ${DESTDIR}"
 	@[ -d ${DESTDIR}/share/gnome-panel/4.0/applets/ ] || mkdir -p ${DESTDIR}/share/gnome-panel/4.0/applets/
 	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet ${DESTDIR}/share/gnome-panel/4.0/applets/
 	@[ -d ${DESTDIR}/share/dbus-1/services/ ] || mkdir -p ${DESTDIR}/share/dbus-1/services/

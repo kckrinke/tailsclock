@@ -17,6 +17,7 @@ $(LNGDIRS):
 all: $(LNGDIRS)
 
 install:
+	@echo "Installing locale to: ${DESTDIR}"
 	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),[ -d $(shell dirname ${DESTDIR}/share/locale/$(c)) ] || mkdir -p $(shell dirname ${DESTDIR}/share/locale/$(c));	install -D -m 644 "$(c)" $(shell dirname ${DESTDIR}/share/locale/$(c));)
 
 uninstall:

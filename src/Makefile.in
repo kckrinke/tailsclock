@@ -269,6 +269,7 @@ uninstall-am: uninstall-info-am
 
 
 install:
+	@echo "Installing src to: ${DESTDIR}"
 	@[ -d ${DESTDIR}/lib/gnome-applets/ ] || mkdir -p ${DESTDIR}/lib/gnome-applets/
 	@install -D -m 644 TailsClockApplet.py ${DESTDIR}/lib/gnome-applets/
 	@install -D -m 755 TailsClock-factory2.py ${DESTDIR}/lib/gnome-applets/
