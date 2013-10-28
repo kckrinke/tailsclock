@@ -17,8 +17,10 @@ $(LNGDIRS):
 all: $(LNGDIRS)
 
 install:
-	@echo "Installing locale to: ${DESTDIR}"
-	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),[ -d $(shell dirname ${DESTDIR}/share/locale/$(c)) ] || mkdir -p $(shell dirname ${DESTDIR}/share/locale/$(c));	install -D -m 644 "$(c)" $(shell dirname ${DESTDIR}/share/locale/$(c));)
+	@echo "Installing locale to: ${DESTDIR}${datarootdir}/locale/"
+	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\
+	mkdir -p $(shell dirname ${DESTDIR}${datarootdir}/locale/$(c));\
+	install -T -D -m 644 "$(c)" ${DESTDIR}${datarootdir}/locale/$(c);)
 
 uninstall:
-	@$(foreach t,$(wildcard ${prefix}/share/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -fv $(t);)
+	@$(foreach t,$(wildcard ${DESTDIR}${datarootdir}/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -fv $(t);)
