@@ -117,7 +117,9 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-appletdir = $(prefix)/lib/gnome-applets/
+DESTDIR := $(prefix)
+PREFIX := $(DESTDIR)
+appletdir = $(PREFIX)/lib/gnome-applets/
 EXTRA_DIST = $(wildcard *.py)
 all: all-am
 

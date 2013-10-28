@@ -1,5 +1,7 @@
+DESTDIR := $(prefix)
+PREFIX := $(DESTDIR)
 
-appletdir = $(prefix)/lib/gnome-applets/
+appletdir = $(PREFIX)/lib/gnome-applets/
 
 EXTRA_DIST = $(wildcard *.py)
 

@@ -1,3 +1,5 @@
+DESTDIR := $(prefix)
+PREFIX := $(DESTDIR)
 
 LNGDIRS = de en es fr nl
 
@@ -17,7 +19,7 @@ $(LNGDIRS):
 all: $(LNGDIRS)
 
 install:
-	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),install -D -m 644 "$(c)" "$(prefix)/share/locale/$(c)";)
+	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),install -D -m 644 "$(c)" "$(PREFIX)/share/locale/$(c)";)
 
 uninstall:
-	@$(foreach t,$(wildcard $(prefix)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -f $(t);)
+	@$(foreach t,$(wildcard $(PREFIX)/share/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -f $(t);)
