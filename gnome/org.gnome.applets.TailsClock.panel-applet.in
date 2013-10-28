@@ -1,6 +1,6 @@
 [Applet Factory]
 Id=TailsClockFactory
-Location={{PREFIX}}/lib/gnome-applets/TailsClock-factory3.py
+Location=@appletdir@/TailsClock-factory3.py
 Name=Tails Clock Factory
 
 [TailsClock]
