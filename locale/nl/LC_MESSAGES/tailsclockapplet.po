@@ -5,45 +5,63 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"POT-Creation-Date: 2013-10-16 15:04+EDT\n"
-"PO-Revision-Date: 2013-10-16 15:04+EDT\n"
+"POT-Creation-Date: 2013-10-28 04:02+EDT\n"
+"PO-Revision-Date: 2013-10-28 11:14-0500\n"
 "Last-Translator: Kevin C. Krinke <kevin@krinke.ca>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-
-#: TailsClockApplet.py:53
+#: src/TailsClockApplet.py:229
 msgid "Tails Clock Preferences"
 msgstr "Tails Clock Voorkeuren"
 
-#: TailsClockApplet.py:66
+#: src/TailsClockApplet.py:243
 msgid "12 Hour Clock?"
 msgstr "Twaalf uur Klok?"
 
-#: TailsClockApplet.py:70
-msgid "Display Seconds?"
-msgstr "Seconden weergeven?"
+#: src/TailsClockApplet.py:244
+msgid "Display seconds?"
+msgstr "Dsiplay seconden?"
 
-#: TailsClockApplet.py:74
+#: src/TailsClockApplet.py:245
 msgid "Display Timezone?"
 msgstr "Weer Tijdzone?"
 
-#: TailsClockApplet.py:78
+#: src/TailsClockApplet.py:246
+msgid "Display Year?"
+msgstr "Dsiplay Jaar?"
+
+#: src/TailsClockApplet.py:247
+msgid "Display Date?"
+msgstr "Dsiplay Date?"
+
+#: src/TailsClockApplet.py:248
 msgid "General"
 msgstr "Algemeen"
 
-#: TailsClockApplet.py:81
+#: src/TailsClockApplet.py:251
 msgid "Timezone"
 msgstr "Tijdzone"
 
-#: TailsClockApplet.py:82
-msgid "Please select a timezone from the following list:"
-msgstr "Selecteer een tijdzone uit de volgende lijst:"
+#: src/TailsClockApplet.py:253
+msgid "Changing the timezone only affects the Tails Clock."
+msgstr "Het veranderen van de tijdzone alleen van invloed op de Tails Clock."
 
-#: TailsClockApplet.py:39
+#: src/TailsClockApplet.py:262
 msgid "Timezones"
 msgstr "Tijdzones"
 
+#: src/TailsClockApplet.py:441
+msgid "Copy Date"
+msgstr "kopieer Datum"
+
+#: src/TailsClockApplet.py:445
+msgid "Copy Time"
+msgstr "Kopieer de Time"
+
+#~ msgid "Please select a timezone from the following list:"
+#~ msgstr "Selecteer een tijdzone uit de volgende lijst:"
