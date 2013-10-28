@@ -400,6 +400,7 @@ class TailsClock:
                 dt_format = locale.nl_langinfo(locale.D_T_FMT)
             else: # NOT show_dt
                 dt_format = locale.nl_langinfo(locale.T_FMT)
+                debug_log("dt_format:in1: '"+dt_format+"'")
             if '%r' in dt_format:
                 if cfg.show_sec:
                     if cfg.show_12hr:
@@ -419,17 +420,24 @@ class TailsClock:
                     dt_format = re.sub("\s*%Z","",dt_format)
         else: # NOT show_time
             dt_format = locale.nl_langinfo(locale.D_T_FMT)
+            debug_log("dt_format:in2: '"+dt_format+"'")
             if '%r' in dt_format:
                 dt_format = re.sub("\s??%r","",dt_format)
             if '%Z' in dt_format:
                 dt_format = re.sub("\s??%Z","",dt_format)
         if ' %Y' in dt_format:
-            if cfg.show_yr:
-                dt_format = re.sub(" %Y",", %Y",dt_format)
+            if cfg.show_yr and not self.config.show_dt:
+                dt_format = "%Y, " + dt_format
+            elif cfg.show_yr:
+                if cfg.show_time:
+                    dt_format = re.sub(" %Y ",", %Y, ",dt_format)
+                else:
+                    dt_format = re.sub(" %Y",", %Y",dt_format)
             else:
                 dt_format = re.sub(" %Y","",dt_format)
-        if cfg.show_yr and not self.config.show_dt:
-            dt_format = "%Y, " + dt_format
+        if cfg.show_time and cfg.show_dt and not cfg.show_yr:
+            dt_format = re.sub("%b %","%b, %",dt_format)
+        debug_log("dt_format:out: '"+dt_format+"'")
         return dt_format
 
     def create_menu3(self):
