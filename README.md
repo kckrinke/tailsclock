@@ -19,25 +19,14 @@ problem for Tails users.
 
 ## Installing ##
 
-Currently, Tails Clock uses a hand-crafted Makefile as an interim build system.
-Installation defaults to /opt though that's probably not "correct" for any
-linux distribution. The following steps walk you through the installation.
+Tails Clock uses autotools for configuration, building and installing. Simply
+do the normal steps...
 
 ```
-# First step is to generate the files and translations
-make DESTDIR=/usr
-# Second step is to copy the files to the correct locations
-sudo make install DESTDIR=/usr
-# If you're installing this onto a GNOME2.x system, you'll need to logout
-# and log back in, or restart the gnome-panel to see the new applet
+./configure --prefix /usr
+make
+sudo make install
 ```
-
-Notice that the DESTDIR=/usr option is provided at each step. While this isn't
-typical Makefile behaviour, this Makefile isn't setup via a ```./configure```
-script either so please don't expect too much.
-
-Try running ```make help``` to get some extra feedback on how to use the
-Makefile as-is.
 
 ## Hacking / Contributing ##
 
@@ -53,9 +42,15 @@ For GNOME3.x development:
    * org.gnome.TailsClock.panel-applet
    * org.gnome.panel.applet.TailsClock.service
 
+Translations:
+ * from the top-level of the source tree, run gen-en-pot.sh to update the
+   translations template (.pot), it'll also create the "EN" language from
+   the template.
+ * All current translations have been derived from free translation
+   services found online.
+
 ## TODO ##
 
-- [ ] Implement a standards compliant build system
 - [ ] Custom icons / artwork
 - [ ] More / Update translations
 

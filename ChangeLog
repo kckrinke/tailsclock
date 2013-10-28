@@ -1,3 +1,9 @@
+0.3 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Updated README with developer notes
+  * Tweaked how comma is placed within time/date formatting (not sure
+    how this works with i18n yet)
+
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Minor code cleanups
