@@ -1,3 +1,9 @@
+tailsclock (0.3-1) unstable; urgency=low
+
+  * Upstream release
+
+ -- Kevin C. Krinke <kevin@krinke.ca>  Tue, 29 Oct 2013 10:15:09 -0400
+
 tailsclock (0.2-1) unstable; urgency=low
 
   * Initial release
