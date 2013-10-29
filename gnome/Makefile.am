@@ -8,7 +8,7 @@ EXTRA_DIST = \
 	org.gnome.panel.applet.TailsClock.service.in \
 	TailsClock.server.in
 
-appletdir = ${prefix}/lib/gnome-applets
+appletdir = ${DESTDIR}${libdir}/gnome-applets
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' 
