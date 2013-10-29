@@ -3,6 +3,7 @@
   * Updated README with developer notes
   * Tweaked how comma is placed within time/date formatting (not sure
     how this works with i18n yet)
+  * Implemented a simple About Dialog
 
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 

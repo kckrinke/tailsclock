@@ -222,10 +222,10 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: initialize self
         if IS_GTK3:
             flags = Gtk.DialogFlags.MODAL
-            buttons = (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
         else:
             flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
-            buttons = (Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),None,flags,buttons)
         self.set_modal(True)
         self.set_size_request(280,280)
@@ -339,6 +339,36 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         """
         self.show_all()
         rv = super(Gtk.Dialog,self).run()
+        self.destroy()
+        if IS_GTK3 and rv == Gtk.ResponseType.ACCEPT:
+            TailsClockAboutDialog().run()
+        elif not IS_GTK3 and rv == Gtk.RESPONSE_ACCEPT:
+            TailsClockAboutDialog().run()
+        return
+
+class TailsClockAboutDialog(Gtk.AboutDialog):
+    """
+    Basic About Dialog
+    """
+
+    def __init__(self):
+        Gtk.AboutDialog.__init__(self)
+        self.set_size_request(300,150)
+        self.set_modal(True)
+        self.set_name("Tails Clock")
+        self.set_program_name("Tails Clock")
+        self.set_version("0.3")
+        self.set_copyright("GPL2")
+        self.set_comments("A simple GNOME panel applet clock.")
+        pass
+
+    def run(self):
+        """
+        Helper method to actually display the dialog (and all of the
+        widgets contained therein.
+        """
+        self.show_all()
+        rv = super(Gtk.AboutDialog,self).run()
         self.destroy()
         return
 
@@ -459,6 +489,7 @@ class TailsClock:
         self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,self.copy_date,self.main_menu)
         self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,self.copy_time,self.main_menu)
         self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,self.display_prefs,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_ABOUT,self.display_about,self.main_menu)
         self.main_menu.show_all()
         return True
 
@@ -485,11 +516,17 @@ class TailsClock:
             label="_Preferences"
             pixtype="stock"
             pixname="gtk-preferences" />
+        <menuitem name="ItemAbout"
+            verb="About"
+            label="_About"
+            pixtype="stock"
+            pixname="gtk-about" />
         </popup>
         '''
         verbs = [('CopyDate', self.copy_date),
                  ('CopyTime', self.copy_time),
-                 ('Preferences', self.display_prefs)]
+                 ('Preferences', self.display_prefs),
+                 ('About', self.display_about)]
         self.panel_applet.setup_menu(xml, verbs, self)
         return True
 
@@ -586,6 +623,10 @@ class TailsClock:
         Display the Tails Clock Preferences dialog.
         """
         TailsClockPrefsDialog(self).run()
+        pass
+
+    def display_about(self,*argv):
+        TailsClockAboutDialog().run()
         pass
 
     def display_menu(self,widget,event):
