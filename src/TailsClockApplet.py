@@ -440,23 +440,25 @@ class TailsClock:
         debug_log("dt_format:out: '"+dt_format+"'")
         return dt_format
 
+    def _add_menu3_item(self,title,stock_id,func,menu):
+        if title is not None:
+            item = Gtk.ImageMenuItem.new_with_label(title)
+            item.set_image(Gtk.Image.new_from_stock(stock_id,Gtk.IconSize.MENU))
+        else:
+            item = Gtk.ImageMenuItem.new_from_stock(stock_id,None)
+        item.connect("activate",func,self)
+        menu.append(item)
+        return
+
     def create_menu3(self):
         """
         Generate a left-click context-menu
         """
         debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
-        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Date"))
-        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
-        pref_item.connect("activate",self.copy_date,self)
-        self.main_menu.append(pref_item)
-        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Time"))
-        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
-        pref_item.connect("activate",self.copy_time,self)
-        self.main_menu.append(pref_item)
-        pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
-        pref_item.connect("activate",self.display_prefs,self)
-        self.main_menu.append(pref_item)
+        self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,self.copy_date,self.main_menu)
+        self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,self.copy_time,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,self.display_prefs,self.main_menu)
         self.main_menu.show_all()
         return True
 
