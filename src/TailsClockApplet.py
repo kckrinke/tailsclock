@@ -332,13 +332,18 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         widgets contained therein.
         """
         self.show_all()
-        rv = super(Gtk.Dialog,self).run()
-        self.destroy()
-        if IS_GTK3 and rv == Gtk.ResponseType.ACCEPT:
-            TailsClockAboutDialog().run()
-        elif not IS_GTK3 and rv == Gtk.RESPONSE_ACCEPT:
-            TailsClockAboutDialog().run()
+        if IS_GTK3:
+            rv = super(Gtk.Dialog,self).run()
+            self.destroy()
+            if rv == Gtk.ResponseType.ACCEPT:
+                TailsClockAboutDialog().run()
+        else:
+            rv = Gtk.Dialog.run(self)
+            self.destroy()
+            if rv == Gtk.RESPONSE_ACCEPT:
+                TailsClockAboutDialog().run()
         return
+
 
 class TailsClockAboutDialog(Gtk.AboutDialog):
     """
