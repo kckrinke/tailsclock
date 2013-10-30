@@ -22,4 +22,4 @@ install:
 	install -T -D -m 644 "$(c)" ${DESTDIR}${datarootdir}/locale/$(c);)
 
 uninstall:
-	@$(foreach t,$(wildcard ${DESTDIR}${datarootdir}/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -fv $(t);)
+	@$(foreach t,$(wildcard ${DESTDIR}${datarootdir}/locale/*/LC_MESSAGES/tailsclockapplet.mo),/bin/rm -v $(t);)
