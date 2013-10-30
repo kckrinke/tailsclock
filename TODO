@@ -8,4 +8,8 @@
   * On press, display a simple calendar
  * Support & Maintenance:
   * Test on Tails 0.20, pretty sure things gonna break right now
-  * Unit tests?
+
+
+# Tails Clock Super Low Priority TODO #  
+ * Unit tests? - dogtail and strongwind both failed to work :/ even
+   the simplest of test scripts wouldn't load due to ATK errors?
