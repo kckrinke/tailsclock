@@ -8,7 +8,7 @@ EXTRA_DIST = \
 	org.gnome.panel.applet.TailsClock.service.in \
 	TailsClock.server.in
 
-appletdir = ${prefix}/lib/gnome-applets
+appletdir = ${DESTDIR}${libdir}/gnome-applets
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' 
@@ -21,9 +21,9 @@ all:
 	@$(do_substitution) < TailsClock.server.in > TailsClock.server
 
 clean:
-	@rm -f org.gnome.applets.TailsClock.panel-applet
-	@rm -f org.gnome.panel.applet.TailsClock.service
-	@rm -f TailsClock.server
+	@/bin/rm -v org.gnome.applets.TailsClock.panel-applet
+	@/bin/rm -v org.gnome.panel.applet.TailsClock.service
+	@/bin/rm -v TailsClock.server
 
 install:
 	@echo "Installing gnome-files to: ${DESTDIR}${datarootdir} and ${DESTDIR}${libdir}"
@@ -35,6 +35,6 @@ install:
 	@install -D -m 644 TailsClock.server ${DESTDIR}${libdir}/bonobo/servers/
 
 uninstall:
-	@rm -f ${DESTDIR}${datarootdir}/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
-	@rm -f ${DESTDIR}${datarootdir}/dbus-1/services/org.gnome.panel.applet.TailsClock.service
-	@rm -f ${DESTDIR}${libdir}/bonobo/servers/TailsClock.server
+	@/bin/rm -v ${DESTDIR}${datarootdir}/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
+	@/bin/rm -v ${DESTDIR}${datarootdir}/dbus-1/services/org.gnome.panel.applet.TailsClock.service
+	@/bin/rm -v ${DESTDIR}${libdir}/bonobo/servers/TailsClock.server

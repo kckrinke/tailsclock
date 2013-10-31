@@ -1,3 +1,12 @@
+0.3 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Updated README with developer notes
+  * Tweaked how comma is placed within time/date formatting (not sure how this works with i18n yet)
+  * Implemented a simple About Dialog
+  * Implemented a pop-down calendar
+  * Changed the applet from being an EventBox+Label to a ToggleButton
+  * Applet now resembles actual GNOME Panel Clock basics (without weather, etc).
+
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Minor code cleanups

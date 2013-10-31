@@ -222,10 +222,10 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: initialize self
         if IS_GTK3:
             flags = Gtk.DialogFlags.MODAL
-            buttons = (Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
         else:
             flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
-            buttons = (Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),None,flags,buttons)
         self.set_modal(True)
         self.set_size_request(280,280)
@@ -249,12 +249,6 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
         nbook.append_page(tz_vbox,Gtk.Label(_("Timezone")))
-        tz_hbox = Gtk.HBox()
-        tz_label = Gtk.Label(_("Changing the timezone only affects the Tails Clock."))
-        tz_label.set_line_wrap(True)
-        tz_hbox.pack_start(tz_label,True,False,8)
-        tz_vbox.pack_start(tz_hbox,False,True,8)
-        tz_vbox.pack_start(Gtk.Separator(),False,False,2)
         self.tz_store = Gtk.ListStore(str)
         self.tz_tview = Gtk.TreeView(self.tz_store)
         self.tz_tview.set_headers_visible(False)
@@ -338,18 +332,130 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         widgets contained therein.
         """
         self.show_all()
-        rv = super(Gtk.Dialog,self).run()
+        if IS_GTK3:
+            rv = super(Gtk.Dialog,self).run()
+            self.destroy()
+            if rv == Gtk.ResponseType.ACCEPT:
+                TailsClockAboutDialog().run()
+        else:
+            rv = Gtk.Dialog.run(self)
+            self.destroy()
+            if rv == Gtk.RESPONSE_ACCEPT:
+                TailsClockAboutDialog().run()
+        return
+
+
+class TailsClockAboutDialog(Gtk.AboutDialog):
+    """
+    Basic About Dialog
+    """
+
+    def __init__(self):
+        Gtk.AboutDialog.__init__(self)
+        self.set_size_request(300,150)
+        self.set_modal(True)
+        self.set_name("Tails Clock")
+        self.set_program_name("Tails Clock")
+        self.set_version("0.3")
+        self.set_copyright("GPL2")
+        self.set_comments("A simple GNOME panel applet clock.")
+        pass
+
+    def run(self):
+        """
+        Helper method to actually display the dialog (and all of the
+        widgets contained therein.
+        """
+        self.show_all()
+        rv = super(Gtk.AboutDialog,self).run()
         self.destroy()
         return
+
+class TailsClockCalendarWindow(Gtk.Window):
+    """
+    Simple Calendar, mimics basic feature of actual GNOME Panel Clock.
+    Based on a stackoverflow answer:
+    http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu/11261043#11261043
+    """
+    toggle_button = None
+    def __init__(self,button):
+        self.toggle_button = button
+        if IS_GTK3:
+            #cal_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+            super(TailsClockCalendarWindow,self).__init__(Gtk.WindowType.TOPLEVEL)
+            self.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        else:
+            #cal_window = Gtk.Window(Gtk.WINDOW_TOPLEVEL)
+            super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
+            #cal_window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+            self.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+        self.set_decorated(False)
+        self.set_resizable(False)
+        self.stick()
+        cal_vbox = Gtk.VBox(False, 10)
+        self.add(cal_vbox)
+        cal_vbox.pack_start(Gtk.Calendar(), True, False, 0)
+        #self.connect("configure-event", self.on_window_config, self.toggle_button)
+        pass
+
+    def show_calendar(self):
+        rect = self.toggle_button.get_allocation()
+        main_window = self.toggle_button.get_toplevel()
+        [win_x, win_y] = main_window.get_window().get_root_coords(0,0)
+        cal_x = win_x + rect.x
+        cal_y = win_y + rect.y + rect.height
+        [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.toggle_button)
+        debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
+        self.move(x, y)
+        self.show_all()
+        return True
+
+    def hide_calendar(self):
+        self.hide()
+        return True
+
+    def toggle(self):
+        if self.toggle_button.get_active():
+            self.show_calendar()
+        else:
+            self.hide_calendar()
+        return
+
+    # This function "tries" to correct calendar window position so that it is not obscured when
+    # a portion of main window is off-screen.
+    # Known bug: If the main window is partially off-screen before Calendar window
+    # has been realized then get_allocation() will return rect of 1x1 in which case
+    # the calculations will fail & correction will not be applied
+    def apply_screen_coord_correction(self, x, y, widget, relative_widget):
+        corrected_y = y
+        corrected_x = x
+        rect = widget.get_allocation()
+        if IS_GTK3:
+            screen_w = Gdk.Screen.get_default().get_width()
+            screen_h = Gdk.Screen.get_default().get_height()
+        else:
+            screen_w = Gdk.screen_width()
+            screen_h = Gdk.screen_height()
+        delta_x = screen_w - (x + rect.width)
+        delta_y = screen_h - (y + rect.height)
+        if delta_x < 0:
+            corrected_x += delta_x
+        if corrected_x < 0:
+            corrected_x = 0
+        if delta_y < 0:
+            corrected_y = y - rect.height - relative_widget.get_allocation().height
+        if corrected_y < 0:
+            corrected_y = 0
+        return [corrected_x, corrected_y]
 
 
 class TailsClock:
     """
     Actual class used to manage the applet and display the time.
     """
-    main_label = None
-    main_evbox = None
+    main_bttn = None
     main_menu = None
+    main_drop = None #Currently just a Calendar
 
     panel_applet = None
     panel_iid = None
@@ -400,6 +506,7 @@ class TailsClock:
                 dt_format = locale.nl_langinfo(locale.D_T_FMT)
             else: # NOT show_dt
                 dt_format = locale.nl_langinfo(locale.T_FMT)
+                debug_log("dt_format:in1: '"+dt_format+"'")
             if '%r' in dt_format:
                 if cfg.show_sec:
                     if cfg.show_12hr:
@@ -419,18 +526,35 @@ class TailsClock:
                     dt_format = re.sub("\s*%Z","",dt_format)
         else: # NOT show_time
             dt_format = locale.nl_langinfo(locale.D_T_FMT)
+            debug_log("dt_format:in2: '"+dt_format+"'")
             if '%r' in dt_format:
                 dt_format = re.sub("\s??%r","",dt_format)
             if '%Z' in dt_format:
                 dt_format = re.sub("\s??%Z","",dt_format)
         if ' %Y' in dt_format:
-            if cfg.show_yr:
-                dt_format = re.sub(" %Y",", %Y",dt_format)
+            if cfg.show_yr and not self.config.show_dt:
+                dt_format = "%Y, " + dt_format
+            elif cfg.show_yr:
+                if cfg.show_time:
+                    dt_format = re.sub(" %Y ",", %Y, ",dt_format)
+                else:
+                    dt_format = re.sub(" %Y",", %Y",dt_format)
             else:
                 dt_format = re.sub(" %Y","",dt_format)
-        if cfg.show_yr and not self.config.show_dt:
-            dt_format = "%Y, " + dt_format
+        if cfg.show_time and cfg.show_dt and not cfg.show_yr:
+            dt_format = re.sub("%b %","%b, %",dt_format)
+        debug_log("dt_format:out: '"+dt_format+"'")
         return dt_format
+
+    def _add_menu3_item(self,title,stock_id,func,menu):
+        if title is not None:
+            item = Gtk.ImageMenuItem.new_with_label(title)
+            item.set_image(Gtk.Image.new_from_stock(stock_id,Gtk.IconSize.MENU))
+        else:
+            item = Gtk.ImageMenuItem.new_from_stock(stock_id,None)
+        item.connect("activate",func,self)
+        menu.append(item)
+        return
 
     def create_menu3(self):
         """
@@ -438,17 +562,10 @@ class TailsClock:
         """
         debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
-        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Date"))
-        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
-        pref_item.connect("activate",self.copy_date,self)
-        self.main_menu.append(pref_item)
-        pref_item = Gtk.ImageMenuItem.new_with_label(_("Copy Time"))
-        pref_item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_COPY,Gtk.IconSize.MENU))
-        pref_item.connect("activate",self.copy_time,self)
-        self.main_menu.append(pref_item)
-        pref_item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_PREFERENCES,None)
-        pref_item.connect("activate",self.display_prefs,self)
-        self.main_menu.append(pref_item)
+        self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,self.copy_date,self.main_menu)
+        self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,self.copy_time,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,self.display_prefs,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_ABOUT,self.display_about,self.main_menu)
         self.main_menu.show_all()
         return True
 
@@ -475,11 +592,17 @@ class TailsClock:
             label="_Preferences"
             pixtype="stock"
             pixname="gtk-preferences" />
+        <menuitem name="ItemAbout"
+            verb="About"
+            label="_About"
+            pixtype="stock"
+            pixname="gtk-about" />
         </popup>
         '''
         verbs = [('CopyDate', self.copy_date),
                  ('CopyTime', self.copy_time),
-                 ('Preferences', self.display_prefs)]
+                 ('Preferences', self.display_prefs),
+                 ('About', self.display_about)]
         self.panel_applet.setup_menu(xml, verbs, self)
         return True
 
@@ -506,17 +629,20 @@ class TailsClock:
         and so on. Basically; launch the applet.
         """
         # actually populate UI
-        self.main_label = Gtk.Label("...")
-        self.main_label.set_name("TailsClockAppletLabel")
-        self.main_evbox = Gtk.EventBox()
-        self.main_evbox.set_name("TailsClockAppletEvBox")
-        self.main_evbox.add(self.main_label)
-        self.main_evbox.connect("button-release-event",self.display_menu)
+        self.main_bttn = Gtk.ToggleButton(label="")
+        if IS_GTK3:
+            self.main_bttn.set_relief(Gtk.ReliefStyle.NONE)
+        else:
+            self.main_bttn.set_relief(Gtk.RELIEF_NONE)
+        self.main_bttn.set_can_focus(False)
+        self.main_bttn.set_name("TailsClockAppletButton")
+        self.main_bttn.connect("button-press-event",self.popup_menu)
+        self.main_bttn.connect("toggled",self.toggle_drop)
         # transparent background style
         if IS_GTK3:
             style_provider = Gtk.CssProvider()
             css = """
-            #TailsClockAppletLabel,#TailsClockAppletEvBox {
+            #TailsClockAppletButton {
                 background-color: rgba(0,0,0,0);
                 font-weight: bold;
             }
@@ -529,8 +655,10 @@ class TailsClock:
                 )
         else: # NOT_GTK3
             pass
+        # add an instance of the calendar
+        self.main_drop = TailsClockCalendarWindow(self.main_bttn)
         # add/show all
-        self.panel_applet.add(self.main_evbox)
+        self.panel_applet.add(self.main_bttn)
         self.panel_applet.show_all()
         self.refresh_cfg()
         self.update_time()
@@ -568,7 +696,7 @@ class TailsClock:
         #debug_log("Format: "+dt_format)
         stamp = dt.strftime(dt_format)
         # actually update the label
-        self.main_label.set_text(stamp)
+        self.main_bttn.set_label(stamp)
         return self.update_glib_timer()
 
     def display_prefs(self,*argv):
@@ -578,19 +706,29 @@ class TailsClock:
         TailsClockPrefsDialog(self).run()
         pass
 
-    def display_menu(self,widget,event):
+    def display_about(self,*argv):
+        TailsClockAboutDialog().run()
+        pass
+
+    def toggle_drop(self,widget):
+        self.main_drop.toggle()
+        return True
+
+    def popup_menu(self,widget,event):
         """
         Trigger the context-menu to popup.
         """
+        debug_log("popup_menu")
         if IS_GTK3:
-            if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
-                # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
+            if event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == 0:
                 self.main_menu.popup(None,None,None,None,event.button,event.time)
                 return True
         else: # NOT_GTK3
-            if event.type == Gdk.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.MOD1_MASK) == False:
+            if event.button == 3 and (event.state & Gdk.MOD1_MASK) == 0:
                 self.main_menu.popup(None,None,None,event.button,event.time,None)
                 return True
+        if event.button > 1:
+            return self.panel_applet.event(event)
         return False
 
     def copy_date(self,widget,event):

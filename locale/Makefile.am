@@ -6,7 +6,6 @@ MESSAGES_PO = en/LC_MESSAGES/tailsclockapplet.po
 mo_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
 CLEANFILES = $(mo_files)
 EXTRA_DIST = *.po *.pot
-DESTDIR := $(prefix)
 
 .PHONY: lngdirs $(LNGDIRS)
 lngdirs: $(LNGDIRS)
@@ -23,4 +22,4 @@ install:
 	install -T -D -m 644 "$(c)" ${DESTDIR}${datarootdir}/locale/$(c);)
 
 uninstall:
-	@$(foreach t,$(wildcard ${DESTDIR}${datarootdir}/locale/*/LC_MESSAGES/tailsclockapplet.mo),rm -fv $(t);)
+	@$(foreach t,$(wildcard ${DESTDIR}${datarootdir}/locale/*/LC_MESSAGES/tailsclockapplet.mo),/bin/rm -v $(t);)
