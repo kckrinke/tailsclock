@@ -2,10 +2,6 @@
 
  * Context Menu:
   * "Help" - (Requires writing DocBook documentation.)
- * Applet UI:
-  * Make it a button instead of just a label
-  * Flat look unless hovered over
-  * On press, display a simple calendar
  * Support & Maintenance:
   * Test on Tails 0.20, pretty sure things gonna break right now
 
