@@ -7,7 +7,8 @@ There are very few configurable options, no weather reports or other fanciness.
 Users can right-click on the applet, select the Preferences option and change
 the Time Zone along with a few other general options from there. The timezone
 is system-independent and is intended to allow the user to view the time in a
-different Time Zone than the system settings.
+different Time Zone than the system settings. The clock also displays a simple
+calendar when clicked.
 
 ## Purpose ##
 
@@ -58,7 +59,7 @@ Translations:
 
 ```
 Tails Clock - Simple GNOME panel applet clock.
-Copyright (C) Kevin C. Krinke <kevin@krinke.ca>
+Copyright (C) 2013 Kevin C. Krinke <kevin@krinke.ca>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
