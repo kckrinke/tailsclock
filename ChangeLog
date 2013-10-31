@@ -5,6 +5,7 @@
   * Implemented a simple About Dialog
   * Implemented a pop-down calendar
   * Changed the applet from being an EventBox+Label to a ToggleButton
+  * Applet now resembles actual GNOME Panel Clock basics (without weather, etc).
 
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 
