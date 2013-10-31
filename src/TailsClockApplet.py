@@ -448,9 +448,9 @@ class TailsClock:
     """
     Actual class used to manage the applet and display the time.
     """
-    main_label = None
-    main_evbox = None
+    main_bttn = None
     main_menu = None
+    main_drop = None #Currently just a Calendar
 
     panel_applet = None
     panel_iid = None
@@ -624,17 +624,20 @@ class TailsClock:
         and so on. Basically; launch the applet.
         """
         # actually populate UI
-        self.main_label = Gtk.Label("...")
-        self.main_label.set_name("TailsClockAppletLabel")
-        self.main_evbox = Gtk.EventBox()
-        self.main_evbox.set_name("TailsClockAppletEvBox")
-        self.main_evbox.add(self.main_label)
-        self.main_evbox.connect("button-release-event",self.display_menu)
+        self.main_bttn = Gtk.ToggleButton(label="")
+        if IS_GTK3:
+            self.main_bttn.set_relief(Gtk.ReliefStyle.NONE)
+        else:
+            self.main_bttn.set_relief(Gtk.RELIEF_NONE)
+        self.main_bttn.set_can_focus(False)
+        self.main_bttn.set_name("TailsClockAppletButton")
+        self.main_bttn.connect("button-release-event",self.display_menu)
+        self.main_bttn.connect("toggled",self.toggle_drop)
         # transparent background style
         if IS_GTK3:
             style_provider = Gtk.CssProvider()
             css = """
-            #TailsClockAppletLabel,#TailsClockAppletEvBox {
+            #TailsClockAppletButton {
                 background-color: rgba(0,0,0,0);
                 font-weight: bold;
             }
@@ -647,8 +650,10 @@ class TailsClock:
                 )
         else: # NOT_GTK3
             pass
+        # add an instance of the calendar
+        self.main_drop = TailsClockCalendarWindow(self.main_bttn)
         # add/show all
-        self.panel_applet.add(self.main_evbox)
+        self.panel_applet.add(self.main_bttn)
         self.panel_applet.show_all()
         self.refresh_cfg()
         self.update_time()
@@ -686,7 +691,7 @@ class TailsClock:
         #debug_log("Format: "+dt_format)
         stamp = dt.strftime(dt_format)
         # actually update the label
-        self.main_label.set_text(stamp)
+        self.main_bttn.set_label(stamp)
         return self.update_glib_timer()
 
     def display_prefs(self,*argv):
@@ -700,10 +705,15 @@ class TailsClock:
         TailsClockAboutDialog().run()
         pass
 
+    def toggle_drop(self,widget):
+        self.main_drop.toggle()
+        return True
+
     def display_menu(self,widget,event):
         """
         Trigger the context-menu to popup.
         """
+        debug_log("display_menu")
         if IS_GTK3:
             if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
                 # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
