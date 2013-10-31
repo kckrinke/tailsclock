@@ -372,6 +372,11 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         return
 
 class TailsClockCalendarWindow(Gtk.Window):
+    """
+    Simple Calendar, mimics basic feature of actual GNOME Panel Clock.
+    Based on a stackoverflow answer:
+    http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu/11261043#11261043
+    """
     toggle_button = None
     def __init__(self,button):
         self.toggle_button = button
@@ -631,7 +636,7 @@ class TailsClock:
             self.main_bttn.set_relief(Gtk.RELIEF_NONE)
         self.main_bttn.set_can_focus(False)
         self.main_bttn.set_name("TailsClockAppletButton")
-        self.main_bttn.connect("button-release-event",self.display_menu)
+        self.main_bttn.connect("button-press-event",self.popup_menu)
         self.main_bttn.connect("toggled",self.toggle_drop)
         # transparent background style
         if IS_GTK3:
@@ -709,20 +714,21 @@ class TailsClock:
         self.main_drop.toggle()
         return True
 
-    def display_menu(self,widget,event):
+    def popup_menu(self,widget,event):
         """
         Trigger the context-menu to popup.
         """
-        debug_log("display_menu")
+        debug_log("popup_menu")
         if IS_GTK3:
-            if event.type == Gdk.EventType.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == False:
-                # popup(self, parent_menu_shell, parent_menu_item, func, data, button, activate_time)
+            if event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == 0:
                 self.main_menu.popup(None,None,None,None,event.button,event.time)
                 return True
         else: # NOT_GTK3
-            if event.type == Gdk.BUTTON_RELEASE and event.button == 3 and (event.state & Gdk.MOD1_MASK) == False:
+            if event.button == 3 and (event.state & Gdk.MOD1_MASK) == 0:
                 self.main_menu.popup(None,None,None,event.button,event.time,None)
                 return True
+        if event.button > 1:
+            return self.panel_applet.event(event)
         return False
 
     def copy_date(self,widget,event):
