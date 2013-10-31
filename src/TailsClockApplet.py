@@ -381,13 +381,10 @@ class TailsClockCalendarWindow(Gtk.Window):
     def __init__(self,button):
         self.toggle_button = button
         if IS_GTK3:
-            #cal_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
             super(TailsClockCalendarWindow,self).__init__(Gtk.WindowType.TOPLEVEL)
             self.set_type_hint(Gdk.WindowTypeHint.DOCK)
         else:
-            #cal_window = Gtk.Window(Gtk.WINDOW_TOPLEVEL)
             super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
-            #cal_window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
             self.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
         self.set_decorated(False)
         self.set_resizable(False)
@@ -395,13 +392,15 @@ class TailsClockCalendarWindow(Gtk.Window):
         cal_vbox = Gtk.VBox(False, 10)
         self.add(cal_vbox)
         cal_vbox.pack_start(Gtk.Calendar(), True, False, 0)
-        #self.connect("configure-event", self.on_window_config, self.toggle_button)
         pass
 
     def show_calendar(self):
         rect = self.toggle_button.get_allocation()
         main_window = self.toggle_button.get_toplevel()
-        [win_x, win_y] = main_window.get_window().get_root_coords(0,0)
+        if IS_GTK3:
+            [win_x, win_y] = main_window.get_window().get_root_coords(0,0)
+        else: # NOT IS_GTK3
+            [win_x, win_y] = main_window.get_window().get_origin()
         cal_x = win_x + rect.x
         cal_y = win_y + rect.y + rect.height
         [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.toggle_button)
@@ -693,7 +692,6 @@ class TailsClock:
         dt = utc_dt.astimezone(self.config.tz_info)
         # format the date/time stamp
         dt_format = self._dt_format()
-        #debug_log("Format: "+dt_format)
         stamp = dt.strftime(dt_format)
         # actually update the label
         self.main_bttn.set_label(stamp)
@@ -710,7 +708,7 @@ class TailsClock:
         TailsClockAboutDialog().run()
         pass
 
-    def toggle_drop(self,widget):
+    def toggle_drop(self,*argv):
         self.main_drop.toggle()
         return True
 
@@ -718,20 +716,16 @@ class TailsClock:
         """
         Trigger the context-menu to popup.
         """
-        debug_log("popup_menu")
+        debug_log("popup_menu: "+str(event.state))
         if IS_GTK3:
             if event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == 0:
                 self.main_menu.popup(None,None,None,None,event.button,event.time)
-                return True
-        else: # NOT_GTK3
-            if event.button == 3 and (event.state & Gdk.MOD1_MASK) == 0:
-                self.main_menu.popup(None,None,None,event.button,event.time,None)
                 return True
         if event.button > 1:
             return self.panel_applet.event(event)
         return False
 
-    def copy_date(self,widget,event):
+    def copy_date(self,widget,event,data=None):
         cfg = self.config.copy()
         cfg.show_time = False
         cfg.show_dt = True
@@ -742,13 +736,18 @@ class TailsClock:
         dt = utc_dt.astimezone(cfg.tz_info)
         stamp = dt.strftime(dt_format)
         debug_log("copy_date: "+dt_format+" -> "+stamp)
-        display = Gdk.Display.get_default()
-        clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(stamp,-1)
-        clipboard.store()
+        if IS_GTK3:
+            display = Gdk.Display.get_default()
+            clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(stamp,-1)
+            clipboard.store()
+        else: # NOT IS_GTK3
+            clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(stamp,-1)
+            clipboard.store()
         return True
 
-    def copy_time(self,widget,event):
+    def copy_time(self,widget,event,data=None):
         cfg = self.config.copy()
         cfg.show_time = True
         cfg.show_tz = True
@@ -760,10 +759,15 @@ class TailsClock:
         dt = utc_dt.astimezone(cfg.tz_info)
         stamp = dt.strftime(dt_format)
         debug_log("copy_time: "+dt_format+" -> "+stamp)
-        display = Gdk.Display.get_default()
-        clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(stamp,-1)
-        clipboard.store()
+        if IS_GTK3:
+            display = Gdk.Display.get_default()
+            clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(stamp,-1)
+            clipboard.store()
+        else: # NOT IS_GTK3
+            clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(stamp,-1)
+            clipboard.store()
         return True
 
 
@@ -774,5 +778,9 @@ def applet_factory(applet, iid, data = None, is_debug = False):
     """
     global IS_DEBUG
     IS_DEBUG = is_debug
+    if IS_DEBUG:
+        #: log std{err,out} to the debug log
+        sys.stdout = open("/tmp/tailsclockapplet.log","a",0)
+        sys.stderr = open("/tmp/tailsclockapplet.log","a",0)
     tc_inst = TailsClock(applet,iid,data).launch()
     return True
