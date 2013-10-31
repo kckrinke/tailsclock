@@ -371,6 +371,78 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.destroy()
         return
 
+class TailsClockCalendarWindow(Gtk.Window):
+    toggle_button = None
+    def __init__(self,button):
+        self.toggle_button = button
+        if IS_GTK3:
+            #cal_window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+            super(TailsClockCalendarWindow,self).__init__(Gtk.WindowType.TOPLEVEL)
+            self.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        else:
+            #cal_window = Gtk.Window(Gtk.WINDOW_TOPLEVEL)
+            super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
+            #cal_window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+            self.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+        self.set_decorated(False)
+        self.set_resizable(False)
+        self.stick()
+        cal_vbox = Gtk.VBox(False, 10)
+        self.add(cal_vbox)
+        cal_vbox.pack_start(Gtk.Calendar(), True, False, 0)
+        #self.connect("configure-event", self.on_window_config, self.toggle_button)
+        pass
+
+    def show_calendar(self):
+        rect = self.toggle_button.get_allocation()
+        main_window = self.toggle_button.get_toplevel()
+        [win_x, win_y] = main_window.get_window().get_root_coords(0,0)
+        cal_x = win_x + rect.x
+        cal_y = win_y + rect.y + rect.height
+        [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.toggle_button)
+        debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
+        self.move(x, y)
+        self.show_all()
+        return True
+
+    def hide_calendar(self):
+        self.hide()
+        return True
+
+    def toggle(self):
+        if self.toggle_button.get_active():
+            self.show_calendar()
+        else:
+            self.hide_calendar()
+        return
+
+    # This function "tries" to correct calendar window position so that it is not obscured when
+    # a portion of main window is off-screen.
+    # Known bug: If the main window is partially off-screen before Calendar window
+    # has been realized then get_allocation() will return rect of 1x1 in which case
+    # the calculations will fail & correction will not be applied
+    def apply_screen_coord_correction(self, x, y, widget, relative_widget):
+        corrected_y = y
+        corrected_x = x
+        rect = widget.get_allocation()
+        if IS_GTK3:
+            screen_w = Gdk.Screen.get_default().get_width()
+            screen_h = Gdk.Screen.get_default().get_height()
+        else:
+            screen_w = Gdk.screen_width()
+            screen_h = Gdk.screen_height()
+        delta_x = screen_w - (x + rect.width)
+        delta_y = screen_h - (y + rect.height)
+        if delta_x < 0:
+            corrected_x += delta_x
+        if corrected_x < 0:
+            corrected_x = 0
+        if delta_y < 0:
+            corrected_y = y - rect.height - relative_widget.get_allocation().height
+        if corrected_y < 0:
+            corrected_y = 0
+        return [corrected_x, corrected_y]
+
 
 class TailsClock:
     """
