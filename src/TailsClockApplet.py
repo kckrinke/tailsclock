@@ -358,7 +358,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.set_program_name("Tails Clock")
         self.set_version("0.3")
         self.set_copyright("GPL2")
-        self.set_comments("A simple GNOME panel applet clock.")
+        self.set_comments("A simple GNOME panel applet clock")
         pass
 
     def run(self):
