@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-10-28 04:02+EDT\n"
+"POT-Creation-Date: 2013-11-01 09:59+EDT\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,19 +47,15 @@ msgstr ""
 msgid "Timezone"
 msgstr ""
 
-#: ./src/TailsClockApplet.py:253
-msgid "Changing the timezone only affects the Tails Clock."
-msgstr ""
-
-#: ./src/TailsClockApplet.py:262
+#: ./src/TailsClockApplet.py:256
 msgid "Timezones"
 msgstr ""
 
-#: ./src/TailsClockApplet.py:441
+#: ./src/TailsClockApplet.py:564
 msgid "Copy Date"
 msgstr ""
 
-#: ./src/TailsClockApplet.py:445
+#: ./src/TailsClockApplet.py:565
 msgid "Copy Time"
 msgstr ""
 

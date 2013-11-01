@@ -1,5 +1,5 @@
 #!/bin/bash
-MESSAGES_POT=./locale/en/LC_MESSAGES/tailsclockapplet.pot
+MESSAGES_POT=./locale/tailsclockapplet.pot
 MESSAGES_PO=./locale/en/LC_MESSAGES/tailsclockapplet.po
 
 echo -n "Generating POT... "
