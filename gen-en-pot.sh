@@ -3,7 +3,7 @@ MESSAGES_POT=./locale/tailsclockapplet.pot
 MESSAGES_PO=./locale/en/LC_MESSAGES/tailsclockapplet.po
 
 echo -n "Generating POT... "
-pygettext -o ${MESSAGES_POT} ./src/TailsClockApplet.py
+xgettext --add-comments=Translators --language=Python --omit-header -o ${MESSAGES_POT} ./src/TailsClockApplet.py
 echo "done"
 echo -n "Creating EN PO... "
 cat ${MESSAGES_POT} | \
