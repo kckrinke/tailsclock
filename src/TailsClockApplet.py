@@ -203,6 +203,7 @@ class TailsClockConfig:
             return _("{0}, {1}").format(date_fmt,self.get_time_fmt())
         return self.get_time_fmt()
 
+    # internal method to write text to a file
     def _write_file(self,path,contents):
         try:
             fh = open(path,'w')
@@ -213,6 +214,7 @@ class TailsClockConfig:
             return False
         return True
 
+    # internal method to write yaml to a file
     def _write_yaml(self,path,data):
         current = self._read_yaml(path)
         yaml = ""
@@ -225,6 +227,7 @@ class TailsClockConfig:
                 yaml += k+":"+str(current[k])+"\n"
         return self._write_file(path,yaml)
 
+    # internal method to read text from a file
     def _read_file(self,path):
         if not os.path.exists(path):
             return None
@@ -239,6 +242,7 @@ class TailsClockConfig:
             return None
         return val
 
+    # internal method to read yaml from a file
     def _read_yaml(self,path):
         val = DEFAULT_CFG_DATA.copy()
         if not os.path.exists(path):
@@ -262,7 +266,6 @@ class TailsClockConfig:
 
 
 
-
 class TailsClockPrefsDialog(Gtk.Dialog):
     """
     Simple preferences dialog for Tails Clock. Currently supports changing
@@ -279,6 +282,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     show_yr = None
     show_dt = None
 
+    # internal method to add a preference checkbox in a consistent way
     def _add_pref_checkbox(self,box,title,state,func):
         bttn = Gtk.CheckButton(title)
         bttn.set_active(state)
@@ -480,6 +484,9 @@ class TailsClockCalendarWindow(Gtk.Window):
 
     _has_shown_calendar = False
     def show_calendar(self):
+        """
+        Display the calendar widget and align it to the applet appropriately.
+        """
         rect = self.toggle_button.get_allocation()
         main_window = self.toggle_button.get_toplevel()
         if IS_GTK3:
@@ -499,6 +506,9 @@ class TailsClockCalendarWindow(Gtk.Window):
         return True
 
     def hide_calendar(self):
+        """
+        Hide the widget
+        """
         self.hide()
         return True
 
@@ -559,7 +569,8 @@ class TailsClock:
 
     def __init__(self,applet,iid,data):
         """
-        Simple initialization of the class instance.
+        Simple initialization of the class instance. Call the launch() method
+        to actuall launch the applet.
         """
         if IS_GTK3:
             debug_log("IS_GTK3")
@@ -581,6 +592,7 @@ class TailsClock:
             self.create_menu2()
         pass
 
+    # internal method to add Gtk3 menu items consistently
     def _add_menu3_item(self,title,stock_id,func,menu):
         if title is not None:
             item = Gtk.ImageMenuItem.new_with_label(title)
@@ -722,7 +734,9 @@ class TailsClock:
 
     def update_time(self):
         """
-        Fired once-per second to update the time.
+        Recursive callback event loop to update the time every second if
+        the end-user has the seconds being displayed with the time, or
+        once per minute at the start of the minute.
         """
         # get the date/time and apply tz_info to it
         utc_dt = datetime.utcnow()
@@ -743,10 +757,16 @@ class TailsClock:
         pass
 
     def display_about(self,*argv):
+        """
+        Display the About dialog.
+        """
         TailsClockAboutDialog().run()
         pass
 
     def toggle_drop(self,*argv):
+        """
+        Toggle the drop-down widgets (currently just a calendar).
+        """
         self.main_drop.toggle()
         return True
 
@@ -764,6 +784,10 @@ class TailsClock:
         return False
 
     def copy_date(self,widget,event,data=None):
+        """
+        Get just the date part of the current configuration and copy it to
+        the Gtk Clipboard.
+        """
         cfg = self.config.copy()
         cfg.show_dt = True
         dt_format = cfg.get_date_fmt()
@@ -775,15 +799,17 @@ class TailsClock:
         if IS_GTK3:
             display = Gdk.Display.get_default()
             clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
-            clipboard.set_text(stamp,-1)
-            clipboard.store()
         else: # NOT IS_GTK3
             clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
-            clipboard.set_text(stamp,-1)
-            clipboard.store()
+        clipboard.set_text(stamp,-1)
+        clipboard.store()
         return True
 
     def copy_time(self,widget,event,data=None):
+        """
+        Get just the time part of the current configuration and copy it to
+        the Gtk Clipboard.
+        """
         cfg = self.config.copy()
         dt_format = cfg.get_time_fmt()
         utc_dt = datetime.utcnow()
@@ -794,12 +820,10 @@ class TailsClock:
         if IS_GTK3:
             display = Gdk.Display.get_default()
             clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
-            clipboard.set_text(stamp,-1)
-            clipboard.store()
         else: # NOT IS_GTK3
             clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
-            clipboard.set_text(stamp,-1)
-            clipboard.store()
+        clipboard.set_text(stamp,-1)
+        clipboard.store()
         return True
 
 
