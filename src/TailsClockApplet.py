@@ -393,6 +393,10 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         pass
     def toggled_dt(self,widget):
         self.update_general()
+        if self.show_dt.get_active():
+            self.show_yr.set_sensitive(True)
+        else:
+            self.show_yr.set_sensitive(False)
         pass
 
     def on_timezone_selection_changed(self,selection):
