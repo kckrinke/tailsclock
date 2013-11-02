@@ -298,6 +298,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         else:
             flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
             buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+        #Translators: This is the title of the Preferences dialog window.
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),None,flags,buttons)
         self.set_modal(True)
         self.set_size_request(280,280)
@@ -312,20 +313,27 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.vbox.pack_start(content_hbox,True,True,8)
         #: General Settings
         tbl = Gtk.VBox()
-        self.show_12hr = self._add_pref_checkbox(tbl,_("12 Hour Clock?"),self.panel_applet.config.show_12hr,self.toggled_12hr)
-        self.show_sec = self._add_pref_checkbox(tbl,_("Display seconds?"),self.panel_applet.config.show_sec,self.toggled_sec)
-        self.show_tz = self._add_pref_checkbox(tbl,_("Display Timezone?"),self.panel_applet.config.show_tz,self.toggled_tz)
-        self.show_yr = self._add_pref_checkbox(tbl,_("Display Year?"),self.panel_applet.config.show_yr,self.toggled_yr)
-        self.show_dt = self._add_pref_checkbox(tbl,_("Display Date?"),self.panel_applet.config.show_dt,self.toggled_dt)
+        #Translators: label for the pref checkbox: users want to see the timezone code (ie: UTC, EDT, etc)
+        self.show_tz = self._add_pref_checkbox(tbl,_("Display the timezone with the time?"),self.panel_applet.config.show_tz,self.toggled_tz)
+        #Translators: label for the pref checkbox: users want to see AM/PM time instead of 24-hour time
+        self.show_12hr = self._add_pref_checkbox(tbl,_("Display the time as AM/PM?"),self.panel_applet.config.show_12hr,self.toggled_12hr)
+        #Translators: label for the pref checkbox: users want to see the seconds in the displayed time
+        self.show_sec = self._add_pref_checkbox(tbl,_("Show the seconds with the time?"),self.panel_applet.config.show_sec,self.toggled_sec)
+        #Translators: label for the pref checkbox: users want to see the date in the clock display
+        self.show_dt = self._add_pref_checkbox(tbl,_("Show the date with the time?"),self.panel_applet.config.show_dt,self.toggled_dt)
+        #Translators: label for the pref checkbox: users want to see the year in the date portion of the clock
+        self.show_yr = self._add_pref_checkbox(tbl,_("When showing the date, show the year too?"),self.panel_applet.config.show_yr,self.toggled_yr)
+        #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
         tz_vbox = Gtk.VBox()
+        #Translators: name of the Timezone tab in the preference dialog
         nbook.append_page(tz_vbox,Gtk.Label(_("Timezone")))
         self.tz_store = Gtk.ListStore(str)
         self.tz_tview = Gtk.TreeView(self.tz_store)
         self.tz_tview.set_headers_visible(False)
         tz_rndrr = Gtk.CellRendererText()
-        tz_col = Gtk.TreeViewColumn(_("Timezones"), tz_rndrr, text = 0)
+        tz_col = Gtk.TreeViewColumn("tz_list", tz_rndrr, text = 0) #< this string is never show to users, no need to translate
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
         if IS_GTK3:
@@ -580,7 +588,9 @@ class TailsClock:
         """
         debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
+        #Translators: label for the context-menu option to copy the date to the clipboard
         self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,self.copy_date,self.main_menu)
+        #Translators: label for the context-menu option to copy the time to the clipboard
         self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,self.copy_time,self.main_menu)
         self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,self.display_prefs,self.main_menu)
         self._add_menu3_item(None,Gtk.STOCK_ABOUT,self.display_about,self.main_menu)
