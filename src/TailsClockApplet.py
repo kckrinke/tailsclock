@@ -131,6 +131,78 @@ class TailsClockConfig:
         clone.show_dt = self.show_dt
         return clone
 
+    def _locale_supports_am_pm(self):
+        am = locale.nl_langinfo(locale.AM_STR)
+        if len(am) > 0:
+            return True
+        return False
+
+    def get_show_am_pm(self):
+        if self._locale_supports_am_pm():
+            if self.show_12hr:
+                return True
+        return False
+
+    def get_time_fmt(self):
+        """
+        Construct the strftime format string to render the time as-per the
+        end-user's preferences. Will always return a valid strftime string.
+        """
+        locale.setlocale(locale.LC_NUMERIC,'POSIX')
+        if self.get_show_am_pm():
+            if self.show_sec and self.show_tz:
+                #Translators: strftime to display the clock with seconds, timezone and AM/PM format
+                return _("%I:%M:%S %p %Z")
+            if self.show_sec:
+                #Translators: strftime to display the clock with seconds and AM/PM format
+                return _("%I:%M:%S %p")
+            if self.show_tz:
+                #Translators: strftime to display the clock with timezone and AM/PM format
+                return _("%I:%M %p %Z")
+            #Translators: strftime to display the clock with AM/PM format (no seconds or timezone)
+            return _("%I:%M %p")
+        if self.show_sec and self.show_tz:
+            #Translators: strftime to display the clock with seconds, timezone and 24hr format
+            return _("%H:%M:%S %Z")
+        if self.show_sec:
+            #Translators: strftime to display the clock with seconds in 24hr format
+            return _("%H:%M:%S")
+        if self.show_tz:
+            #Translators: strftime to display the clock with timezone and 24hr format
+            return _("%H:%M %Z")
+        #Translators: strftime to display the clock in 24hr format (no seconds or timezone)
+        return _("%H:%M")
+
+    def get_date_fmt(self):
+        """
+        Construct the strftime format string to render the date as-per the
+        end-user's preferences. If the user prefers that no date be show, this
+        method will return None.
+        """
+        if self.show_dt:
+            if self.show_yr:
+                #Translators: long-form strftime representing the date and year
+                #EN example: "Fri 01 Nov 2013"
+                return _("%a %d %b %Y")
+            #Translators: long-form strftime representing the date without the year
+            #EN example: "Fri 01 Nov"
+            return _("%a %d %b")
+        return None # Don't display the date
+
+    def get_dt_fmt(self):
+        """
+        Returns the combination of date and time strftime strings into one string.
+        If the user does not want to see the date, this will return just the time
+        format string.
+        """
+        date_fmt = self.get_date_fmt()
+        if date_fmt is not None:
+            #Translators: combining date{0} with time{1}, reverse the {0} and {1}
+            # if you want to have the date come after the time.
+            #EN example: "Fri 01 Nov 2013, 11:20 PM EDT"
+            return _("{0}, {1}").format(date_fmt,self.get_time_fmt())
+        return self.get_time_fmt()
+
     def _write_file(self,path,contents):
         try:
             fh = open(path,'w')
