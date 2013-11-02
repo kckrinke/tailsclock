@@ -1,7 +1,11 @@
 0.4 - Kevin C. Krinke <kevin@krinke.ca>
 
-  * Moved i18n .pot to locale/
-  * Cosmetic changes to some strings
+  * Moved i18n .pot to locale/ from en subdir
+  * Made the preference dialog checkboxes more descriptive
+  * Refactored how the time/date format is determined
+  * Commented all of the translation strings properly
+  * Removed all locale .po (except EN) so that translators can start clean
+  * Switched to xgettext from pygettext for generating .pot
   * Regenerated .pot from sources
 
 0.3 - Kevin C. Krinke <kevin@krinke.ca>
