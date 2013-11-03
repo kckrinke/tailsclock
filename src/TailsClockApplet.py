@@ -482,7 +482,6 @@ class TailsClockCalendarWindow(Gtk.Window):
         cal_vbox.pack_start(Gtk.Calendar(), True, False, 0)
         pass
 
-    _has_shown_calendar = False
     def show_calendar(self):
         """
         Display the calendar widget and align it to the applet appropriately.
@@ -499,10 +498,6 @@ class TailsClockCalendarWindow(Gtk.Window):
         debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
         self.move(x, y)
         self.show_all()
-        if not self._has_shown_calendar:
-            # double-up first time to get correct coords
-            self.show_calendar()
-            self._has_shown_calendar = True
         return True
 
     def hide_calendar(self):
