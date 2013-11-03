@@ -455,6 +455,7 @@ class TailsClockCalendarWindow(Gtk.Window):
     http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu/11261043#11261043
     """
     panel_applet = None
+    calendar = None
     def __init__(self,applet):
         self.panel_applet = applet
         if IS_GTK3:
@@ -466,9 +467,24 @@ class TailsClockCalendarWindow(Gtk.Window):
         self.set_decorated(False)
         self.set_resizable(False)
         self.stick()
-        cal_vbox = Gtk.VBox(False, 10)
-        self.add(cal_vbox)
-        cal_vbox.pack_start(Gtk.Calendar(), True, False, 0)
+        self.calendar = Gtk.Calendar()
+        if IS_GTK3:
+            self.calendar.set_display_options(
+                Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS |
+                Gtk.CalendarDisplayOptions.SHOW_HEADING |
+                Gtk.CalendarDisplayOptions.SHOW_DAY_NAMES
+                )
+        else:
+            self.calendar.set_display_options(
+                Gtk.CALENDAR_SHOW_WEEK_NUMBERS |
+                Gtk.CALENDAR_SHOW_HEADING |
+                Gtk.CALENDAR_SHOW_DAY_NAMES
+                )
+        cal_vbox = Gtk.VBox(False, 8)
+        cal_hbox = Gtk.HBox(False, 8)
+        self.add(cal_hbox)
+        cal_hbox.pack_start(cal_vbox, True, False, 8)
+        cal_vbox.pack_start(self.calendar, True, False, 8)
         pass
 
     def show_calendar(self):
