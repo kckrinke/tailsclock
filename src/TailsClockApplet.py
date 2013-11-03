@@ -546,7 +546,9 @@ class TailsClock:
     """
     Actual class used to manage the applet and display the time.
     """
+    main_obox = None
     main_bttn = None
+    main_label = None
     main_menu = None
     main_drop = None #Currently just a Calendar
 
@@ -673,7 +675,10 @@ class TailsClock:
         and so on. Basically; launch the applet.
         """
         # actually populate UI
-        self.main_bttn = Gtk.ToggleButton(label="")
+        self.main_obox = Gtk.Box()
+        self.main_label = Gtk.Label("")
+        self.main_bttn = Gtk.ToggleButton()
+        self.main_bttn.add(self.main_label)
         if IS_GTK3:
             self.main_bttn.set_relief(Gtk.ReliefStyle.NONE)
         else:
@@ -702,7 +707,8 @@ class TailsClock:
         # add an instance of the calendar
         self.main_drop = TailsClockCalendarWindow(self)
         # add/show all
-        self.panel_applet.add(self.main_bttn)
+        self.main_obox.add(self.main_bttn)
+        self.panel_applet.add(self.main_obox)
         self.panel_applet.show_all()
         self.refresh_cfg()
         self.update_time()
@@ -741,7 +747,7 @@ class TailsClock:
         dt_format = self.config.get_dt_fmt()
         stamp = dt.strftime(dt_format)
         # actually update the label
-        self.main_bttn.set_label(stamp)
+        self.main_label.set_text(stamp)
         return self.update_glib_timer()
 
     def display_prefs(self,*argv):
