@@ -40,12 +40,13 @@ def debug_log(message):
 #: load up Gtk
 IS_GTK3=True
 try:
-    from gi.repository import Gtk, GObject, Gdk
+    from gi.repository import Gtk, GObject, Gdk, PanelApplet
 except: # Can't use ImportError, as gi.repository isn't quite that nice...
     IS_GTK3=False
     import gtk as Gtk
     import gobject as GObject
     import gtk.gdk as Gdk
+    import gnomeapplet
 
 # Consolidate default values
 DEFAULT_CFG_DATA = {
@@ -494,7 +495,7 @@ class TailsClockCalendarWindow(Gtk.Window):
             [win_x, win_y] = main_window.get_window().get_origin()
         cal_x = win_x + rect.x
         cal_y = win_y + rect.y + rect.height
-        [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.toggle_button)
+        [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.panel_applet.main_bttn)
         debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
         self.move(x, y)
         self.show_all()
@@ -520,23 +521,31 @@ class TailsClockCalendarWindow(Gtk.Window):
     # has been realized then get_allocation() will return rect of 1x1 in which case
     # the calculations will fail & correction will not be applied
     def apply_screen_coord_correction(self, x, y, widget, relative_widget):
-        corrected_y = y
-        corrected_x = x
-        rect = widget.get_allocation()
+        w_rect = widget.get_allocation()
+        r_rect = relative_widget.get_allocation()
+        if self.panel_applet.orientation == TailsClock.ORIENT_RIGHT:
+            corrected_y = y - r_rect.height
+            corrected_x = x + r_rect.width
+        elif self.panel_applet.orientation == TailsClock.ORIENT_LEFT:
+            corrected_y = y - r_rect.height
+            corrected_x = x - r_rect.width
+        else:
+            corrected_y = y
+            corrected_x = x
         if IS_GTK3:
             screen_w = Gdk.Screen.get_default().get_width()
             screen_h = Gdk.Screen.get_default().get_height()
         else:
             screen_w = Gdk.screen_width()
             screen_h = Gdk.screen_height()
-        delta_x = screen_w - (x + rect.width)
-        delta_y = screen_h - (y + rect.height)
+        delta_x = screen_w - (x + w_rect.width)
+        delta_y = screen_h - (y + w_rect.height)
         if delta_x < 0:
             corrected_x += delta_x
         if corrected_x < 0:
             corrected_x = 0
         if delta_y < 0:
-            corrected_y = y - rect.height - relative_widget.get_allocation().height
+            corrected_y = y - w_rect.height - r_rect.height
         if corrected_y < 0:
             corrected_y = 0
         return [corrected_x, corrected_y]
@@ -551,6 +560,13 @@ class TailsClock:
     main_label = None
     main_menu = None
     main_drop = None #Currently just a Calendar
+
+    ORIENT_TOP = 0
+    ORIENT_BOTTOM = 1
+    ORIENT_LEFT = 2
+    ORIENT_RIGHT = 3
+
+    orientation = -1
 
     panel_applet = None
     panel_iid = None
@@ -576,6 +592,7 @@ class TailsClock:
         # live or debug?
         if applet.__class__ is not Gtk.Window:
             applet.set_background_widget(applet)
+            applet.connect('change-orient',self.on_orient_change)
         else:
             # debug; load translations from "here"
             gettext.install('tailsclockapplet', './locale', unicode=1)
@@ -710,6 +727,7 @@ class TailsClock:
         self.main_obox.add(self.main_bttn)
         self.panel_applet.add(self.main_obox)
         self.panel_applet.show_all()
+        self.on_orient_change()
         self.refresh_cfg()
         self.update_time()
         return self
@@ -826,6 +844,79 @@ class TailsClock:
         clipboard.set_text(stamp,-1)
         clipboard.store()
         return True
+
+    def _set_applet_horiz_up(self):
+        debug_log("orientation: horizontal")
+        self.orientation = TailsClock.ORIENT_TOP
+        if self.main_label.get_angle() != 0:
+            self.main_label.set_angle(0)
+        if IS_GTK3:
+            self.main_obox.set_orientation(Gtk.Orientation.HORIZONTAL)
+        else:
+            self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
+        pass
+    def _set_applet_horiz_down(self):
+        debug_log("orientation: horizontal")
+        self.orientation = TailsClock.ORIENT_BOTTOM
+        if self.main_label.get_angle() != 0:
+            self.main_label.set_angle(0)
+        if IS_GTK3:
+            self.main_obox.set_orientation(Gtk.Orientation.HORIZONTAL)
+        else:
+            self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
+        pass
+    def _set_applet_vert_left(self):
+        debug_log("orientation: vert left")
+        self.orientation = TailsClock.ORIENT_LEFT
+        if self.main_label.get_angle() != 270:
+            self.main_label.set_angle(270)
+        if IS_GTK3:
+            self.main_obox.set_orientation(Gtk.Orientation.VERTICAL)
+        else:
+            self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
+        pass
+    def _set_applet_vert_right(self):
+        debug_log("orientation: vert right")
+        self.orientation = TailsClock.ORIENT_RIGHT
+        if self.main_label.get_angle() != 90:
+            self.main_label.set_angle(90)
+        if IS_GTK3:
+            self.main_obox.set_orientation(Gtk.Orientation.VERTICAL)
+        else:
+            self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
+        pass
+
+    def on_orient_change(self,orient=None,data=None):
+        if self.panel_applet.__class__ is not Gtk.Window.__class__:
+            orientation = self.panel_applet.get_orient()
+            if IS_GTK3:
+                if orientation == PanelApplet.AppletOrient.UP:
+                    # top panel
+                    self._set_applet_horiz_up()
+                elif orientation == PanelApplet.AppletOrient.DOWN:
+                    # bottom panel
+                    self._set_applet_horiz_down()
+                elif orientation == PanelApplet.AppletOrient.LEFT:
+                    # right-hand side of screen
+                    self._set_applet_vert_left()
+                elif orientation == PanelApplet.AppletOrient.RIGHT:
+                    # left-hand side of screen
+                    self._set_applet_vert_right()
+            else:
+                if orientation == gnomeapplet.ORIENT_UP:
+                    # top of screen
+                    self._set_applet_horiz_up()
+                elif orientation == gnomeapplet.ORIENT_DOWN:
+                    # bottom of screen
+                    self._set_applet_horiz_down()
+                elif orientation == gnomeapplet.ORIENT_LEFT:
+                    # right-hand side
+                    self._set_applet_vert_left()
+                elif orientation == gnomeapplet.ORIENT_RIGHT:
+                    # left-hand side of screen
+                    self._set_applet_vert_right()
+        return True
+    
 
 
 tc_inst = None
