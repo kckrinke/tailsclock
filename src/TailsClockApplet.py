@@ -319,15 +319,15 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: General Settings
         tbl = Gtk.VBox()
         #Translators: label for the pref checkbox: users want to see the timezone code (ie: UTC, EDT, etc)
-        self.show_tz = self._add_pref_checkbox(tbl,_("Display the timezone with the time?"),self.panel_applet.config.show_tz,self.toggled_tz)
+        self.show_tz = self._add_pref_checkbox(tbl,_("Display the timezone with the time?"),self.panel_applet.config.show_tz,self.update_general)
         #Translators: label for the pref checkbox: users want to see AM/PM time instead of 24-hour time
-        self.show_12hr = self._add_pref_checkbox(tbl,_("Display the time as AM/PM?"),self.panel_applet.config.show_12hr,self.toggled_12hr)
+        self.show_12hr = self._add_pref_checkbox(tbl,_("Display the time as AM/PM?"),self.panel_applet.config.show_12hr,self.update_general)
         #Translators: label for the pref checkbox: users want to see the seconds in the displayed time
-        self.show_sec = self._add_pref_checkbox(tbl,_("Show the seconds with the time?"),self.panel_applet.config.show_sec,self.toggled_sec)
+        self.show_sec = self._add_pref_checkbox(tbl,_("Show the seconds with the time?"),self.panel_applet.config.show_sec,self.update_general)
         #Translators: label for the pref checkbox: users want to see the date in the clock display
         self.show_dt = self._add_pref_checkbox(tbl,_("Show the date with the time?"),self.panel_applet.config.show_dt,self.toggled_dt)
         #Translators: label for the pref checkbox: users want to see the year in the date portion of the clock
-        self.show_yr = self._add_pref_checkbox(tbl,_("When showing the date, show the year too?"),self.panel_applet.config.show_yr,self.toggled_yr)
+        self.show_yr = self._add_pref_checkbox(tbl,_("When showing the date, show the year too?"),self.panel_applet.config.show_yr,self.update_general)
         #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
@@ -374,7 +374,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.destroy()
         return True
 
-    def update_general(self):
+    def update_general(self,*argv):
         data = DEFAULT_CFG_DATA.copy()
         data['show_12hr'] = self.show_12hr.get_active()
         data['show_sec'] = self.show_sec.get_active()
@@ -384,18 +384,6 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.panel_applet.update_cfg(data)
         pass
 
-    def toggled_12hr(self,widget):
-        self.update_general()
-        pass
-    def toggled_sec(self,widget):
-        self.update_general()
-        pass
-    def toggled_tz(self,widget):
-        self.update_general()
-        pass
-    def toggled_yr(self,widget):
-        self.update_general()
-        pass
     def toggled_dt(self,widget):
         self.update_general()
         if self.show_dt.get_active():
