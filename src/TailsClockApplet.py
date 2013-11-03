@@ -10,7 +10,7 @@ system with the exception of storing the currently selected timezone in
 ~/.config/tails/timezone
 
 Author: Kevin C. Krinke <kevin@krinke.ca>
-License: GNU Public License 2.0 (or greater)
+License: GNU Public License 3.0 (or greater)
 
 Project based on initial code that was generated using the following project:
  https://github.com/palfrey/panel-applet-generator
