@@ -7,7 +7,7 @@ that displays the date and time. The clock applet defaults to UTC, however,
 users can configure the timezone in the applet's preferences. Changing the
 timezone in the applet does not affect any actual part of the operating
 system with the exception of storing the currently selected timezone in
-~/.config/tails/timezone
+~/.config/tailsclock/timezone
 
 Author: Kevin C. Krinke <kevin@krinke.ca>
 License: GNU Public License 3.0 (or greater)
