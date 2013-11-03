@@ -132,14 +132,14 @@ class TailsClockConfig:
         clone.show_dt = self.show_dt
         return clone
 
-    def _locale_supports_am_pm(self):
+    def locale_supports_am_pm(self):
         am = locale.nl_langinfo(locale.AM_STR)
         if len(am) > 0:
             return True
         return False
 
     def get_show_am_pm(self):
-        if self._locale_supports_am_pm():
+        if self.locale_supports_am_pm():
             if self.show_12hr:
                 return True
         return False
