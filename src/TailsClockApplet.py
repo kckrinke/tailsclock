@@ -218,7 +218,7 @@ class TailsClockConfig:
     # internal method to write yaml to a file
     def _write_yaml(self,path,data):
         current = self._read_yaml(path)
-        yaml = ""
+        yaml = "# DO NOT EDIT - This file is overwritten automatically. #\n"
         for k in current.keys():
             if k is 'tz':
                 next
