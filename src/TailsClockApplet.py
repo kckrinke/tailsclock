@@ -98,11 +98,16 @@ class TailsClockConfig:
             self.tz_info = pytz.utc
         if os.path.exists(self.cfg_rc_path):
             data = self._read_yaml(self.cfg_rc_path)
-            if data.has_key('show_tz'):   self.show_tz   = bool(data['show_tz'])
-            if data.has_key('show_sec'):  self.show_sec  = bool(data['show_sec'])
-            if data.has_key('show_12hr'): self.show_12hr = bool(data['show_12hr'])
-            if data.has_key('show_yr'):   self.show_yr   = bool(data['show_yr'])
-            if data.has_key('show_dt'):   self.show_dt   = bool(data['show_dt'])
+            if data.has_key('show_tz'):
+                self.show_tz = bool(data['show_tz'])
+            if data.has_key('show_sec'):
+                self.show_sec = bool(data['show_sec'])
+            if data.has_key('show_12hr'):
+                self.show_12hr = bool(data['show_12hr'])
+            if data.has_key('show_yr'):
+                self.show_yr = bool(data['show_yr'])
+            if data.has_key('show_dt'):
+                self.show_dt = bool(data['show_dt'])
         return True
 
     def save(self,data=None):
@@ -152,26 +157,34 @@ class TailsClockConfig:
         locale.setlocale(locale.LC_NUMERIC,'POSIX')
         if self.get_show_am_pm():
             if self.show_sec and self.show_tz:
-                #Translators: strftime to display the clock with seconds, timezone and AM/PM format
+                #Translators: strftime to display the clock with seconds,
+                # timezone and AM/PM format
                 return _("%I:%M:%S %p %Z")
             if self.show_sec:
-                #Translators: strftime to display the clock with seconds and AM/PM format
+                #Translators: strftime to display the clock with seconds and
+                # AM/PM format
                 return _("%I:%M:%S %p")
             if self.show_tz:
-                #Translators: strftime to display the clock with timezone and AM/PM format
+                #Translators: strftime to display the clock with timezone and
+                # AM/PM format
                 return _("%I:%M %p %Z")
-            #Translators: strftime to display the clock with AM/PM format (no seconds or timezone)
+            #Translators: strftime to display the clock with AM/PM format (no
+            # seconds or timezone)
             return _("%I:%M %p")
         if self.show_sec and self.show_tz:
-            #Translators: strftime to display the clock with seconds, timezone and 24hr format
+            #Translators: strftime to display the clock with seconds, timezone
+            # and 24hr format
             return _("%H:%M:%S %Z")
         if self.show_sec:
-            #Translators: strftime to display the clock with seconds in 24hr format
+            #Translators: strftime to display the clock with seconds in 24hr
+            # format
             return _("%H:%M:%S")
         if self.show_tz:
-            #Translators: strftime to display the clock with timezone and 24hr format
+            #Translators: strftime to display the clock with timezone and 24hr
+            # format
             return _("%H:%M %Z")
-        #Translators: strftime to display the clock in 24hr format (no seconds or timezone)
+        #Translators: strftime to display the clock in 24hr format (no seconds
+        # or timezone)
         return _("%H:%M")
 
     def get_date_fmt(self):
@@ -185,21 +198,21 @@ class TailsClockConfig:
                 #Translators: long-form strftime representing the date and year
                 #EN example: "Fri 01 Nov 2013"
                 return _("%a %d %b %Y")
-            #Translators: long-form strftime representing the date without the year
-            #EN example: "Fri 01 Nov"
+            #Translators: long-form strftime representing the date without the
+            # year. EN example: "Fri 01 Nov"
             return _("%a %d %b")
         return None # Don't display the date
 
     def get_dt_fmt(self):
         """
-        Returns the combination of date and time strftime strings into one string.
-        If the user does not want to see the date, this will return just the time
-        format string.
+        Returns the combination of date and time strftime strings into one
+        string. If the user does not want to see the date, this will return just
+        the time format string.
         """
         date_fmt = self.get_date_fmt()
         if date_fmt is not None:
-            #Translators: combining date{0} with time{1}, reverse the {0} and {1}
-            # if you want to have the date come after the time.
+            #Translators: combining date{0} with time{1}, reverse the {0} and
+            # {1}. If you want to have the date come after the time.
             #EN example: "Fri 01 Nov 2013, 11:20 PM EDT"
             return _("{0}, {1}").format(date_fmt,self.get_time_fmt())
         return self.get_time_fmt()
@@ -304,12 +317,15 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: initialize self
         if IS_GTK3:
             flags = Gtk.DialogFlags.MODAL
-            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,
+                       Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
         else:
             flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
-            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,
+                       Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
         #Translators: This is the title of the Preferences dialog window.
-        Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),None,flags,buttons)
+        Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),
+                            None,flags,buttons)
         self.set_modal(True)
         self.set_size_request(280,280)
         self.set_resizable(False)
@@ -334,12 +350,14 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         clock_fmt_hbox.pack_start(clock_fmt_frame,True,True,8)
         tbl.pack_start(clock_fmt_hbox,True,True,8)
         self.show_12hr = Gtk.RadioButton()
-        #Translators: label for the pref dialog: user wants to see AM/PM format clock
+        #Translators: label for the pref dialog: user wants to see AM/PM format
+        # clock
         self.show_12hr.set_label(_("12 hour format"))
         clock_fmt_inner_hbox.pack_start(self.show_12hr,True,True,8)
         self.show_24hr = Gtk.RadioButton()
         self.show_24hr.join_group(self.show_12hr)
-        #Translators: label for the pref dialog: user wants to see 24-hour format clock
+        #Translators: label for the pref dialog: user wants to see 24-hour
+        # format clock
         self.show_24hr.set_label(_("24 hour format"))
         clock_fmt_inner_hbox.pack_start(self.show_24hr,True,True,8)
         if self.panel_applet.config.show_12hr:
@@ -360,14 +378,26 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         panel_dsp_frame.add(panel_dsp_vbox)
         panel_dsp_hbox.pack_start(panel_dsp_frame,True,True,8)
         tbl.pack_start(panel_dsp_hbox,True,True,8)
-        #Translators: label for the pref checkbox: users want to see the timezone code (ie: UTC, EDT, etc)
-        self.show_tz = self._add_pref_checkbox(panel_dsp_vbox,_("Display the timezone with the time?"),self.panel_applet.config.show_tz,self.update_general)
-        #Translators: label for the pref checkbox: users want to see the seconds in the displayed time
-        self.show_sec = self._add_pref_checkbox(panel_dsp_vbox,_("Show the seconds with the time?"),self.panel_applet.config.show_sec,self.update_general)
-        #Translators: label for the pref checkbox: users want to see the date in the clock display
-        self.show_dt = self._add_pref_checkbox(panel_dsp_vbox,_("Show the date with the time?"),self.panel_applet.config.show_dt,self.toggled_dt)
-        #Translators: label for the pref checkbox: users want to see the year in the date portion of the clock
-        self.show_yr = self._add_pref_checkbox(panel_dsp_vbox,_("When showing the date, show the year too?"),self.panel_applet.config.show_yr,self.update_general)
+        #Translators: label for the pref checkbox: users want to see the
+        # timezone code (ie: UTC, EDT, etc)
+        self.show_tz = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Display the timezone with the time?"),
+            self.panel_applet.config.show_tz,self.update_general)
+        #Translators: label for the pref checkbox: users want to see the seconds
+        # in the displayed time
+        self.show_sec = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show the seconds with the time?"),
+            self.panel_applet.config.show_sec,self.update_general)
+        #Translators: label for the pref checkbox: users want to see the date in
+        # the clock display
+        self.show_dt = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show the date with the time?"),
+            self.panel_applet.config.show_dt,self.toggled_dt)
+        #Translators: label for the pref checkbox: users want to see the year in
+        # the date portion of the clock
+        self.show_yr = self._add_pref_checkbox(
+            panel_dsp_vbox,_("When showing the date, show the year too?"),
+            self.panel_applet.config.show_yr,self.update_general)
         #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
@@ -378,11 +408,12 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.tz_tview = Gtk.TreeView(self.tz_store)
         self.tz_tview.set_headers_visible(False)
         tz_rndrr = Gtk.CellRendererText()
-        tz_col = Gtk.TreeViewColumn("tz_list", tz_rndrr, text = 0) #< this string is never show to users, no need to translate
+        tz_col = Gtk.TreeViewColumn("tz_list", tz_rndrr, text = 0)
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
         if IS_GTK3:
-            tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,Gtk.PolicyType.AUTOMATIC)
+            tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
         else: # NOT_GTK3
             tz_scroll.set_policy(Gtk.POLICY_AUTOMATIC,Gtk.POLICY_AUTOMATIC)
         tz_scroll.add(self.tz_tview)
@@ -494,14 +525,15 @@ class TailsClockCalendarWindow(Gtk.Window):
     """
     Simple Calendar, mimics basic feature of actual GNOME Panel Clock.
     Based on a stackoverflow answer:
-    http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu/11261043#11261043
+    http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu
     """
     panel_applet = None
     calendar = None
     def __init__(self,applet):
         self.panel_applet = applet
         if IS_GTK3:
-            super(TailsClockCalendarWindow,self).__init__(Gtk.WindowType.TOPLEVEL)
+            super(TailsClockCalendarWindow,
+                  self).__init__(Gtk.WindowType.TOPLEVEL)
             self.set_type_hint(Gdk.WindowTypeHint.DOCK)
         else:
             super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
@@ -542,8 +574,11 @@ class TailsClockCalendarWindow(Gtk.Window):
         cal_x = win_x + rect.x
         cal_y = win_y + rect.y + rect.height
         self.show_all()
-        [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.panel_applet.main_bttn)
-        debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
+        [x, y] = self.apply_screen_coord_correction(
+            cal_x, cal_y, self,
+            self.panel_applet.main_bttn)
+        debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d"
+                  % (x,y,win_x,win_y,cal_x,cal_y))
         self.move(x, y)
         return True
 
@@ -561,11 +596,11 @@ class TailsClockCalendarWindow(Gtk.Window):
             self.hide_calendar()
         return
 
-    # This function "tries" to correct calendar window position so that it is not obscured when
-    # a portion of main window is off-screen.
-    # Known bug: If the main window is partially off-screen before Calendar window
-    # has been realized then get_allocation() will return rect of 1x1 in which case
-    # the calculations will fail & correction will not be applied
+    # This function "tries" to correct calendar window position so that it is
+    # not obscured when a portion of main window is off-screen.
+    # Known bug: If the main window is partially off-screen before Calendar
+    # window has been realized then get_allocation() will return rect of 1x1 in
+    # which case the calculations will fail & correction will not be applied
     def apply_screen_coord_correction(self, x, y, widget, relative_widget):
         w_rect = widget.get_allocation()
         r_rect = relative_widget.get_allocation()
@@ -669,12 +704,18 @@ class TailsClock:
         """
         debug_log("create_menu3")
         self.main_menu = Gtk.Menu()
-        #Translators: label for the context-menu option to copy the date to the clipboard
-        self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,self.copy_date,self.main_menu)
-        #Translators: label for the context-menu option to copy the time to the clipboard
-        self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,self.copy_time,self.main_menu)
-        self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,self.display_prefs,self.main_menu)
-        self._add_menu3_item(None,Gtk.STOCK_ABOUT,self.display_about,self.main_menu)
+        #Translators: label for the context-menu option to copy the date to the
+        # clipboard
+        self._add_menu3_item(_("Copy Date"),Gtk.STOCK_COPY,
+                             self.copy_date,self.main_menu)
+        #Translators: label for the context-menu option to copy the time to the
+        # clipboard
+        self._add_menu3_item(_("Copy Time"),Gtk.STOCK_COPY,
+                             self.copy_time,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_PREFERENCES,
+                             self.display_prefs,self.main_menu)
+        self._add_menu3_item(None,Gtk.STOCK_ABOUT,
+                             self.display_about,self.main_menu)
         self.main_menu.show_all()
         return True
 
@@ -843,8 +884,10 @@ class TailsClock:
         """
         debug_log("popup_menu: "+str(event.state))
         if IS_GTK3:
-            if event.button == 3 and (event.state & Gdk.ModifierType.MOD1_MASK) == 0:
-                self.main_menu.popup(None,None,None,None,event.button,event.time)
+            if ((event.button == 3)
+                and (event.state & Gdk.ModifierType.MOD1_MASK) == 0):
+                self.main_menu.popup(None,None,None,None,
+                                     event.button,event.time)
                 return True
         if event.button > 1:
             return self.panel_applet.event(event)
@@ -865,7 +908,8 @@ class TailsClock:
         debug_log("copy_date: "+dt_format+" -> "+stamp)
         if IS_GTK3:
             display = Gdk.Display.get_default()
-            clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+            clipboard = Gtk.Clipboard.get_for_display(display,
+                                                      Gdk.SELECTION_CLIPBOARD)
         else: # NOT IS_GTK3
             clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
         clipboard.set_text(stamp,-1)
@@ -886,7 +930,8 @@ class TailsClock:
         debug_log("copy_time: "+dt_format+" -> "+stamp)
         if IS_GTK3:
             display = Gdk.Display.get_default()
-            clipboard = Gtk.Clipboard.get_for_display(display,Gdk.SELECTION_CLIPBOARD)
+            clipboard = Gtk.Clipboard.get_for_display(display,
+                                                      Gdk.SELECTION_CLIPBOARD)
         else: # NOT IS_GTK3
             clipboard = self.panel_applet.get_clipboard(Gdk.SELECTION_CLIPBOARD)
         clipboard.set_text(stamp,-1)
@@ -983,3 +1028,4 @@ def applet_factory(applet, iid, data = None, is_debug = False):
         sys.stderr = open("/tmp/tailsclockapplet.log","a",0)
     tc_inst = TailsClock(applet,iid,data).launch()
     return True
+
