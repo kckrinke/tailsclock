@@ -408,6 +408,8 @@ class TailsClockPrefsDialog(Gtk.Dialog):
             select.set_mode(Gtk.SELECTION_SINGLE)
         #: try to constrain the dialog's size
         nbook.show_all()
+        if not self.panel_applet.config.locale_supports_am_pm():
+            clock_fmt_hbox.set_sensitive(False)
         pass
 
     def close(self,widget,event):
