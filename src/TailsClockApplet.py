@@ -983,7 +983,7 @@ class TailsClock:
         pass
 
     def on_orient_change(self,orient=None,data=None):
-        if self.panel_applet.__class__ is not Gtk.Window.__class__:
+        if self.panel_applet.__class__ is not Gtk.Window:
             orientation = self.panel_applet.get_orient()
             if IS_GTK3:
                 if orientation == PanelApplet.AppletOrient.UP:
