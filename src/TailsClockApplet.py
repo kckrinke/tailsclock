@@ -495,10 +495,10 @@ class TailsClockCalendarWindow(Gtk.Window):
             [win_x, win_y] = main_window.get_window().get_origin()
         cal_x = win_x + rect.x
         cal_y = win_y + rect.y + rect.height
+        self.show_all()
         [x, y] = self.apply_screen_coord_correction(cal_x, cal_y, self, self.panel_applet.main_bttn)
         debug_log("on_toggle: X:%d,Y:%d,WX:%d,WY:%d,CX:%d,CY:%d" % (x,y,win_x,win_y,cal_x,cal_y))
         self.move(x, y)
-        self.show_all()
         return True
 
     def hide_calendar(self):
