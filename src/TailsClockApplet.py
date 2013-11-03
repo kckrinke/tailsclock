@@ -261,9 +261,9 @@ class TailsClockConfig:
             line = line.strip()
             if re.match("^\s*$",line) or re.match("^\s*#",line):
                 # ignore blank lines and #-comments
-                next
+                continue
+            line = re.sub("\s*#.*$","",line)
             (k,v) = re.split("\s*:\s*",line)
-            v = re.sub("\s*#.+?$","",line)
             if v == 'True': v = True
             else: v = False
             val[k] = v
