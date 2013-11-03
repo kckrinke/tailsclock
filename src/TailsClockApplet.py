@@ -666,6 +666,8 @@ class TailsClock:
             pixname="gtk-about" />
         </popup>
         '''
+        #These strings are not user-visible, they're just
+        #verbs for the menu system.
         verbs = [('CopyDate', self.copy_date),
                  ('CopyTime', self.copy_time),
                  ('Preferences', self.display_prefs),
