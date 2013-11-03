@@ -861,6 +861,7 @@ class TailsClock:
         else:
             self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
         pass
+
     def _set_applet_horiz_down(self):
         debug_log("orientation: horizontal")
         self.orientation = TailsClock.ORIENT_BOTTOM
@@ -871,6 +872,7 @@ class TailsClock:
         else:
             self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
         pass
+
     def _set_applet_vert_left(self):
         debug_log("orientation: vert left")
         self.orientation = TailsClock.ORIENT_LEFT
@@ -881,6 +883,7 @@ class TailsClock:
         else:
             self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
         pass
+
     def _set_applet_vert_right(self):
         debug_log("orientation: vert right")
         self.orientation = TailsClock.ORIENT_RIGHT
