@@ -465,9 +465,9 @@ class TailsClockCalendarWindow(Gtk.Window):
     Based on a stackoverflow answer:
     http://stackoverflow.com/questions/11132929/showing-a-gtk-calendar-in-a-menu/11261043#11261043
     """
-    toggle_button = None
-    def __init__(self,button):
-        self.toggle_button = button
+    panel_applet = None
+    def __init__(self,applet):
+        self.panel_applet = applet
         if IS_GTK3:
             super(TailsClockCalendarWindow,self).__init__(Gtk.WindowType.TOPLEVEL)
             self.set_type_hint(Gdk.WindowTypeHint.DOCK)
@@ -486,8 +486,8 @@ class TailsClockCalendarWindow(Gtk.Window):
         """
         Display the calendar widget and align it to the applet appropriately.
         """
-        rect = self.toggle_button.get_allocation()
-        main_window = self.toggle_button.get_toplevel()
+        rect = self.panel_applet.main_bttn.get_allocation()
+        main_window = self.panel_applet.main_bttn.get_toplevel()
         if IS_GTK3:
             [win_x, win_y] = main_window.get_window().get_root_coords(0,0)
         else: # NOT IS_GTK3
@@ -508,7 +508,7 @@ class TailsClockCalendarWindow(Gtk.Window):
         return True
 
     def toggle(self):
-        if self.toggle_button.get_active():
+        if self.panel_applet.main_bttn.get_active():
             self.show_calendar()
         else:
             self.hide_calendar()
@@ -700,7 +700,7 @@ class TailsClock:
         else: # NOT_GTK3
             pass
         # add an instance of the calendar
-        self.main_drop = TailsClockCalendarWindow(self.main_bttn)
+        self.main_drop = TailsClockCalendarWindow(self)
         # add/show all
         self.panel_applet.add(self.main_bttn)
         self.panel_applet.show_all()
