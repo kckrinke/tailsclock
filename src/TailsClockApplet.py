@@ -282,6 +282,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     tz_store = None
     # note: the following vars are widgets, not actual config
     show_12hr = None
+    show_24hr = None
     show_tz = None
     show_sec = None
     show_yr = None
@@ -322,15 +323,34 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.vbox.pack_start(content_hbox,True,True,8)
         #: General Settings
         tbl = Gtk.VBox()
+        # General - Clock Format
         clock_fmt_hbox = Gtk.HBox()
         clock_fmt_frame = Gtk.Frame()
         clock_fmt_label = Gtk.Label()
         clock_fmt_frame.set_label_widget(clock_fmt_label)
         clock_fmt_label.set_markup("<b>"+_("Clock Format")+"</b>")
-        clock_fmt_vbox = Gtk.VBox()
-        clock_fmt_frame.add(clock_fmt_vbox)
+        clock_fmt_inner_hbox = Gtk.HBox()
+        clock_fmt_frame.add(clock_fmt_inner_hbox)
         clock_fmt_hbox.pack_start(clock_fmt_frame,True,True,8)
         tbl.pack_start(clock_fmt_hbox,True,True,8)
+        self.show_12hr = Gtk.RadioButton()
+        #Translators: label for the pref dialog: user wants to see AM/PM format clock
+        self.show_12hr.set_label(_("12 hour format"))
+        clock_fmt_inner_hbox.pack_start(self.show_12hr,True,True,8)
+        self.show_24hr = Gtk.RadioButton()
+        self.show_24hr.join_group(self.show_12hr)
+        #Translators: label for the pref dialog: user wants to see 24-hour format clock
+        self.show_24hr.set_label(_("24 hour format"))
+        clock_fmt_inner_hbox.pack_start(self.show_24hr,True,True,8)
+        if self.panel_applet.config.show_12hr:
+            self.show_12hr.set_active(True)
+            self.show_24hr.set_active(False)
+        else:
+            self.show_12hr.set_active(False)
+            self.show_24hr.set_active(True)
+        self.show_12hr.connect('toggled',self.update_general)
+        self.show_24hr.connect('toggled',self.update_general)
+        # General - Panel Section
         panel_dsp_hbox = Gtk.HBox()
         panel_dsp_frame = Gtk.Frame()
         panel_dsp_label = Gtk.Label()
@@ -342,8 +362,6 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         tbl.pack_start(panel_dsp_hbox,True,True,8)
         #Translators: label for the pref checkbox: users want to see the timezone code (ie: UTC, EDT, etc)
         self.show_tz = self._add_pref_checkbox(panel_dsp_vbox,_("Display the timezone with the time?"),self.panel_applet.config.show_tz,self.update_general)
-        #Translators: label for the pref checkbox: users want to see AM/PM time instead of 24-hour time
-        self.show_12hr = self._add_pref_checkbox(clock_fmt_vbox,_("Display the time as AM/PM?"),self.panel_applet.config.show_12hr,self.update_general)
         #Translators: label for the pref checkbox: users want to see the seconds in the displayed time
         self.show_sec = self._add_pref_checkbox(panel_dsp_vbox,_("Show the seconds with the time?"),self.panel_applet.config.show_sec,self.update_general)
         #Translators: label for the pref checkbox: users want to see the date in the clock display
