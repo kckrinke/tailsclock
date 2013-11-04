@@ -256,8 +256,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
-
 clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-am
@@ -342,6 +340,17 @@ $(LNGDIRS):
 	@msgfmt --verbose --output-file $@/LC_MESSAGES/tailsclockapplet.mo $@/LC_MESSAGES/tailsclockapplet.po || true
 
 all: $(LNGDIRS)
+
+extraclean:
+	-/bin/rm -fv config-tmp-*
+	-/bin/rm -fv *~ \#*
+	-/bin/rm -fv */LC_MESSAGES/*~
+	-/bin/rm -fv */LC_MESSAGES/\#*
+
+clean:
+	@echo "Cleaning locale..."
+	@/bin/rm -v $(wildcard */LC_MESSAGES/*.mo)
+	@echo "Cleaning locale completed."
 
 install:
 	@echo "Installing locale to: ${DESTDIR}${datarootdir}/locale/"
