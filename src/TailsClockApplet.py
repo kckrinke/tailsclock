@@ -331,8 +331,6 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),
                             None,flags,buttons)
         self.set_modal(True)
-        self.set_size_request(280,280)
-        self.set_resizable(False)
         #: construct the core dialog
         #: setup a notebook
         nbook = Gtk.Notebook()
