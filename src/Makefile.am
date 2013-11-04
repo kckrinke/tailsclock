@@ -1,5 +1,9 @@
 EXTRA_DIST = $(wildcard *.py)
 
+extraclean:
+	-/bin/rm -fv config-tmp-*
+	-/bin/rm -fv *~ \#*
+
 install:
 	@echo "Installing src to: ${DESTDIR}${libdir}/gnome-applets/"
 	@mkdir -p ${DESTDIR}${libdir}/gnome-applets/

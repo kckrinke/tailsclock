@@ -20,6 +20,10 @@ all:
 	@$(do_substitution) < org.gnome.panel.applet.TailsClock.service.in > org.gnome.panel.applet.TailsClock.service
 	@$(do_substitution) < TailsClock.server.in > TailsClock.server
 
+extraclean:
+	-/bin/rm -fv config-tmp-*
+	-/bin/rm -fv *~ \#*
+
 clean:
 	@/bin/rm -v org.gnome.applets.TailsClock.panel-applet
 	@/bin/rm -v org.gnome.panel.applet.TailsClock.service

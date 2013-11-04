@@ -15,6 +15,12 @@ $(LNGDIRS):
 
 all: $(LNGDIRS)
 
+extraclean:
+	-/bin/rm -fv config-tmp-*
+	-/bin/rm -fv *~ \#*
+	-/bin/rm -fv */LC_MESSAGES/*~
+	-/bin/rm -fv */LC_MESSAGES/\#*
+
 install:
 	@echo "Installing locale to: ${DESTDIR}${datarootdir}/locale/"
 	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\
