@@ -602,6 +602,10 @@ class TailsClockCalendarWindow(Gtk.Window):
         return True
 
     def toggle(self):
+        """
+        Based on the state of the main clock button, hide or show the calendar
+        widget appropriately.
+        """
         if self.panel_applet.main_bttn.get_active():
             self.show_calendar()
         else:
@@ -949,6 +953,7 @@ class TailsClock:
         clipboard.store()
         return True
 
+    # internal method to handle ORIENT_UP changes
     def _set_applet_horiz_up(self):
         debug_log("orientation: horizontal")
         self.orientation = TailsClock.ORIENT_TOP
@@ -960,6 +965,7 @@ class TailsClock:
             self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
         pass
 
+    # internal method to handle ORIENT_DOWN changes
     def _set_applet_horiz_down(self):
         debug_log("orientation: horizontal")
         self.orientation = TailsClock.ORIENT_BOTTOM
@@ -971,6 +977,7 @@ class TailsClock:
             self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
         pass
 
+    # internal method to handle ORIENT_LEFT changes
     def _set_applet_vert_left(self):
         debug_log("orientation: vert left")
         self.orientation = TailsClock.ORIENT_LEFT
@@ -982,6 +989,7 @@ class TailsClock:
             self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
         pass
 
+    # internal method to handle ORIENT_RIGHT changes
     def _set_applet_vert_right(self):
         debug_log("orientation: vert right")
         self.orientation = TailsClock.ORIENT_RIGHT
@@ -994,6 +1002,11 @@ class TailsClock:
         pass
 
     def on_orient_change(self,orient=None,data=None):
+        """
+        React to orientation change events. Only relevant for actual panel
+        applet use. The -d debug mode has no orientation change compliment
+        to the actual gnome-panel's orientation changing ability.
+        """
         if self.panel_applet.__class__ is not Gtk.Window:
             orientation = self.panel_applet.get_orient()
             if IS_GTK3:
