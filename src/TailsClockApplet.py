@@ -23,6 +23,10 @@ import pytz
 import gettext
 gettext.install('tailsclockapplet', unicode=1) #: system default
 
+import tempfile
+(LOG_FILE_DSC,LOG_FILE_PATH)=tempfile.mkstemp( suffix='.log',
+                                               prefix='tailsclockapplet')
+
 IS_DEBUG=False
 def debug_log(message):
     global IS_DEBUG
@@ -30,7 +34,7 @@ def debug_log(message):
         return False
     sys.stderr.write("TailsClock: "+message+"\n")
     try:
-        fh = open("/tmp/tailsclockapplet.log","a")
+        fh = open(LOG_FILE_PATH,"a")
         fh.write(message+"\n")
         fh.close()
     except Exception, e:
@@ -1024,8 +1028,8 @@ def applet_factory(applet, iid, data = None, is_debug = False):
     IS_DEBUG = is_debug
     if IS_DEBUG:
         #: log std{err,out} to the debug log
-        sys.stdout = open("/tmp/tailsclockapplet.log","a",0)
-        sys.stderr = open("/tmp/tailsclockapplet.log","a",0)
+        sys.stdout = open(LOG_FILE_PATH,"a",0)
+        sys.stderr = open(LOG_FILE_PATH,"a",0)
     tc_inst = TailsClock(applet,iid,data).launch()
     return True
 
