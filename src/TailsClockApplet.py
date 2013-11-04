@@ -385,22 +385,22 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #Translators: label for the pref checkbox: users want to see the
         # timezone code (ie: UTC, EDT, etc)
         self.show_tz = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Display the timezone with the time?"),
+            panel_dsp_vbox,_("Display the timezone with the time"),
             self.panel_applet.config.show_tz,self.update_general)
         #Translators: label for the pref checkbox: users want to see the seconds
         # in the displayed time
         self.show_sec = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the seconds with the time?"),
+            panel_dsp_vbox,_("Show the seconds with the time"),
             self.panel_applet.config.show_sec,self.update_general)
         #Translators: label for the pref checkbox: users want to see the date in
         # the clock display
         self.show_dt = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the date with the time?"),
+            panel_dsp_vbox,_("Show the date with the time"),
             self.panel_applet.config.show_dt,self.toggled_dt)
         #Translators: label for the pref checkbox: users want to see the year in
         # the date portion of the clock
         self.show_yr = self._add_pref_checkbox(
-            panel_dsp_vbox,_("When showing the date, show the year too?"),
+            panel_dsp_vbox,_("When showing the date, show the year too"),
             self.panel_applet.config.show_yr,self.update_general)
         #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
