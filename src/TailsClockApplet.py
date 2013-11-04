@@ -504,7 +504,6 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
 
     def __init__(self):
         Gtk.AboutDialog.__init__(self)
-        self.set_size_request(300,150)
         self.set_modal(True)
         self.set_name("Tails Clock")
         self.set_program_name("Tails Clock")
