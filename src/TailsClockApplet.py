@@ -889,7 +889,6 @@ class TailsClock:
         """
         Trigger the context-menu to popup.
         """
-        debug_log("popup_menu: "+str(event.state))
         if IS_GTK3:
             if ((event.button == 3)
                 and (event.state & Gdk.ModifierType.MOD1_MASK) == 0):
