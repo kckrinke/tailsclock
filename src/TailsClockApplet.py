@@ -510,7 +510,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.set_modal(True)
         self.set_name("Tails Clock")
         self.set_program_name("Tails Clock")
-        self.set_version("0.3")
+        self.set_version("Version 0.4")
         if IS_GTK3:
             self.set_license_type(Gtk.License.GPL_3_0)
         else:
