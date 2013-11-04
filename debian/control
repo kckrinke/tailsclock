@@ -2,7 +2,7 @@ Source: tailsclock
 Section: gnome
 Priority: extra
 Maintainer: Kevin C. Krinke <kevin@krinke.ca>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, python
 Standards-Version: 3.9.3
 Homepage: http://kevin.c.krinke.ca/code/tailsclock
 #Vcs-Git: https://github.com/kckrinke/tailsclock.git
@@ -10,7 +10,7 @@ Homepage: http://kevin.c.krinke.ca/code/tailsclock
 
 Package: tailsclock
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, gir1.2-gtk-3.0 | python-gtk2, gir1.2-panelapplet-4.0 | python-gnomeapplet, gnome-icon-theme, gnome-panel, python-tz
+Depends: ${shlibs:Depends}, ${misc:Depends}, gir1.2-gtk-3.0 | python-gtk2, gir1.2-panelapplet-4.0 | python-gnomeapplet, gnome-icon-theme, gnome-panel, python-tz, python
 Description: Simple clock applet for Gnome (2.x or classic/fallback mode)
  This clock applet is extremely simple. The only configurable option is to
  change the timezone of the displayed time. This timezone change is independent
