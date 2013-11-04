@@ -21,6 +21,9 @@ extraclean:
 	-/bin/rm -fv */LC_MESSAGES/*~
 	-/bin/rm -fv */LC_MESSAGES/\#*
 
+clean:
+	@/bin/rm -v $(wildcard */LC_MESSAGES/*.mo)
+
 install:
 	@echo "Installing locale to: ${DESTDIR}${datarootdir}/locale/"
 	@$(foreach c,$(wildcard */LC_MESSAGES/*.mo),\

@@ -25,9 +25,9 @@ extraclean:
 	-/bin/rm -fv *~ \#*
 
 clean:
-	@/bin/rm -v org.gnome.applets.TailsClock.panel-applet
-	@/bin/rm -v org.gnome.panel.applet.TailsClock.service
-	@/bin/rm -v TailsClock.server
+	@[ -f org.gnome.applets.TailsClock.panel-applet ] && /bin/rm -v org.gnome.applets.TailsClock.panel-applet || true
+	@[ -f org.gnome.panel.applet.TailsClock.service ] && /bin/rm -v org.gnome.panel.applet.TailsClock.service || true
+	@[ -f TailsClock.server ] && /bin/rm -v TailsClock.server || true
 
 install:
 	@echo "Installing gnome-files to: ${DESTDIR}${datarootdir} and ${DESTDIR}${libdir}"
