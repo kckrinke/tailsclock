@@ -1,25 +1,61 @@
+0.4 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Moved i18n .pot to locale/ from en subdir
+  * Made the preference dialog checkboxes more descriptive
+  * Refactored how the time/date format is determined
+  * Commented all of the translation strings properly
+  * Removed all locale .po (except EN) so that translators can
+     start clean
+  * Switched to xgettext from pygettext for generating .pot
+  * Regenerated .pot from sources
+  * Refined the prefs dialog to be visually as close to the GNOME
+     clock as possible
+  * Lots of code-level cleanups
+  * Applet handles panel orientation changes properly (can start-off
+     vertical too)
+  * About Dialog cleaned up
+  * Changed licensing from GPL2 to GPL3
+  * Debug log no longer hard-coded /tmp file, now mkstemp() powered
+  * All clock formatting options are driven by locale translations
+     instead of being hard-coded programmaticly driven logic (which
+     was prone to failure based on locale)
+  * If locale doesn't support AM/PM, prefs dialog option is disabled
+  * If "show date" pref option is unchecked; the "show year too"
+     option is disabled (unclickable)
+  * Config file parser supports comments and empty lines but when
+     ~/.config/tailsclock/settings is re-written, a commented note
+     at the top of the file warns to not edit as all changes will be
+     lost.
+  * Added padding to the calendar window frame
+  * Other small and random bugfixes for Gtk2/Gtk3 support
+
 0.3 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Updated README with developer notes
-  * Tweaked how comma is placed within time/date formatting (not sure how this works with i18n yet)
+  * Tweaked how comma is placed within time/date formatting (not sure
+     how this works with i18n yet)
   * Implemented a simple About Dialog
   * Implemented a pop-down calendar
   * Changed the applet from being an EventBox+Label to a ToggleButton
-  * Applet now resembles actual GNOME Panel Clock basics (without weather, etc).
+  * Applet now resembles actual GNOME Panel Clock basics (without
+     weather, etc).
 
 0.2 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Minor code cleanups
   * Tweaks/Updates to translations and loading
   * Added CHANGELOG, updated README
-  * Implemented a few more configuration items (stored in ~/.config/tails/tailsclock)
+  * Implemented a few more configuration items (stored in
+     ~/.config/tails/tailsclock)
     * Toggle 12/24 hr display (default 24hr)
     * Toggle Seconds display (default off)
     * Toggle Timezone display (default off)
   * Refactored prefs dialog to accomodate new options
-  * Applet context menu listens for right-click (ignores alt+right-click)
+  * Applet context menu listens for right-click (ignores alt +
+     right-click)
   * Implemented simple Makefile based build system
-  * Makefile has targets for generating .mo files and for generating messages.pot
+  * Makefile has targets for generating .mo files and for generating
+     messages.pot
   * Renamed README to README.md so github displays markdown correctly
   * Renamed/Moved configs:
     * ~/.config/tails/timezone   -> ~/.config/tailsclock/timezone
@@ -30,7 +66,8 @@
   * Refactored Makefile to consolidate file installation (incl. perms)
   * (Debian Squeeze) Gtk2.x now functions 100%
     * Split the context menu creation into Gtk2/Gtk3 counterparts
-    * Detect the Gtk2/3 environment better (avoid try/except for logic flow control)
+    * Detect the Gtk2/3 environment better (avoid try/except for logic
+       flow control)
 
 0.1 - Kevin C. Krinke <kevin@krinke.ca>
 
