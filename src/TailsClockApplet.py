@@ -346,6 +346,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         clock_fmt_frame = Gtk.Frame()
         clock_fmt_label = Gtk.Label()
         clock_fmt_frame.set_label_widget(clock_fmt_label)
+        #Translators: Label for the clock format section of the prefs dialog
         clock_fmt_label.set_markup("<b>"+_("Clock Format")+"</b>")
         clock_fmt_inner_hbox = Gtk.HBox()
         clock_fmt_frame.add(clock_fmt_inner_hbox)
@@ -375,6 +376,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         panel_dsp_frame = Gtk.Frame()
         panel_dsp_label = Gtk.Label()
         panel_dsp_frame.set_label_widget(panel_dsp_label)
+        #Translators: Label for the panel-features section of the prefs dialog
         panel_dsp_label.set_markup("<b>"+_("Panel Display")+"</b>")
         panel_dsp_vbox = Gtk.VBox()
         panel_dsp_frame.add(panel_dsp_vbox)
@@ -515,6 +517,9 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         if IS_GTK3:
             self.set_license_type(Gtk.License.GPL_3_0)
         else:
+            #Translators: This is the license notice displayed in the about
+            # dialog. This particular string originates from the stock Gtk3
+            # English-language license notice.
             self.set_license(_(
                 "This program comes with ABSOLUTELY NO WARRANTY;"
                 " for details, visit http://www.gnu.org/licenses/gpl.html"
