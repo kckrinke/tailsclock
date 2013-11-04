@@ -505,9 +505,13 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
     def __init__(self):
         Gtk.AboutDialog.__init__(self)
         self.set_modal(True)
-        self.set_name("Tails Clock")
-        self.set_program_name("Tails Clock")
-        self.set_version("Version 0.4")
+        #Translators: title for the about dialog
+        self.set_name(_("Tails Clock"))
+        #Translators: actual program name for the about dialog
+        self.set_program_name(_("Tails Clock"))
+        #Translators: the version string label for the about dialog. The
+        # %s is replaced with the actual version number.
+        self.set_version(_("Version %s") % "0.4")
         if IS_GTK3:
             self.set_license_type(Gtk.License.GPL_3_0)
         else:
@@ -515,7 +519,8 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
                 "This program comes with ABSOLUTELY NO WARRANTY;"
                 " for details, visit http://www.gnu.org/licenses/gpl.html"
                 ))
-        self.set_comments("A simple GNOME panel applet clock")
+        #Translators: This is the description found on the about dialog.
+        self.set_comments(_("A simple GNOME panel applet clock"))
         pass
 
     def run(self):
