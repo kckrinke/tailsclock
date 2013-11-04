@@ -511,7 +511,13 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.set_name("Tails Clock")
         self.set_program_name("Tails Clock")
         self.set_version("0.3")
-        self.set_copyright("GPL2")
+        if IS_GTK3:
+            self.set_license_type(Gtk.License.GPL_3_0)
+        else:
+            self.set_license(_(
+                "This program comes with ABSOLUTELY NO WARRANTY;"
+                " for details, visit http://www.gnu.org/licenses/gpl.html"
+                ))
         self.set_comments("A simple GNOME panel applet clock")
         pass
 
