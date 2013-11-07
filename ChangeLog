@@ -1,3 +1,13 @@
+0.5 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Changed description of applet in about dialog
+  * added a newline to the ~/.config/tailsclock/timezone
+  * add space between "Key: value" to ~/.config/tailsclock/settings
+  * hide 12/24hr options if not supported by locale
+  * removed NEWS file
+  * debian packaging cleanups and polish
+  * disable forced debugging
+
 0.4 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Moved i18n .pot to locale/ from en subdir
