@@ -352,7 +352,9 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         clock_fmt_inner_hbox = Gtk.HBox()
         clock_fmt_frame.add(clock_fmt_inner_hbox)
         clock_fmt_hbox.pack_start(clock_fmt_frame,True,True,8)
-        tbl.pack_start(clock_fmt_hbox,True,True,8)
+        if self.panel_applet.config.locale_supports_am_pm():
+            debug_log("locale supports am/pm")
+            tbl.pack_start(clock_fmt_hbox,True,True,8)
         self.show_12hr = Gtk.RadioButton()
         #Translators: label for the pref dialog: user wants to see AM/PM format
         # clock
