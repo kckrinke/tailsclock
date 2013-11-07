@@ -514,7 +514,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.set_program_name(_("Tails Clock"))
         #Translators: the version string label for the about dialog. The
         # %s is replaced with the actual version number.
-        self.set_version(_("Version %s") % "0.4")
+        self.set_version(_("Version %s") % "0.5")
         if IS_GTK3:
             self.set_license_type(Gtk.License.GPL_3_0)
         else:

@@ -2181,7 +2181,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=TailsClock
- VERSION=0.4
+ VERSION=0.5
 
 
 cat >>confdefs.h <<_ACEOF
