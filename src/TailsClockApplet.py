@@ -318,6 +318,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     def __init__(self,applet):
         #: store the applet's reference for later
         self.panel_applet = applet
+        self.panel_applet.refresh_cfg()
         #: initialize self
         if IS_GTK3:
             flags = Gtk.DialogFlags.MODAL
