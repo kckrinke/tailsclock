@@ -240,9 +240,9 @@ class TailsClockConfig:
             if k is 'tz':
                 next
             if data.has_key(k):
-                yaml += k+":"+str(data[k])+"\n"
+                yaml += k+": "+str(data[k])+"\n"
             else:
-                yaml += k+":"+str(current[k])+"\n"
+                yaml += k+": "+str(current[k])+"\n"
         return self._write_file(path,yaml)
 
     # internal method to read text from a file
