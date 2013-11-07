@@ -526,7 +526,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
                 " for details, visit http://www.gnu.org/licenses/gpl.html"
                 ))
         #Translators: This is the description found on the about dialog.
-        self.set_comments(_("A simple GNOME panel applet clock"))
+        self.set_comments(_("Clone of the GNOME Clock with configurable timezone"))
         pass
 
     def run(self):
