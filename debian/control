@@ -11,7 +11,9 @@ Vcs-Browser: https://git.tails.boum.org/kevin/clock/
 Package: tailsclock
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, gir1.2-gtk-3.0 | python-gtk2, gir1.2-panelapplet-4.0 | python-gnomeapplet, gnome-icon-theme, gnome-panel, python-tz, python
-Description: Simple clock applet for Gnome (2.x or classic/fallback mode)
- This clock applet is extremely simple. The only configurable option is to
- change the timezone of the displayed time. This timezone change is independent
- of the actual operating system configuration.
+Description: Clone of the GNOME Clock with configurable timezone
+ This clock applet is a Python-based clone of the GNOME Clock applet
+ with configurable timezone for GNOME 2.x or for GNOME 3.x in fallback
+ mode.
+ .
+ This applet does not work with GNOME Shell.
