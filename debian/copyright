@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: tailsclock
-Source: http://kevin.c.krinke.ca/code/tailsclock
+Source: https://git.tails.boum.org/kevin/clock/
 
 Files: *
 Copyright: 2013 Kevin C. Krinke <kevin@krinke.ca>
