@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS=-Wno-portability
 custom_files = \
 	org.gnome.applets.TailsClock.panel-applet \
 	org.gnome.panel.applet.TailsClock.service \

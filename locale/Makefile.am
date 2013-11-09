@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS=-Wno-portability
 LNGDIRS = de en es fr nl
 
 MESSAGES_POT = en/LC_MESSAGES/tailsclockapplet.pot
