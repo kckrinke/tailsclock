@@ -24,22 +24,21 @@ import gettext
 gettext.install('tailsclockapplet', unicode=1) #: system default
 
 import tempfile
-(LOG_FILE_DSC,LOG_FILE_PATH)=tempfile.mkstemp( suffix='.log',
-                                               prefix='tailsclockapplet')
+(LOG_FILE_DSC,LOG_FILE_PATH)=(None,'/dev/null')
 
 IS_DEBUG=False
 def debug_log(message):
     global IS_DEBUG
-    if not IS_DEBUG:
-        return False
-    sys.stderr.write("TailsClock: "+message+"\n")
-    try:
-        fh = open(LOG_FILE_PATH,"a")
-        fh.write(message+"\n")
-        fh.close()
-    except Exception, e:
-        sys.stderr.write("TailsClock: Exception caught: ("+str(e)+")\n")
-    return True
+    if IS_DEBUG:
+        sys.stderr.write("TailsClock: "+message+"\n")
+        try:
+            fh = open(LOG_FILE_PATH,"a")
+            fh.write(message+"\n")
+            fh.close()
+        except Exception, e:
+            sys.stderr.write("TailsClock: Exception caught: ("+str(e)+")\n")
+        return True
+    return False
 
 #: load up Gtk
 IS_GTK3=True
@@ -1057,6 +1056,9 @@ def applet_factory(applet, iid, data = None, is_debug = False):
     IS_DEBUG = is_debug
     if IS_DEBUG:
         #: log std{err,out} to the debug log
+        global LOG_FILE_DSC, LOG_FILE_PATH
+        (LOG_FILE_DSC,LOG_FILE_PATH) = \
+            tempfile.mkstemp(suffix='.log',prefix='tailsclockapplet')
         sys.stdout = open(LOG_FILE_PATH,"a",0)
         sys.stderr = open(LOG_FILE_PATH,"a",0)
     tc_inst = TailsClock(applet,iid,data).launch()
