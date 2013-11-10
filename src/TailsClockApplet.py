@@ -597,29 +597,13 @@ class TailsClockCalendarWindow(Gtk.Window):
     calendar = None
     def __init__(self,applet):
         self.panel_applet = applet
-        if IS_GTK3:
-            super(TailsClockCalendarWindow,
-                  self).__init__(Gtk.WindowType.TOPLEVEL)
-            self.set_type_hint(Gdk.WindowTypeHint.DOCK)
-        else:
-            super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
-            self.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+        super(TailsClockCalendarWindow,self).__init__(TC_GTK_WINDOW_TOPLEVEL)
+        self.set_type_hint(TC_GDK_WINDOW_TYPE_HINT_DOCK)
         self.set_decorated(False)
         self.set_resizable(False)
         self.stick()
         self.calendar = Gtk.Calendar()
-        if IS_GTK3:
-            self.calendar.set_display_options(
-                Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS |
-                Gtk.CalendarDisplayOptions.SHOW_HEADING |
-                Gtk.CalendarDisplayOptions.SHOW_DAY_NAMES
-                )
-        else:
-            self.calendar.set_display_options(
-                Gtk.CALENDAR_SHOW_WEEK_NUMBERS |
-                Gtk.CALENDAR_SHOW_HEADING |
-                Gtk.CALENDAR_SHOW_DAY_NAMES
-                )
+        self.calendar.set_display_options(TC_CALENDAR_DISPLAY_FLAGS)
         cal_vbox = Gtk.VBox(False, 8)
         cal_hbox = Gtk.HBox(False, 8)
         self.add(cal_hbox)
