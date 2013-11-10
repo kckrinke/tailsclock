@@ -476,11 +476,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         tz_col = Gtk.TreeViewColumn("tz_list", tz_rndrr, text = 0)
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
-        if IS_GTK3:
-            tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        else: # NOT_GTK3
-            tz_scroll.set_policy(Gtk.POLICY_AUTOMATIC,Gtk.POLICY_AUTOMATIC)
+        tz_scroll.set_policy(TC_GTK_POLICY_AUTO,TC_GTK_POLICY_AUTO)
         tz_scroll.add(self.tz_tview)
         tz_frame = Gtk.Frame()
         tz_frame.add(tz_scroll)
