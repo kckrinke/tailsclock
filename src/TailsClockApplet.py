@@ -839,10 +839,7 @@ class TailsClock:
         self.main_label = Gtk.Label("")
         self.main_bttn = Gtk.ToggleButton()
         self.main_bttn.add(self.main_label)
-        if IS_GTK3:
-            self.main_bttn.set_relief(Gtk.ReliefStyle.NONE)
-        else:
-            self.main_bttn.set_relief(Gtk.RELIEF_NONE)
+        self.main_bttn.set_relief(TC_GTK_RELIEF_NONE)
         self.main_bttn.set_can_focus(False)
         self.main_bttn.set_name("TailsClockAppletButton")
         self.main_bttn.connect("button-press-event",self.popup_menu)
