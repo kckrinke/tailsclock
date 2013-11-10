@@ -177,7 +177,7 @@ class TailsClockConfig:
                 'show_dt': self.show_dt,
                 }
         if data.has_key('tz'):
-            self._write_file("{0}\n".format(self.cfg_tz_path,data['tz']))
+            self._write_file(self.cfg_tz_path,"{0}\n".format(data['tz']))
             del data['tz']
         if len(data) > 0:
             self._write_yaml(self.cfg_rc_path,data)
