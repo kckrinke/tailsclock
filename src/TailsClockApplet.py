@@ -52,6 +52,56 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gtk.gdk as Gdk
     import gnomeapplet
 
+#
+# Configure Constants based on GTK version
+#
+
+if IS_GTK3:
+    TC_GTK_WIN_POS_CENTER = Gtk.WindowPosition.CENTER
+    TC_GTK_DIALOG_FLAGS_MODAL = Gtk.DialogFlags.MODAL
+    TC_GTK_DIALOG_FLAGS_NO_SEPARATOR = 0
+    TC_GTK_RESPONSE_ACCEPT = Gtk.ResponseType.ACCEPT
+    TC_GTK_RESPONSE_OK = Gtk.ResponseType.OK
+    TC_GTK_POLICY_AUTO = Gtk.PolicyType.AUTOMATIC
+    TC_GTK_SELECTION_SINGLE = Gtk.SelectionMode.SINGLE
+    TC_GDK_WINDOW_TYPE_HINT_DOCK = Gdk.WindowTypeHint.DOCK
+    TC_GTK_WINDOW_TOPLEVEL = Gtk.WindowType.TOPLEVEL
+    TC_CALENDAR_DISPLAY_FLAGS = (
+        Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS |
+        Gtk.CalendarDisplayOptions.SHOW_HEADING |
+        Gtk.CalendarDisplayOptions.SHOW_DAY_NAMES
+        )
+    TC_GTK_ORIENTATION_HORIZONTAL = Gtk.Orientation.HORIZONTAL
+    TC_GTK_ORIENTATION_VERTICAL = Gtk.Orientation.VERTICAL
+    TC_GTK_RELIEF_NONE = Gtk.ReliefStyle.NONE
+    TC_APPLET_ORIENT_UP = PanelApplet.AppletOrient.UP
+    TC_APPLET_ORIENT_DOWN = PanelApplet.AppletOrient.DOWN
+    TC_APPLET_ORIENT_LEFT = PanelApplet.AppletOrient.LEFT
+    TC_APPLET_ORIENT_RIGHT = PanelApplet.AppletOrient.RIGHT
+else:
+    TC_GTK_WIN_POS_CENTER = Gtk.WINODW_POSITION_CENTER
+    TC_GTK_DIALOG_FLAGS_MODAL = Gtk.DIALOG_MODAL
+    TC_GTK_DIALOG_FLAGS_NO_SEPARATOR = Gtk.DIALOG_NO_SEPARATOR
+    TC_GTK_RESPONSE_ACCEPT = Gtk.RESPONSE_ACCEPT
+    TC_GTK_RESPONSE_OK = Gtk.RESPONSE_OK
+    TC_GTK_POLICY_AUTO = Gtk.POLICY_AUTOMATIC
+    TC_GTK_SELECTION_SINGLE = Gtk.SELECTION_SINGLE
+    TC_GDK_WINDOW_TYPE_HINT_DOCK = Gdk.WINDOW_TYPE_HINT_DOCK
+    TC_GTK_WINDOW_TOPLEVEL = Gtk.WINDOW_TOPLEVEL
+    TC_CALENDAR_DISPLAY_FLAGS = (
+        Gtk.CALENDAR_SHOW_WEEK_NUMBERS |
+        Gtk.CALENDAR_SHOW_HEADING |
+        Gtk.CALENDAR_SHOW_DAY_NAMES
+        )
+    TC_GTK_ORIENTATION_HORIZONTAL = Gtk.ORIENTATION_HORIZONTAL
+    TC_GTK_ORIENTATION_VERTICAL = Gtk.ORIENTATION_VERTICAL
+    TC_GTK_RELIEF_NONE = Gtk.RELEIF_NONE
+    TC_APPLET_ORIENT_UP = gnomeapplet.ORIENT_UP
+    TC_APPLET_ORIENT_DOWN = gnomeapplet.ORIENT_DOWN
+    TC_APPLET_ORIENT_LEFT = gnomeapplet.ORIENT_LEFT
+    TC_APPLET_ORIENT_RIGHT = gnomeapplet.ORIENT_RIGHT
+
+
 # Consolidate default values
 DEFAULT_CFG_DATA = {
     'show_sec':False,
