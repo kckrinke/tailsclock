@@ -309,13 +309,13 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     show_dt = None
 
     # internal method to add a preference checkbox in a consistent way
-    def _add_pref_checkbox(self,box,title,state,func):
+    def _add_pref_checkbox(self,box,title,state,func,hpad=8,bpad=4):
         bttn = Gtk.CheckButton(title)
         bttn.set_active(state)
         bttn.connect('toggled',func)
         hbox = Gtk.HBox()
-        hbox.pack_start(bttn,True,True,8)
-        box.pack_start(hbox,True,True,8)
+        hbox.pack_start(bttn,True,True,hpad)
+        box.pack_start(hbox,False,False,bpad)
         return bttn
 
     def __init__(self,applet):
