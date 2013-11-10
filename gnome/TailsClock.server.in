@@ -9,7 +9,7 @@
       <item value="IDL:Bonobo/Unknown:1.0"/>
     </oaf_attribute>
     <oaf_attribute name="name" type="string" value="Tails Clock"/>
-    <oaf_attribute name="description" type="string" value="Simple clock applet."/>
+    <oaf_attribute name="description" type="string" value="Clone of the GNOME Clock with configurable timezone"/>
   </oaf_server>
   <oaf_server iid="OAFIID:TailsClock"
               type="factory" 
