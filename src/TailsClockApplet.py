@@ -373,14 +373,9 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.panel_applet = applet
         self.panel_applet.refresh_cfg()
         #: initialize self
-        if IS_GTK3:
-            flags = Gtk.DialogFlags.MODAL
-            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,
-                       Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
-        else:
-            flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
-            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,
-                       Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+        flags = TC_GTK_DIALOG_FLAGS_MODAL | TC_GTK_DIALOG_FLAGS_NO_SEPARATOR
+        buttons = (Gtk.STOCK_ABOUT,TC_GTK_RESPONSE_ACCEPT,
+                   Gtk.STOCK_CLOSE,TC_GTK_RESPONSE_OK)
         #Translators: This is the title of the Preferences dialog window.
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),
                             None,flags,buttons)
