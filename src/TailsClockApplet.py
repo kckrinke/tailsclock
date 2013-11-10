@@ -62,6 +62,9 @@ DEFAULT_CFG_DATA = {
     }
 
 class TailsClockConfig:
+    """
+    Simple object for managing the configuration state of the applet
+    """
     cfg_base = None
     cfg_rc_path = None
     cfg_tz_path = None
