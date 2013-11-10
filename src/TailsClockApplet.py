@@ -346,18 +346,22 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: General Settings
         tbl = Gtk.VBox()
         # General - Clock Format
+        clock_fmt_vbox = Gtk.VBox()
         clock_fmt_hbox = Gtk.HBox()
+        clock_fmt_vbox.pack_start(clock_fmt_hbox,True,True,8)
         clock_fmt_frame = Gtk.Frame()
         clock_fmt_label = Gtk.Label()
         clock_fmt_frame.set_label_widget(clock_fmt_label)
         #Translators: Label for the clock format section of the prefs dialog
         clock_fmt_label.set_markup("<b>"+_("Clock Format")+"</b>")
         clock_fmt_inner_hbox = Gtk.HBox()
-        clock_fmt_frame.add(clock_fmt_inner_hbox)
+        clock_fmt_inner_vbox = Gtk.VBox()
+        clock_fmt_inner_vbox.pack_start(clock_fmt_inner_hbox,True,True,8)
+        clock_fmt_frame.add(clock_fmt_inner_vbox)
         clock_fmt_hbox.pack_start(clock_fmt_frame,True,True,8)
         if self.panel_applet.config.locale_supports_am_pm():
             debug_log("locale supports am/pm")
-            tbl.pack_start(clock_fmt_hbox,True,True,8)
+            tbl.pack_start(clock_fmt_vbox,True,True,4)
         self.show_12hr = Gtk.RadioButton()
         #Translators: label for the pref dialog: user wants to see AM/PM format
         # clock
@@ -387,27 +391,33 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         panel_dsp_vbox = Gtk.VBox()
         panel_dsp_frame.add(panel_dsp_vbox)
         panel_dsp_hbox.pack_start(panel_dsp_frame,True,True,8)
-        tbl.pack_start(panel_dsp_hbox,True,True,8)
-        #Translators: label for the pref checkbox: users want to see the
-        # timezone code (ie: UTC, EDT, etc)
-        self.show_tz = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Display the timezone with the time"),
-            self.panel_applet.config.show_tz,self.update_general)
-        #Translators: label for the pref checkbox: users want to see the seconds
-        # in the displayed time
-        self.show_sec = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the seconds with the time"),
-            self.panel_applet.config.show_sec,self.update_general)
+        tbl.pack_start(panel_dsp_hbox,True,True,0)
+        panel_dsp_date_hbox = Gtk.HBox()
+        panel_dsp_vbox.pack_start(panel_dsp_date_hbox,True,True,8)
         #Translators: label for the pref checkbox: users want to see the date in
         # the clock display
         self.show_dt = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the date with the time"),
-            self.panel_applet.config.show_dt,self.toggled_dt)
+            panel_dsp_date_hbox,_("Show the date"),
+            self.panel_applet.config.show_dt,self.toggled_dt,
+            hpad=2,bpad=6)
         #Translators: label for the pref checkbox: users want to see the year in
         # the date portion of the clock
         self.show_yr = self._add_pref_checkbox(
-            panel_dsp_vbox,_("When showing the date, show the year too"),
-            self.panel_applet.config.show_yr,self.update_general)
+            panel_dsp_date_hbox,_("Show the year"),
+            self.panel_applet.config.show_yr,self.update_general,
+            hpad=12,bpad=0)
+        #Translators: label for the pref checkbox: users want to see the seconds
+        # in the displayed time
+        self.show_sec = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show seconds"),
+            self.panel_applet.config.show_sec,self.update_general,
+            bpad=0)
+        #Translators: label for the pref checkbox: users want to see the
+        # timezone code (ie: UTC, EDT, etc)
+        self.show_tz = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show timezone"),
+            self.panel_applet.config.show_tz,self.update_general,
+            bpad=10)
         #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
