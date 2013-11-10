@@ -494,10 +494,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
             pass
         tz_vbox.pack_start(tz_frame,True,True,0)
         select.connect("changed",self.on_timezone_selection_changed)
-        if IS_GTK3:
-            select.set_mode(Gtk.SelectionMode.SINGLE)
-        else: # NOT_GTK3
-            select.set_mode(Gtk.SELECTION_SINGLE)
+        select.set_mode(TC_GTK_SELECTION_SINGLE)
         #: try to constrain the dialog's size
         nbook.show_all()
         pass
