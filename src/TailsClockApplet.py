@@ -540,14 +540,11 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.show_all()
         if IS_GTK3:
             rv = super(Gtk.Dialog,self).run()
-            self.destroy()
-            if rv == Gtk.ResponseType.ACCEPT:
-                TailsClockAboutDialog().run()
         else:
             rv = Gtk.Dialog.run(self)
-            self.destroy()
-            if rv == Gtk.RESPONSE_ACCEPT:
-                TailsClockAboutDialog().run()
+        self.destroy()
+        if rv == TC_GTK_RESPONSE_ACCEPT:
+            TailsClockAboutDialog().run()
         return
 
 
