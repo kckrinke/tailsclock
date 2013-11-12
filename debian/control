@@ -2,8 +2,8 @@ Source: tailsclock
 Section: gnome
 Priority: extra
 Maintainer: Kevin C. Krinke <kevin@krinke.ca>
-Standards-Version: 3.9.3
 Build-Depends: debhelper (>= 9), autotools-dev, dh-autoreconf, dh-python, python
+Standards-Version: 3.9.5
 Homepage: http://kevin.c.krinke.ca/code/tailsclock
 Vcs-Git: git://git.tails.boum.org/kevin/clock
 Vcs-Browser: https://git-tails.immerda.ch/kevin/clock
