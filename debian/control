@@ -5,8 +5,8 @@ Maintainer: Kevin C. Krinke <kevin@krinke.ca>
 Build-Depends: debhelper (>= 9.0.0), autotools-dev, dh-autoreconf, dh-python, python
 Standards-Version: 3.9.3
 Homepage: http://kevin.c.krinke.ca/code/tailsclock
-Vcs-Git: ssh://tails@git.tails.boum.org:kevin/clock.git
-Vcs-Browser: https://git.tails.boum.org/kevin/clock/
+Vcs-Git: git://git.tails.boum.org/kevin/clock
+Vcs-Browser: https://git-tails.immerda.ch/kevin/clock
 
 Package: tailsclock
 Architecture: all
