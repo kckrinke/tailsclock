@@ -1,155 +1,155 @@
 #. Translators: strftime to display the clock with seconds,
 #. timezone and AM/PM format
-#: src/TailsClockApplet.py:166
+#: src/TailsClockApplet.py:218
 msgid "%I:%M:%S %p %Z"
 msgstr ""
 
 #. Translators: strftime to display the clock with seconds and
 #. AM/PM format
-#: src/TailsClockApplet.py:170
+#: src/TailsClockApplet.py:222
 msgid "%I:%M:%S %p"
 msgstr ""
 
 #. Translators: strftime to display the clock with timezone and
 #. AM/PM format
-#: src/TailsClockApplet.py:174
+#: src/TailsClockApplet.py:226
 msgid "%I:%M %p %Z"
 msgstr ""
 
 #. Translators: strftime to display the clock with AM/PM format (no
 #. seconds or timezone)
-#: src/TailsClockApplet.py:177
+#: src/TailsClockApplet.py:229
 msgid "%I:%M %p"
 msgstr ""
 
 #. Translators: strftime to display the clock with seconds, timezone
 #. and 24hr format
-#: src/TailsClockApplet.py:181
+#: src/TailsClockApplet.py:233
 msgid "%H:%M:%S %Z"
 msgstr ""
 
 #. Translators: strftime to display the clock with seconds in 24hr
 #. format
-#: src/TailsClockApplet.py:185
+#: src/TailsClockApplet.py:237
 msgid "%H:%M:%S"
 msgstr ""
 
 #. Translators: strftime to display the clock with timezone and 24hr
 #. format
-#: src/TailsClockApplet.py:189
+#: src/TailsClockApplet.py:241
 msgid "%H:%M %Z"
 msgstr ""
 
 #. Translators: strftime to display the clock in 24hr format (no seconds
 #. or timezone)
-#: src/TailsClockApplet.py:192
+#: src/TailsClockApplet.py:244
 msgid "%H:%M"
 msgstr ""
 
 #. Translators: long-form strftime representing the date and year
 #. EN example: "Fri 01 Nov 2013"
-#: src/TailsClockApplet.py:204
+#: src/TailsClockApplet.py:256
 msgid "%a %d %b %Y"
 msgstr ""
 
 #. Translators: long-form strftime representing the date without the
 #. year. EN example: "Fri 01 Nov"
-#: src/TailsClockApplet.py:207
+#: src/TailsClockApplet.py:259
 msgid "%a %d %b"
 msgstr ""
 
 #. Translators: combining date{0} with time{1}, reverse the {0} and
 #. {1}. If you want to have the date come after the time.
 #. EN example: "Fri 01 Nov 2013, 11:20 PM EDT"
-#: src/TailsClockApplet.py:221
+#: src/TailsClockApplet.py:273
 msgid "{0}, {1}"
 msgstr ""
 
 #. Translators: This is the title of the Preferences dialog window.
-#: src/TailsClockApplet.py:332
+#: src/TailsClockApplet.py:379
 msgid "Tails Clock Preferences"
 msgstr ""
 
 #. Translators: Label for the clock format section of the prefs dialog
-#: src/TailsClockApplet.py:351
+#: src/TailsClockApplet.py:400
 msgid "Clock Format"
 msgstr ""
 
 #. Translators: label for the pref dialog: user wants to see AM/PM format
 #. clock
-#: src/TailsClockApplet.py:361
+#: src/TailsClockApplet.py:412
 msgid "12 hour format"
 msgstr ""
 
 #. Translators: label for the pref dialog: user wants to see 24-hour
 #. format clock
-#: src/TailsClockApplet.py:367
+#: src/TailsClockApplet.py:418
 msgid "24 hour format"
 msgstr ""
 
 #. Translators: Label for the panel-features section of the prefs dialog
-#: src/TailsClockApplet.py:383
+#: src/TailsClockApplet.py:434
 msgid "Panel Display"
 msgstr ""
 
-#: src/TailsClockApplet.py:391
-msgid "Display the timezone with the time"
+#: src/TailsClockApplet.py:444
+msgid "Show the date"
 msgstr ""
 
-#: src/TailsClockApplet.py:396
-msgid "Show the seconds with the time"
+#: src/TailsClockApplet.py:450
+msgid "Show the year"
 msgstr ""
 
-#: src/TailsClockApplet.py:401
-msgid "Show the date with the time"
+#: src/TailsClockApplet.py:456
+msgid "Show seconds"
 msgstr ""
 
-#: src/TailsClockApplet.py:406
-msgid "When showing the date, show the year too"
+#: src/TailsClockApplet.py:462
+msgid "Show timezone"
 msgstr ""
 
 #. Translators: name of the General tab in the preference dialog
-#: src/TailsClockApplet.py:409
+#: src/TailsClockApplet.py:466
 msgid "General"
 msgstr ""
 
 #. Translators: name of the Timezone tab in the preference dialog
-#: src/TailsClockApplet.py:413
+#: src/TailsClockApplet.py:470
 msgid "Timezone"
 msgstr ""
 
 #. Translators: title for the about dialog
 #. Translators: actual program name for the about dialog
-#: src/TailsClockApplet.py:512 src/TailsClockApplet.py:514
+#: src/TailsClockApplet.py:559 src/TailsClockApplet.py:561
 msgid "Tails Clock"
 msgstr ""
 
 #. Translators: the version string label for the about dialog. The
 #. %s is replaced with the actual version number.
-#: src/TailsClockApplet.py:517
+#: src/TailsClockApplet.py:564
 #, python-format
 msgid "Version %s"
 msgstr ""
 
-#: src/TailsClockApplet.py:525
+#: src/TailsClockApplet.py:572
 msgid ""
 "This program comes with ABSOLUTELY NO WARRANTY; for details, visit http://"
 "www.gnu.org/licenses/gpl.html"
 msgstr ""
 
 #. Translators: This is the description found on the about dialog.
-#: src/TailsClockApplet.py:529
+#: src/TailsClockApplet.py:576
 msgid "Clone of the GNOME Clock with configurable timezone"
 msgstr ""
 
 #. Translators: label for the context-menu option to copy the date to the
 #. clipboard
-#: src/TailsClockApplet.py:731
+#: src/TailsClockApplet.py:762
 msgid "Copy Date"
 msgstr ""
 
 #. Translators: label for the context-menu option to copy the time to the
 #. clipboard
-#: src/TailsClockApplet.py:735
+#: src/TailsClockApplet.py:766
 msgid "Copy Time"
 msgstr ""
