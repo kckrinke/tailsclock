@@ -5,6 +5,6 @@ Name=Tails Clock Factory
 
 [TailsClock]
 Name=Tails Clock
-Description=Simple clock applet.
+Description=Clone of the GNOME Clock with configurable timezone
 Icon=gnome-panel-clock
 BonoboId=OAFIID:TailsClockFactory

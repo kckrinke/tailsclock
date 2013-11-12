@@ -24,22 +24,21 @@ import gettext
 gettext.install('tailsclockapplet', unicode=1) #: system default
 
 import tempfile
-(LOG_FILE_DSC,LOG_FILE_PATH)=tempfile.mkstemp( suffix='.log',
-                                               prefix='tailsclockapplet')
+(LOG_FILE_DSC,LOG_FILE_PATH)=(None,'/dev/null')
 
 IS_DEBUG=False
 def debug_log(message):
     global IS_DEBUG
-    if not IS_DEBUG:
-        return False
-    sys.stderr.write("TailsClock: "+message+"\n")
-    try:
-        fh = open(LOG_FILE_PATH,"a")
-        fh.write(message+"\n")
-        fh.close()
-    except Exception, e:
-        sys.stderr.write("TailsClock: Exception caught: ("+str(e)+")\n")
-    return True
+    if IS_DEBUG:
+        sys.stderr.write("TailsClock: "+message+"\n")
+        try:
+            fh = open(LOG_FILE_PATH,"a")
+            fh.write(message+"\n")
+            fh.close()
+        except Exception, e:
+            sys.stderr.write("TailsClock: Exception caught: ("+str(e)+")\n")
+        return True
+    return False
 
 #: load up Gtk
 IS_GTK3=True
@@ -52,6 +51,56 @@ except: # Can't use ImportError, as gi.repository isn't quite that nice...
     import gtk.gdk as Gdk
     import gnomeapplet
 
+#
+# Configure Constants based on GTK version
+#
+
+if IS_GTK3:
+    TC_GTK_WIN_POS_CENTER = Gtk.WindowPosition.CENTER
+    TC_GTK_DIALOG_FLAGS_MODAL = Gtk.DialogFlags.MODAL
+    TC_GTK_DIALOG_FLAGS_NO_SEPARATOR = 0
+    TC_GTK_RESPONSE_ACCEPT = Gtk.ResponseType.ACCEPT
+    TC_GTK_RESPONSE_OK = Gtk.ResponseType.OK
+    TC_GTK_POLICY_AUTO = Gtk.PolicyType.AUTOMATIC
+    TC_GTK_SELECTION_SINGLE = Gtk.SelectionMode.SINGLE
+    TC_GDK_WINDOW_TYPE_HINT_DOCK = Gdk.WindowTypeHint.DOCK
+    TC_GTK_WINDOW_TOPLEVEL = Gtk.WindowType.TOPLEVEL
+    TC_CALENDAR_DISPLAY_FLAGS = (
+        Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS |
+        Gtk.CalendarDisplayOptions.SHOW_HEADING |
+        Gtk.CalendarDisplayOptions.SHOW_DAY_NAMES
+        )
+    TC_GTK_ORIENTATION_HORIZONTAL = Gtk.Orientation.HORIZONTAL
+    TC_GTK_ORIENTATION_VERTICAL = Gtk.Orientation.VERTICAL
+    TC_GTK_RELIEF_NONE = Gtk.ReliefStyle.NONE
+    TC_APPLET_ORIENT_UP = PanelApplet.AppletOrient.UP
+    TC_APPLET_ORIENT_DOWN = PanelApplet.AppletOrient.DOWN
+    TC_APPLET_ORIENT_LEFT = PanelApplet.AppletOrient.LEFT
+    TC_APPLET_ORIENT_RIGHT = PanelApplet.AppletOrient.RIGHT
+else:
+    TC_GTK_WIN_POS_CENTER = Gtk.WINODW_POSITION_CENTER
+    TC_GTK_DIALOG_FLAGS_MODAL = Gtk.DIALOG_MODAL
+    TC_GTK_DIALOG_FLAGS_NO_SEPARATOR = Gtk.DIALOG_NO_SEPARATOR
+    TC_GTK_RESPONSE_ACCEPT = Gtk.RESPONSE_ACCEPT
+    TC_GTK_RESPONSE_OK = Gtk.RESPONSE_OK
+    TC_GTK_POLICY_AUTO = Gtk.POLICY_AUTOMATIC
+    TC_GTK_SELECTION_SINGLE = Gtk.SELECTION_SINGLE
+    TC_GDK_WINDOW_TYPE_HINT_DOCK = Gdk.WINDOW_TYPE_HINT_DOCK
+    TC_GTK_WINDOW_TOPLEVEL = Gtk.WINDOW_TOPLEVEL
+    TC_CALENDAR_DISPLAY_FLAGS = (
+        Gtk.CALENDAR_SHOW_WEEK_NUMBERS |
+        Gtk.CALENDAR_SHOW_HEADING |
+        Gtk.CALENDAR_SHOW_DAY_NAMES
+        )
+    TC_GTK_ORIENTATION_HORIZONTAL = Gtk.ORIENTATION_HORIZONTAL
+    TC_GTK_ORIENTATION_VERTICAL = Gtk.ORIENTATION_VERTICAL
+    TC_GTK_RELIEF_NONE = Gtk.RELEIF_NONE
+    TC_APPLET_ORIENT_UP = gnomeapplet.ORIENT_UP
+    TC_APPLET_ORIENT_DOWN = gnomeapplet.ORIENT_DOWN
+    TC_APPLET_ORIENT_LEFT = gnomeapplet.ORIENT_LEFT
+    TC_APPLET_ORIENT_RIGHT = gnomeapplet.ORIENT_RIGHT
+
+
 # Consolidate default values
 DEFAULT_CFG_DATA = {
     'show_sec':False,
@@ -62,6 +111,9 @@ DEFAULT_CFG_DATA = {
     }
 
 class TailsClockConfig:
+    """
+    Simple object for managing the configuration state of the applet
+    """
     cfg_base = None
     cfg_rc_path = None
     cfg_tz_path = None
@@ -124,7 +176,7 @@ class TailsClockConfig:
                 'show_dt': self.show_dt,
                 }
         if data.has_key('tz'):
-            self._write_file(self.cfg_tz_path,data['tz'])
+            self._write_file(self.cfg_tz_path,"{0}\n".format(data['tz']))
             del data['tz']
         if len(data) > 0:
             self._write_yaml(self.cfg_rc_path,data)
@@ -240,9 +292,9 @@ class TailsClockConfig:
             if k is 'tz':
                 next
             if data.has_key(k):
-                yaml += k+":"+str(data[k])+"\n"
+                yaml += k+": "+str(data[k])+"\n"
             else:
-                yaml += k+":"+str(current[k])+"\n"
+                yaml += k+": "+str(current[k])+"\n"
         return self._write_file(path,yaml)
 
     # internal method to read text from a file
@@ -306,27 +358,23 @@ class TailsClockPrefsDialog(Gtk.Dialog):
     show_dt = None
 
     # internal method to add a preference checkbox in a consistent way
-    def _add_pref_checkbox(self,box,title,state,func):
+    def _add_pref_checkbox(self,box,title,state,func,hpad=8,bpad=4):
         bttn = Gtk.CheckButton(title)
         bttn.set_active(state)
         bttn.connect('toggled',func)
         hbox = Gtk.HBox()
-        hbox.pack_start(bttn,True,True,8)
-        box.pack_start(hbox,True,True,8)
+        hbox.pack_start(bttn,True,True,hpad)
+        box.pack_start(hbox,False,False,bpad)
         return bttn
 
     def __init__(self,applet):
         #: store the applet's reference for later
         self.panel_applet = applet
+        self.panel_applet.refresh_cfg()
         #: initialize self
-        if IS_GTK3:
-            flags = Gtk.DialogFlags.MODAL
-            buttons = (Gtk.STOCK_ABOUT,Gtk.ResponseType.ACCEPT,
-                       Gtk.STOCK_CLOSE,Gtk.ResponseType.OK)
-        else:
-            flags = Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR
-            buttons = (Gtk.STOCK_ABOUT,Gtk.RESPONSE_ACCEPT,
-                       Gtk.STOCK_CLOSE,Gtk.RESPONSE_OK)
+        flags = TC_GTK_DIALOG_FLAGS_MODAL | TC_GTK_DIALOG_FLAGS_NO_SEPARATOR
+        buttons = (Gtk.STOCK_ABOUT,TC_GTK_RESPONSE_ACCEPT,
+                   Gtk.STOCK_CLOSE,TC_GTK_RESPONSE_OK)
         #Translators: This is the title of the Preferences dialog window.
         Gtk.Dialog.__init__(self,_("Tails Clock Preferences"),
                             None,flags,buttons)
@@ -342,16 +390,22 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         #: General Settings
         tbl = Gtk.VBox()
         # General - Clock Format
+        clock_fmt_vbox = Gtk.VBox()
         clock_fmt_hbox = Gtk.HBox()
+        clock_fmt_vbox.pack_start(clock_fmt_hbox,True,True,8)
         clock_fmt_frame = Gtk.Frame()
         clock_fmt_label = Gtk.Label()
         clock_fmt_frame.set_label_widget(clock_fmt_label)
         #Translators: Label for the clock format section of the prefs dialog
         clock_fmt_label.set_markup("<b>"+_("Clock Format")+"</b>")
         clock_fmt_inner_hbox = Gtk.HBox()
-        clock_fmt_frame.add(clock_fmt_inner_hbox)
+        clock_fmt_inner_vbox = Gtk.VBox()
+        clock_fmt_inner_vbox.pack_start(clock_fmt_inner_hbox,True,True,8)
+        clock_fmt_frame.add(clock_fmt_inner_vbox)
         clock_fmt_hbox.pack_start(clock_fmt_frame,True,True,8)
-        tbl.pack_start(clock_fmt_hbox,True,True,8)
+        if self.panel_applet.config.locale_supports_am_pm():
+            debug_log("locale supports am/pm")
+            tbl.pack_start(clock_fmt_vbox,True,True,4)
         self.show_12hr = Gtk.RadioButton()
         #Translators: label for the pref dialog: user wants to see AM/PM format
         # clock
@@ -381,27 +435,33 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         panel_dsp_vbox = Gtk.VBox()
         panel_dsp_frame.add(panel_dsp_vbox)
         panel_dsp_hbox.pack_start(panel_dsp_frame,True,True,8)
-        tbl.pack_start(panel_dsp_hbox,True,True,8)
-        #Translators: label for the pref checkbox: users want to see the
-        # timezone code (ie: UTC, EDT, etc)
-        self.show_tz = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Display the timezone with the time"),
-            self.panel_applet.config.show_tz,self.update_general)
-        #Translators: label for the pref checkbox: users want to see the seconds
-        # in the displayed time
-        self.show_sec = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the seconds with the time"),
-            self.panel_applet.config.show_sec,self.update_general)
+        tbl.pack_start(panel_dsp_hbox,True,True,0)
+        panel_dsp_date_hbox = Gtk.HBox()
+        panel_dsp_vbox.pack_start(panel_dsp_date_hbox,True,True,8)
         #Translators: label for the pref checkbox: users want to see the date in
         # the clock display
         self.show_dt = self._add_pref_checkbox(
-            panel_dsp_vbox,_("Show the date with the time"),
-            self.panel_applet.config.show_dt,self.toggled_dt)
+            panel_dsp_date_hbox,_("Show the date"),
+            self.panel_applet.config.show_dt,self.toggled_dt,
+            hpad=2,bpad=6)
         #Translators: label for the pref checkbox: users want to see the year in
         # the date portion of the clock
         self.show_yr = self._add_pref_checkbox(
-            panel_dsp_vbox,_("When showing the date, show the year too"),
-            self.panel_applet.config.show_yr,self.update_general)
+            panel_dsp_date_hbox,_("Show the year"),
+            self.panel_applet.config.show_yr,self.update_general,
+            hpad=12,bpad=0)
+        #Translators: label for the pref checkbox: users want to see the seconds
+        # in the displayed time
+        self.show_sec = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show seconds"),
+            self.panel_applet.config.show_sec,self.update_general,
+            bpad=0)
+        #Translators: label for the pref checkbox: users want to see the
+        # timezone code (ie: UTC, EDT, etc)
+        self.show_tz = self._add_pref_checkbox(
+            panel_dsp_vbox,_("Show timezone"),
+            self.panel_applet.config.show_tz,self.update_general,
+            bpad=10)
         #Translators: name of the General tab in the preference dialog
         nbook.append_page(tbl,Gtk.Label(_("General")))
         #: Time Zone Configuration
@@ -415,11 +475,7 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         tz_col = Gtk.TreeViewColumn("tz_list", tz_rndrr, text = 0)
         self.tz_tview.append_column(tz_col)
         tz_scroll = Gtk.ScrolledWindow(hadjustment=None,vadjustment=None)
-        if IS_GTK3:
-            tz_scroll.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        else: # NOT_GTK3
-            tz_scroll.set_policy(Gtk.POLICY_AUTOMATIC,Gtk.POLICY_AUTOMATIC)
+        tz_scroll.set_policy(TC_GTK_POLICY_AUTO,TC_GTK_POLICY_AUTO)
         tz_scroll.add(self.tz_tview)
         tz_frame = Gtk.Frame()
         tz_frame.add(tz_scroll)
@@ -437,14 +493,9 @@ class TailsClockPrefsDialog(Gtk.Dialog):
             pass
         tz_vbox.pack_start(tz_frame,True,True,0)
         select.connect("changed",self.on_timezone_selection_changed)
-        if IS_GTK3:
-            select.set_mode(Gtk.SelectionMode.SINGLE)
-        else: # NOT_GTK3
-            select.set_mode(Gtk.SELECTION_SINGLE)
+        select.set_mode(TC_GTK_SELECTION_SINGLE)
         #: try to constrain the dialog's size
         nbook.show_all()
-        if not self.panel_applet.config.locale_supports_am_pm():
-            clock_fmt_hbox.set_sensitive(False)
         pass
 
     def close(self,widget,event):
@@ -488,14 +539,11 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         self.show_all()
         if IS_GTK3:
             rv = super(Gtk.Dialog,self).run()
-            self.destroy()
-            if rv == Gtk.ResponseType.ACCEPT:
-                TailsClockAboutDialog().run()
         else:
             rv = Gtk.Dialog.run(self)
-            self.destroy()
-            if rv == Gtk.RESPONSE_ACCEPT:
-                TailsClockAboutDialog().run()
+        self.destroy()
+        if rv == TC_GTK_RESPONSE_ACCEPT:
+            TailsClockAboutDialog().run()
         return
 
 
@@ -513,7 +561,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
         self.set_program_name(_("Tails Clock"))
         #Translators: the version string label for the about dialog. The
         # %s is replaced with the actual version number.
-        self.set_version(_("Version %s") % "0.4")
+        self.set_version(_("Version %s") % "0.5")
         if IS_GTK3:
             self.set_license_type(Gtk.License.GPL_3_0)
         else:
@@ -525,7 +573,7 @@ class TailsClockAboutDialog(Gtk.AboutDialog):
                 " for details, visit http://www.gnu.org/licenses/gpl.html"
                 ))
         #Translators: This is the description found on the about dialog.
-        self.set_comments(_("A simple GNOME panel applet clock"))
+        self.set_comments(_("Clone of the GNOME Clock with configurable timezone"))
         pass
 
     def run(self):
@@ -548,29 +596,13 @@ class TailsClockCalendarWindow(Gtk.Window):
     calendar = None
     def __init__(self,applet):
         self.panel_applet = applet
-        if IS_GTK3:
-            super(TailsClockCalendarWindow,
-                  self).__init__(Gtk.WindowType.TOPLEVEL)
-            self.set_type_hint(Gdk.WindowTypeHint.DOCK)
-        else:
-            super(TailsClockCalendarWindow,self).__init__(Gtk.WINDOW_TOPLEVEL)
-            self.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+        super(TailsClockCalendarWindow,self).__init__(TC_GTK_WINDOW_TOPLEVEL)
+        self.set_type_hint(TC_GDK_WINDOW_TYPE_HINT_DOCK)
         self.set_decorated(False)
         self.set_resizable(False)
         self.stick()
         self.calendar = Gtk.Calendar()
-        if IS_GTK3:
-            self.calendar.set_display_options(
-                Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS |
-                Gtk.CalendarDisplayOptions.SHOW_HEADING |
-                Gtk.CalendarDisplayOptions.SHOW_DAY_NAMES
-                )
-        else:
-            self.calendar.set_display_options(
-                Gtk.CALENDAR_SHOW_WEEK_NUMBERS |
-                Gtk.CALENDAR_SHOW_HEADING |
-                Gtk.CALENDAR_SHOW_DAY_NAMES
-                )
+        self.calendar.set_display_options(TC_CALENDAR_DISPLAY_FLAGS)
         cal_vbox = Gtk.VBox(False, 8)
         cal_hbox = Gtk.HBox(False, 8)
         self.add(cal_hbox)
@@ -806,10 +838,7 @@ class TailsClock:
         self.main_label = Gtk.Label("")
         self.main_bttn = Gtk.ToggleButton()
         self.main_bttn.add(self.main_label)
-        if IS_GTK3:
-            self.main_bttn.set_relief(Gtk.ReliefStyle.NONE)
-        else:
-            self.main_bttn.set_relief(Gtk.RELIEF_NONE)
+        self.main_bttn.set_relief(TC_GTK_RELIEF_NONE)
         self.main_bttn.set_can_focus(False)
         self.main_bttn.set_name("TailsClockAppletButton")
         self.main_bttn.connect("button-press-event",self.popup_menu)
@@ -964,10 +993,7 @@ class TailsClock:
         self.orientation = TailsClock.ORIENT_TOP
         if self.main_label.get_angle() != 0:
             self.main_label.set_angle(0)
-        if IS_GTK3:
-            self.main_obox.set_orientation(Gtk.Orientation.HORIZONTAL)
-        else:
-            self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
+        self.main_obox.set_orientation(TC_GTK_ORIENTATION_HORIZONTAL)
         pass
 
     # internal method to handle ORIENT_DOWN changes
@@ -976,10 +1002,7 @@ class TailsClock:
         self.orientation = TailsClock.ORIENT_BOTTOM
         if self.main_label.get_angle() != 0:
             self.main_label.set_angle(0)
-        if IS_GTK3:
-            self.main_obox.set_orientation(Gtk.Orientation.HORIZONTAL)
-        else:
-            self.main_obox.set_orientation(Gtk.ORIENTATION_HORIZONTAL)
+        self.main_obox.set_orientation(TC_GTK_ORIENTATION_HORIZONTAL)
         pass
 
     # internal method to handle ORIENT_LEFT changes
@@ -988,10 +1011,7 @@ class TailsClock:
         self.orientation = TailsClock.ORIENT_LEFT
         if self.main_label.get_angle() != 270:
             self.main_label.set_angle(270)
-        if IS_GTK3:
-            self.main_obox.set_orientation(Gtk.Orientation.VERTICAL)
-        else:
-            self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
+        self.main_obox.set_orientation(TC_GTK_ORIENTATION_VERTICAL)
         pass
 
     # internal method to handle ORIENT_RIGHT changes
@@ -1000,10 +1020,7 @@ class TailsClock:
         self.orientation = TailsClock.ORIENT_RIGHT
         if self.main_label.get_angle() != 90:
             self.main_label.set_angle(90)
-        if IS_GTK3:
-            self.main_obox.set_orientation(Gtk.Orientation.VERTICAL)
-        else:
-            self.main_obox.set_orientation(Gtk.ORIENTATION_VERTICAL)
+        self.main_obox.set_orientation(TC_GTK_ORIENTATION_VERTICAL)
         pass
 
     def on_orient_change(self,orient=None,data=None):
@@ -1014,32 +1031,18 @@ class TailsClock:
         """
         if self.panel_applet.__class__ is not Gtk.Window:
             orientation = self.panel_applet.get_orient()
-            if IS_GTK3:
-                if orientation == PanelApplet.AppletOrient.UP:
-                    # top panel
-                    self._set_applet_horiz_up()
-                elif orientation == PanelApplet.AppletOrient.DOWN:
-                    # bottom panel
-                    self._set_applet_horiz_down()
-                elif orientation == PanelApplet.AppletOrient.LEFT:
-                    # right-hand side of screen
-                    self._set_applet_vert_left()
-                elif orientation == PanelApplet.AppletOrient.RIGHT:
-                    # left-hand side of screen
-                    self._set_applet_vert_right()
-            else:
-                if orientation == gnomeapplet.ORIENT_UP:
-                    # top of screen
-                    self._set_applet_horiz_up()
-                elif orientation == gnomeapplet.ORIENT_DOWN:
-                    # bottom of screen
-                    self._set_applet_horiz_down()
-                elif orientation == gnomeapplet.ORIENT_LEFT:
-                    # right-hand side
-                    self._set_applet_vert_left()
-                elif orientation == gnomeapplet.ORIENT_RIGHT:
-                    # left-hand side of screen
-                    self._set_applet_vert_right()
+            if orientation == TC_APPLET_ORIENT_UP:
+                # top of screen
+                self._set_applet_horiz_up()
+            elif orientation == TC_APPLET_ORIENT_DOWN:
+                # bottom of screen
+                self._set_applet_horiz_down()
+            elif orientation == TC_APPLET_ORIENT_LEFT:
+                # right-hand side
+                self._set_applet_vert_left()
+            elif orientation == TC_APPLET_ORIENT_RIGHT:
+                # left-hand side of screen
+                self._set_applet_vert_right()
         return True
     
 
@@ -1053,6 +1056,9 @@ def applet_factory(applet, iid, data = None, is_debug = False):
     IS_DEBUG = is_debug
     if IS_DEBUG:
         #: log std{err,out} to the debug log
+        global LOG_FILE_DSC, LOG_FILE_PATH
+        (LOG_FILE_DSC,LOG_FILE_PATH) = \
+            tempfile.mkstemp(suffix='.log',prefix='tailsclockapplet')
         sys.stdout = open(LOG_FILE_PATH,"a",0)
         sys.stderr = open(LOG_FILE_PATH,"a",0)
     tc_inst = TailsClock(applet,iid,data).launch()

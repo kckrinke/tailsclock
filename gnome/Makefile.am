@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS=-Wno-portability
 custom_files = \
 	org.gnome.applets.TailsClock.panel-applet \
 	org.gnome.panel.applet.TailsClock.service \
@@ -8,7 +9,7 @@ EXTRA_DIST = \
 	org.gnome.panel.applet.TailsClock.service.in \
 	TailsClock.server.in
 
-appletdir = ${DESTDIR}${libdir}/gnome-applets
+appletdir = ${DESTDIR}${prefix}/lib/gnome-applets
 do_substitution = sed -e 's,[@]appletdir[@],$(appletdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]VERSION[@],$(VERSION),g' 
@@ -30,15 +31,15 @@ clean:
 	@[ -f TailsClock.server ] && /bin/rm -v TailsClock.server || true
 
 install:
-	@echo "Installing gnome-files to: ${DESTDIR}${datarootdir} and ${DESTDIR}${libdir}"
+	@echo "Installing gnome-files to: ${DESTDIR}${datarootdir} and ${DESTDIR}${prefix}/lib"
 	@mkdir -p ${DESTDIR}${datarootdir}/gnome-panel/4.0/applets/
 	@install -D -m 644 org.gnome.applets.TailsClock.panel-applet ${DESTDIR}${datarootdir}/gnome-panel/4.0/applets/
 	@mkdir -p ${DESTDIR}${datarootdir}/dbus-1/services/
 	@install -D -m 644 org.gnome.panel.applet.TailsClock.service ${DESTDIR}${datarootdir}/dbus-1/services/
-	@mkdir -p ${DESTDIR}${libdir}/bonobo/servers/
-	@install -D -m 644 TailsClock.server ${DESTDIR}${libdir}/bonobo/servers/
+	@mkdir -p ${DESTDIR}${prefix}/lib/bonobo/servers/
+	@install -D -m 644 TailsClock.server ${DESTDIR}${prefix}/lib/bonobo/servers/
 
 uninstall:
 	@/bin/rm -v ${DESTDIR}${datarootdir}/gnome-panel/4.0/applets/org.gnome.applets.TailsClock.panel-applet
 	@/bin/rm -v ${DESTDIR}${datarootdir}/dbus-1/services/org.gnome.panel.applet.TailsClock.service
-	@/bin/rm -v ${DESTDIR}${libdir}/bonobo/servers/TailsClock.server
+	@/bin/rm -v ${DESTDIR}${prefix}/lib/bonobo/servers/TailsClock.server
