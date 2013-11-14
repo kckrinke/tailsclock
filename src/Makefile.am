@@ -1,9 +1,22 @@
 AUTOMAKE_OPTIONS=-Wno-portability
 EXTRA_DIST = $(wildcard *.py)
 
+do_substitution = sed \
+	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
+	-e 's,[@]VERSION[@],$(VERSION),g' 
+
+.PHONEY: all
+
+all:
+	@$(do_substitution) < TailsClockApplet.py.in > TailsClockApplet.py
+
 extraclean:
 	-/bin/rm -fv config-tmp-*
 	-/bin/rm -fv *~ \#*
+
+clean:
+	@[ -f TailsClockApplet.py ] && /bin/rm -v TailsClockApplet.py || true
+
 
 install:
 	@echo "Installing src to: ${DESTDIR}/lib/gnome-applets/"
