@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS=-Wno-portability
-LNGDIRS = de en es fr nl
+LNGDIRS = $(dir $(wildcard */))
 
 MESSAGES_POT = en/LC_MESSAGES/tailsclockapplet.pot
 MESSAGES_PO = en/LC_MESSAGES/tailsclockapplet.po
@@ -11,8 +11,8 @@ EXTRA_DIST = *.po *.pot
 .PHONY: lngdirs $(LNGDIRS)
 lngdirs: $(LNGDIRS)
 $(LNGDIRS):
-	@echo "Translating: $@/LC_MESSAGES/tailsclockapplet.po"
-	@msgfmt --verbose --output-file $@/LC_MESSAGES/tailsclockapplet.mo $@/LC_MESSAGES/tailsclockapplet.po || true
+	@echo "Translating: $@LC_MESSAGES/tailsclockapplet.po"
+	@msgfmt --verbose --output-file $@LC_MESSAGES/tailsclockapplet.mo $@LC_MESSAGES/tailsclockapplet.po || true
 
 all: $(LNGDIRS)
 
