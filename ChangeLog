@@ -1,3 +1,11 @@
+0.6 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Really rememoved all traces of NEWS
+  * Made locale generation more dynamic during "make"
+  * Minor tidy-ups, autotools/packaging fixes
+  * This release is now 1.0-rc1, if testing goes well next version will
+    just be a version bump and re-release
+
 0.5 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Changed description of applet in about dialog
