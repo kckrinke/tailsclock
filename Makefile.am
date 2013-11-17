@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS=-Wno-portability
 DESTDIR := /
 SUBDIRS = gnome locale src
 
-realclean: clean
+distclean: clean
 	@echo "Removing auto generated files..."
 	@/bin/rm -fv Makefile.in src/Makefile.in locale/Makefile.in gnome/Makefile.in || true
 	@/bin/rm -fv Makefile src/Makefile locale/Makefile gnome/Makefile || true
