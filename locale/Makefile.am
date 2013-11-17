@@ -14,10 +14,10 @@ $(LNGDIRS):
 all: $(LNGDIRS)
 
 extraclean:
-	-/bin/rm -fv config-tmp-*
-	-/bin/rm -fv *~ \#*
-	-/bin/rm -fv */LC_MESSAGES/*~
-	-/bin/rm -fv */LC_MESSAGES/\#*
+	@/bin/rm -fv config-tmp-* || true
+	@/bin/rm -fv *~ \#* || true
+	@/bin/rm -fv */LC_MESSAGES/*~ || true
+	@/bin/rm -fv */LC_MESSAGES/\#* || true
 
 clean:
 	@/bin/rm -v $(wildcard */LC_MESSAGES/*.mo)
