@@ -1,9 +1,6 @@
 AUTOMAKE_OPTIONS=-Wno-portability
 LNGDIRS = $(dir $(wildcard */))
 
-MESSAGES_POT = en/LC_MESSAGES/tailsclockapplet.pot
-MESSAGES_PO = en/LC_MESSAGES/tailsclockapplet.po
-
 mo_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
 CLEANFILES = $(mo_files)
 EXTRA_DIST = *.po *.pot
