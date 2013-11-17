@@ -15,7 +15,8 @@ extraclean:
 	@/bin/rm -fv *~ \#* || true
 
 clean:
-
+	@$(foreach c,$(wildcard **/*.pyc),/bin/rm -v $(c);)
+	@$(foreach c,$(wildcard **/*.pyo),/bin/rm -v $(c);)
 	@/bin/rm -fv TailsClockApplet.py || true
 
 install:

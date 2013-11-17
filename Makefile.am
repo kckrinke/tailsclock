@@ -20,5 +20,3 @@ extraclean:
 	@/bin/rm -fv config-tmp-* || true
 	@/bin/rm -fv *~ \#* || true
 
-clean: clean-recursive
-	@$(foreach c,$(wildcard **/*.pyc),/bin/rm -v $c)
