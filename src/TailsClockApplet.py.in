@@ -78,7 +78,7 @@ if IS_GTK3:
     TC_APPLET_ORIENT_LEFT = PanelApplet.AppletOrient.LEFT
     TC_APPLET_ORIENT_RIGHT = PanelApplet.AppletOrient.RIGHT
 else:
-    TC_GTK_WIN_POS_CENTER = Gtk.WINODW_POSITION_CENTER
+    TC_GTK_WIN_POS_CENTER = Gtk.WIN_POS_CENTER
     TC_GTK_DIALOG_FLAGS_MODAL = Gtk.DIALOG_MODAL
     TC_GTK_DIALOG_FLAGS_NO_SEPARATOR = Gtk.DIALOG_NO_SEPARATOR
     TC_GTK_RESPONSE_ACCEPT = Gtk.RESPONSE_ACCEPT
@@ -94,7 +94,7 @@ else:
         )
     TC_GTK_ORIENTATION_HORIZONTAL = Gtk.ORIENTATION_HORIZONTAL
     TC_GTK_ORIENTATION_VERTICAL = Gtk.ORIENTATION_VERTICAL
-    TC_GTK_RELIEF_NONE = Gtk.RELEIF_NONE
+    TC_GTK_RELIEF_NONE = Gtk.RELIEF_NONE
     TC_APPLET_ORIENT_UP = gnomeapplet.ORIENT_UP
     TC_APPLET_ORIENT_DOWN = gnomeapplet.ORIENT_DOWN
     TC_APPLET_ORIENT_LEFT = gnomeapplet.ORIENT_LEFT
@@ -834,7 +834,10 @@ class TailsClock:
         and so on. Basically; launch the applet.
         """
         # actually populate UI
-        self.main_obox = Gtk.Box()
+	if IS_GTK3:
+            self.main_obox = Gtk.Box()
+        else:
+            self.main_obox = Gtk.HBox()
         self.main_label = Gtk.Label("")
         self.main_bttn = Gtk.ToggleButton()
         self.main_bttn.add(self.main_label)
