@@ -1,3 +1,9 @@
+0.7 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Missed Gtk2 bugfixes
+  * make distclean now really cleans up
+  * Generally minor tweaks to packaging
+
 0.6 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Really rememoved all traces of NEWS
