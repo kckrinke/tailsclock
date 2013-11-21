@@ -411,8 +411,11 @@ class TailsClockPrefsDialog(Gtk.Dialog):
         # clock
         self.show_12hr.set_label(_("12 hour format"))
         clock_fmt_inner_hbox.pack_start(self.show_12hr,True,True,8)
-        self.show_24hr = Gtk.RadioButton()
-        self.show_24hr.join_group(self.show_12hr)
+        if IS_GTK3:
+            self.show_24hr = Gtk.RadioButton()
+            self.show_24hr.join_group(self.show_12hr)
+        else:
+            self.show_24hr = Gtk.RadioButton(self.show_12hr)
         #Translators: label for the pref dialog: user wants to see 24-hour
         # format clock
         self.show_24hr.set_label(_("24 hour format"))
