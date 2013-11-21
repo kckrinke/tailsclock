@@ -16,7 +16,10 @@ distclean: clean
 	@/bin/rm -fv configure || true
 
 extraclean:
-	for i in ${SUBDIRS}; do (cd $$i; $(MAKE) $(MFLAGS) extraclean); done
+	@for i in ${SUBDIRS}; do (cd $$i; $(MAKE) $(MFLAGS) extraclean); done
 	@/bin/rm -fv config-tmp-* || true
 	@/bin/rm -fv *~ \#* || true
 
+
+clean:
+	@for i in ${SUBDIRS}; do (cd $$i; $(MAKE) $(MFLAGS) clean); done
