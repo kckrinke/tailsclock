@@ -1,4 +1,4 @@
-AC_INIT([TailsClock], [0.7])
+AC_INIT([TailsClock], [0.8])
 AM_INIT_AUTOMAKE([foreign])
 
 AM_MAINTAINER_MODE

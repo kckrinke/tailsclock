@@ -1,3 +1,9 @@
+0.8 - Kevin C. Krinke <kevin@krinke.ca>
+
+  * Fix for Gtk2 radio button grouping
+  * make clean now includes *.py{c,o} properly for src subdir
+  * make clean reliably called for subdirs
+
 0.7 - Kevin C. Krinke <kevin@krinke.ca>
 
   * Missed Gtk2 bugfixes
