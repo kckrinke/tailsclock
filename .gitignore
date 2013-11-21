@@ -1,7 +1,0 @@
-*.pyc
-*.mo
-autom4te.cache
-aclocal.m4
-config.log
-config.status
-Makefile

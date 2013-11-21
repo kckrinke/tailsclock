@@ -11,12 +11,13 @@ all:
 	@$(do_substitution) < TailsClockApplet.py.in > TailsClockApplet.py
 
 extraclean:
-	-/bin/rm -fv config-tmp-*
-	-/bin/rm -fv *~ \#*
+	@/bin/rm -fv config-tmp-* || true
+	@/bin/rm -fv *~ \#* || true
 
 clean:
-	@[ -f TailsClockApplet.py ] && /bin/rm -v TailsClockApplet.py || true
-
+	@$(foreach c,$(wildcard **/*.pyc),/bin/rm -v $(c);)
+	@$(foreach c,$(wildcard **/*.pyo),/bin/rm -v $(c);)
+	@/bin/rm -fv TailsClockApplet.py || true
 
 install:
 	@echo "Installing src to: ${DESTDIR}/lib/gnome-applets/"
@@ -26,6 +27,6 @@ install:
 	@install -D -m 755 TailsClock-factory3.py ${DESTDIR}${prefix}/lib/gnome-applets/
 
 uninstall:
-	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClockApplet.py
-	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClock-factory2.py
-	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClock-factory3.py
+	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClockApplet.py || true
+	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClock-factory2.py || true
+	@/bin/rm -v ${DESTDIR}${prefix}/lib/gnome-applets/TailsClock-factory3.py || true

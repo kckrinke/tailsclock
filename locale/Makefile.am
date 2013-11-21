@@ -1,9 +1,6 @@
 AUTOMAKE_OPTIONS=-Wno-portability
 LNGDIRS = $(dir $(wildcard */))
 
-MESSAGES_POT = en/LC_MESSAGES/tailsclockapplet.pot
-MESSAGES_PO = en/LC_MESSAGES/tailsclockapplet.po
-
 mo_files = $(foreach p,$(wildcard *.po),$(basename $(p)).mo;)
 CLEANFILES = $(mo_files)
 EXTRA_DIST = *.po *.pot
@@ -17,13 +14,13 @@ $(LNGDIRS):
 all: $(LNGDIRS)
 
 extraclean:
-	-/bin/rm -fv config-tmp-*
-	-/bin/rm -fv *~ \#*
-	-/bin/rm -fv */LC_MESSAGES/*~
-	-/bin/rm -fv */LC_MESSAGES/\#*
+	@/bin/rm -fv config-tmp-* || true
+	@/bin/rm -fv *~ \#* || true
+	@/bin/rm -fv */LC_MESSAGES/*~ || true
+	@/bin/rm -fv */LC_MESSAGES/\#* || true
 
 clean:
-	@/bin/rm -v $(wildcard */LC_MESSAGES/*.mo)
+	@$(foreach m,$(wildcard */LC_MESSAGES/*.mo),/bin/rm -v $(m);)
 
 install:
 	@echo "Installing locale to: ${DESTDIR}${datarootdir}/locale/"
