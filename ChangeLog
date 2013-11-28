@@ -3,6 +3,8 @@
   * Fix for Gtk2 radio button grouping
   * make clean now includes *.py{c,o} properly for src subdir
   * make clean reliably called for subdirs
+  * updated strings add-to-panel strings
+  * refreshed i18n pot/po
 
 0.7 - Kevin C. Krinke <kevin@krinke.ca>
 
